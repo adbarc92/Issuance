@@ -1,0 +1,75 @@
+import { Entity, PrimaryGeneratedColumn, Column, Timestamp } from 'typeorm';
+
+export enum TicketPriority {
+  HIGHEST = 'highest',
+  HIGH = 'high',
+  MEDIUM = 'medium',
+  LOW = 'low',
+  LOWEST = 'lowest',
+}
+
+export enum TicketType {
+  FEATURE = 'feature',
+  BUG = 'bug',
+  EPIC = 'epic',
+}
+
+export enum TicketStatus {
+  BACKLOG = 'backlog',
+  ACTIVE = 'active',
+  COMPLETE = 'complete',
+}
+
+@Entity()
+export class Ticket {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column()
+  name!: string;
+
+  @Column()
+  project!: number;
+
+  @Column()
+  summary!: string;
+
+  @Column()
+  description!: string;
+
+  @Column({
+    type: 'enum',
+    enum: TicketPriority,
+    default: TicketPriority.MEDIUM,
+  })
+  priority!: TicketPriority;
+
+  @Column()
+  deadline!: Timestamp;
+
+  @Column({
+    type: 'enum',
+    enum: TicketType,
+    default: TicketType.FEATURE,
+  })
+  type!: TicketType;
+
+  @Column()
+  reportedBy!: number;
+
+  @Column()
+  completedBy!: number;
+
+  @Column()
+  assignedTo!: number;
+
+  @Column()
+  createdOn!: Timestamp;
+
+  @Column({
+    type: 'enum',
+    enum: TicketStatus,
+    default: TicketStatus.BACKLOG,
+  })
+  status!: TicketStatus;
+}
