@@ -44,8 +44,8 @@ export class Ticket {
   })
   priority!: TicketPriority;
 
-  @Column()
-  deadline!: Timestamp;
+  @Column('timestamp', {name: 'date', default: (): string => 'LOCALTIMESTAMP' })
+  deadline!: Date;
 
   @Column({
     type: 'enum',
@@ -63,8 +63,8 @@ export class Ticket {
   @Column()
   assignedTo!: number;
 
-  @Column()
-  createdOn!: Timestamp;
+  @Column('timestamp', {name: 'date', default: (): string => 'LOCALTIMESTAMP' })
+  createdOn!: Date;
 
   @Column({
     type: 'enum',

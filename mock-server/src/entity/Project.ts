@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Timestamp } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Project {
@@ -9,10 +9,7 @@ export class Project {
   name!: string;
 
   @Column()
-  tickets!: number[];
-
-  @Column()
-  personnel!: number[];
+  personnel!: number;
 
   @Column()
   description!: string;
