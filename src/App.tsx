@@ -1,7 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import MyDrawer from 'components/Drawer';
 
 const App = (): JSX.Element => {
-  return <div>This is not the next Jira</div>;
+  return (
+    <div>
+      <MyDrawer />
+      This is not the next Jira
+    </div>
+  );
 };
 
 export default App;
