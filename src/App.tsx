@@ -1,11 +1,12 @@
 import React from 'react';
 import MyDrawer from 'components/Drawer';
+import Dashboard from 'components/Dashboard';
 
 const App = (): JSX.Element => {
   return (
     <div>
       <MyDrawer />
-      This is not the next Jira
+      <Dashboard />
     </div>
   );
 };
