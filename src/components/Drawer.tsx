@@ -17,8 +17,13 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Menu as MenuIcon,
-  Inbox as InboxIcon,
-  Mail as MailIcon,
+  Home as HomeIcon,
+  Apps as ProjectsIcon,
+  List as TasksIcon,
+  People as UsersIcon,
+  Settings as SettingsIcon,
+  Search as SearchIcon,
+  Notifications as NotificationsIcon,
 } from '@material-ui/icons';
 import {
   createStyles,
@@ -86,10 +91,6 @@ const useStyles = makeStyles((theme: Theme) =>
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
   })
 );
 
@@ -138,6 +139,7 @@ const MyDrawer = (): JSX.Element => {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
+        // Question: Classes?
         classes={{
           paper: clsx({
             [classes.drawerOpen]: open,
@@ -156,25 +158,51 @@ const MyDrawer = (): JSX.Element => {
         </div>
         <Divider />
         <List>
-          {['Home', 'Projects', 'Tasks', 'Users'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button key={'Home'}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Home'} />
+          </ListItem>
+          <ListItem button key={'Projects'}>
+            <ListItemIcon>
+              <ProjectsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Projects'} />
+          </ListItem>
+          <ListItem button key={'Tasks'}>
+            <ListItemIcon>
+              <TasksIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Tasks'} />
+          </ListItem>
+          <ListItem button key={'Users'}>
+            <ListItemIcon>
+              <UsersIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Users'} />
+          </ListItem>
         </List>
         <Divider />
         <List>
-          {['Settings', 'Search', 'Notifications'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button key={'Settings'}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Settings'} />
+          </ListItem>
+          <ListItem button key={'Search'}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Search'} />
+          </ListItem>
+          <ListItem button key={'Notifications'}>
+            <ListItemIcon>
+              <NotificationsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Notifications'} />
+          </ListItem>
         </List>
       </Drawer>
     </div>

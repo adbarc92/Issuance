@@ -12,32 +12,44 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
+    toolbar: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      padding: theme.spacing(0, 1),
+      // necessary for content to be below app bar
+      ...theme.mixins.toolbar,
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
   })
 );
-
-// Top: 73px
-// Left: 64px
 
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Grid container spacing={6}>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>Project Preview</Paper>
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
+      <div className={classes.root}>
+        <Grid container spacing={6}>
+          <Grid item xs={6}>
+            <Paper className={classes.paper}>Project Preview</Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className={classes.paper}>Ticket Preview</Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className={classes.paper}>User Preview</Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className={classes.paper}>Project Preview</Paper>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>Ticket Preview</Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>User Preview</Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>Project Preview</Paper>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </main>
   );
 };
 
