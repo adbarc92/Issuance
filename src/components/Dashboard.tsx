@@ -35,18 +35,11 @@ const Dashboard = (): JSX.Element => {
       <div className={classes.toolbar} />
       <div className={classes.root}>
         <Grid container spacing={6}>
-          <Grid item xs={6}>
-            <Paper className={classes.paper}>Project Preview</Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper className={classes.paper}>Ticket Preview</Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper className={classes.paper}>User Preview</Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper className={classes.paper}>Project Preview</Paper>
-          </Grid>
+          {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
+            <Grid key={index} item xs={6}>
+              <Paper className={classes.paper}>{text} Preview</Paper>
+            </Grid>
+          ))}
         </Grid>
       </div>
     </main>

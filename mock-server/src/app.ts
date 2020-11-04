@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
-import { User } from './entity/User';
+import { User } from 'entity/User';
 
 // create typeorm connection
 createConnection().then(connection => {

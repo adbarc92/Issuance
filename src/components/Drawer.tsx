@@ -19,7 +19,7 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Apps as ProjectsIcon,
-  List as TasksIcon,
+  FormatListNumbered as TasksIcon,
   People as UsersIcon,
   Settings as SettingsIcon,
   Search as SearchIcon,
