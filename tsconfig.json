@@ -28,7 +28,4 @@
 		"craco.config.js",
 		"node_modules"
 	],
-	"include": [
-		"./src/"
-	]
 }

@@ -23,7 +23,7 @@ export enum TicketStatus {
 @Entity()
 export class Ticket {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
   name!: string;
@@ -45,7 +45,7 @@ export class Ticket {
   priority!: TicketPriority;
 
   @Column('timestamp', {
-    name: 'date',
+    // name: 'deadline',
     default: (): string => 'LOCALTIMESTAMP',
   })
   deadline!: Date;
@@ -67,7 +67,7 @@ export class Ticket {
   assignedTo!: number;
 
   @Column('timestamp', {
-    name: 'date',
+    name: 'createdOn',
     default: (): string => 'LOCALTIMESTAMP',
   })
   createdOn!: Date;
