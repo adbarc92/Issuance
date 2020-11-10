@@ -31,6 +31,7 @@ import {
   useTheme,
   Theme,
 } from '@material-ui/core/styles';
+import TextInput from 'elements/TextInput';
 
 const drawerWidth = 240;
 
@@ -83,6 +84,16 @@ const useStyles = makeStyles((theme: Theme) =>
         width: theme.spacing(9) + 1,
       },
     },
+    searchfieldContainer: {
+      justifyContent: 'right',
+      borderRadius: theme.shape.borderRadius,
+      width: '250px',
+      height: '32px',
+      backgroundColor: '#191970',
+    },
+    title: {
+      flexGrow: 1,
+    },
     toolbar: {
       display: 'flex',
       alignItems: 'center',
@@ -98,6 +109,8 @@ const MyDrawer = (): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [inputString, setInputString] = React.useState<string>('');
+  const [searchString, setSearchString] = React.useState<string>('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -128,9 +141,20 @@ const MyDrawer = (): JSX.Element => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography className={classes.title} variant="h6" noWrap>
             Hello, User!
           </Typography>
+          <div className={classes.searchfieldContainer}>
+            <TextInput
+              placeholder={'Search...'}
+              value={inputString}
+              onChange={e => {
+                const val = (e as any).target.value;
+                setInputString(val);
+                setSearchString(val);
+              }}
+            ></TextInput>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer

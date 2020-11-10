@@ -42,7 +42,7 @@ createConnection().then(connection => {
   });
 
   // start express server
-  app.listen(3000);
+  app.listen(4000);
 
   console.log('Application is up and running');
 });
