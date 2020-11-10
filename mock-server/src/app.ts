@@ -15,6 +15,7 @@ createConnection().then(connection => {
 
   app.get('/users', async function (req: Request, res: Response) {
     const users = await userRepository.find();
+    console.log('/users');
     res.json(users);
   });
 
