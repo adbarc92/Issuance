@@ -8,6 +8,6 @@ export const getUsers = (): any => {
   // console.log('getting users');
   axios.get('/users').then(response => {
     console.log('response:', response);
-    return response;
+    return response.data;
   });
 };
