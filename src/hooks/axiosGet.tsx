@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { User } from 'components/UsersDisplay';
 
+// Prepends `/api` to route
+const api = axios.create({ baseURL: '/api' });
+
 export const getUser = (id: number): void => {
-  axios.get(`/user/${id}`).then(response => console.log(response));
+  api.get(`/user/${id}`).then(response => console.log(response));
 };
 
 // export const getUsers = (): Promise<User[]> => {
@@ -12,6 +15,6 @@ export const getUser = (id: number): void => {
 // };
 
 export const getUsers = async (): Promise<User[]> => {
-  const response = await axios.get('/users');
+  const response = await api.get('/users');
   return response.data;
 };

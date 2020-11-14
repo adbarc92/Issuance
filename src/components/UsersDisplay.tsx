@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { getUser, getUsers } from 'hooks/axiosGet';
+import { useGetData } from 'hooks/useDataLoader';
+import LoadingSpinner from 'elements/LoadingSpinner';
 
 import {
   Table,
@@ -22,32 +25,54 @@ interface UserProps {
   users: User[];
 }
 
-const UsersDisplay = (props: UserProps): JSX.Element => {
-  const { users } = props;
-  console.log('Users:', users);
-  // return <div />;
+const UsersDisplay = (): JSX.Element => {
+  // const [loading, setLoading] = React.useState(true);
+  // const [users, setUsers] = React.useState<null | User[]>(null);
+
+  // useEffect(() => {
+  //   if (!users) {
+  //     getUsers().then((users: User[]) => {
+  //       console.log(users);
+  //       setUsers(users);
+  //       setLoading(false);
+  //     });
+  //   }
+  // }, [users, setUsers]);
+
+  const { loading, data: users, error } = useGetData(getUsers);
+
+  if (error) {
+    return <div>There was an error: {error}</div>;
+  }
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead></TableHead>
-        <TableBody>
-          {users
-            ? users.map((user, index) => {
-                const { id, name, email, role, description } = user;
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{id}</TableCell>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{email}</TableCell>
-                    <TableCell>{role}</TableCell>
-                    <TableCell>{description}</TableCell>
-                  </TableRow>
-                );
-              })
-            : null}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead></TableHead>
+            <TableBody>
+              {users
+                ? users.map((user, index) => {
+                    const { id, name, email, role, description } = user;
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>{id}</TableCell>
+                        <TableCell>{name}</TableCell>
+                        <TableCell>{email}</TableCell>
+                        <TableCell>{role}</TableCell>
+                        <TableCell>{description}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                : null}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start": "concurrently \"craco start\" \"(cd mock-server && yarn start)\"",
     "build": "craco build",
     "test": "craco test"
   },
@@ -30,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
     "babel-preset-react-app": "^9.1.2",
+    "concurrently": "^5.3.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-react-app": "^5.2.1",

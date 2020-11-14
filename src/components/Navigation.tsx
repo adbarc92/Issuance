@@ -31,7 +31,7 @@ import {
   useTheme,
   Theme,
 } from '@material-ui/core/styles';
-import { NavLink, BrowserRouter as Router } from 'react-router-dom';
+import { Link, BrowserRouter as Router } from 'react-router-dom';
 import TextInput from 'elements/TextInput';
 
 const drawerWidth = 240;
@@ -183,40 +183,38 @@ const Navigation = (): JSX.Element => {
         </div>
         <Divider />
         <List>
-          <Router>
-            <ListItem button key={'Home'}>
-              <NavLink to="/">
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-              </NavLink>
-              <NavLink to="/">
-                <ListItemText primary={'Home'} />
-              </NavLink>
-            </ListItem>
-            <ListItem button key={'Projects'}>
+          <ListItem button key={'Home'}>
+            <Link to="/">
               <ListItemIcon>
-                <ProjectsIcon />
+                <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={'Projects'} />
-            </ListItem>
-            <ListItem button key={'Tasks'}>
+            </Link>
+            <Link to="/">
+              <ListItemText primary={'Home'} />
+            </Link>
+          </ListItem>
+          <ListItem button key={'Projects'}>
+            <ListItemIcon>
+              <ProjectsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Projects'} />
+          </ListItem>
+          <ListItem button key={'Tasks'}>
+            <ListItemIcon>
+              <TasksIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Tasks'} />
+          </ListItem>
+          <ListItem button key={'Users'}>
+            <Link to="/users">
               <ListItemIcon>
-                <TasksIcon />
+                <UsersIcon />
               </ListItemIcon>
-              <ListItemText primary={'Tasks'} />
-            </ListItem>
-            <ListItem button key={'Users'}>
-              <NavLink to="/users">
-                <ListItemIcon>
-                  <UsersIcon />
-                </ListItemIcon>
-              </NavLink>
-              <NavLink to="/users">
-                <ListItemText primary={'Users'} />
-              </NavLink>
-            </ListItem>
-          </Router>
+            </Link>
+            <Link to="/users">
+              <ListItemText primary={'Users'} />
+            </Link>
+          </ListItem>
         </List>
         <Divider />
         <List>

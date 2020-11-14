@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Paper } from '@material-ui/core';
+import { getUser, getUsers } from 'hooks/axiosGet';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { User } from 'components/UsersDisplay';
+import LoadingSpinner from 'elements/LoadingSpinner';
+import { useGetData } from 'hooks/useDataLoader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,15 +26,25 @@ const useStyles = makeStyles((theme: Theme) =>
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
 
+  const { loading, data: users, error } = useGetData(getUsers);
+
+  if (error) {
+    return <div>There was an error: {error}</div>;
+  }
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={6}>
-        {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
-          <Grid key={index} item xs={6}>
-            <Paper className={classes.paper}>{text} Preview</Paper>
-          </Grid>
-        ))}
-      </Grid>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <Grid container spacing={6}>
+          {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
+            <Grid key={index} item xs={6}>
+              <Paper className={classes.paper}>{text} Preview</Paper>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </div>
   );
 };
