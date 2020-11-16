@@ -10,7 +10,7 @@ interface InputProps {
   showSearchIcon?: boolean;
 }
 
-const TextInput = (props: InputProps): JSX.Element => {
+const SearchInput = (props: InputProps): JSX.Element => {
   const { value, placeholder, onChange } = props;
   return (
     <Input
@@ -28,4 +28,4 @@ const TextInput = (props: InputProps): JSX.Element => {
   );
 };
 
-export default TextInput;
+export default SearchInput;

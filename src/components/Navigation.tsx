@@ -31,8 +31,8 @@ import {
   useTheme,
   Theme,
 } from '@material-ui/core/styles';
-import { Link, BrowserRouter as Router } from 'react-router-dom';
-import TextInput from 'elements/TextInput';
+import { Link } from 'react-router-dom';
+import SearchInput from 'elements/SearchInput';
 
 const drawerWidth = 240;
 
@@ -146,7 +146,7 @@ const Navigation = (): JSX.Element => {
             Hello, User!
           </Typography>
           <div className={classes.searchfieldContainer}>
-            <TextInput
+            <SearchInput
               placeholder={'Search...'}
               value={inputString}
               onChange={e => {
@@ -154,7 +154,7 @@ const Navigation = (): JSX.Element => {
                 setInputString(val);
                 setSearchString(val);
               }}
-            ></TextInput>
+            ></SearchInput>
           </div>
         </Toolbar>
       </AppBar>

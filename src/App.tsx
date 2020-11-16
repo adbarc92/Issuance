@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
-import UsersDisplay from 'components/UsersDisplay';
+import UsersTable from 'components/UsersTable';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -49,7 +49,7 @@ const App = (): JSX.Element => {
   console.log('Rendering');
 
   return (
-    <Router forcedRefresh={true}>
+    <Router>
       <div className={classes.pageContainer}>
         <main className={classes.content}>
           <div className={classes.toolbar} />
@@ -58,14 +58,14 @@ const App = (): JSX.Element => {
             <Route path="/users">
               {/* <main className={classes.content}> */}
               {/* <div className={classes.toolbar} /> */}
-              <UsersDisplay />
+              <UsersTable />
               {/* </main> */}
             </Route>
-            <Route exact path="/" component={Dashboard}>
+            <Route exact path="/">
               {/* <main className={classes.content}>
-                <div className={classes.toolbar} />
-                <Dashboard />
-              </main> */}
+                <div className={classes.toolbar} /> */}
+              <Dashboard />
+              {/* </main> */}
             </Route>
           </Switch>
         </main>

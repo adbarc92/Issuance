@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from 'components/UsersDisplay';
+import { User } from 'components/UsersTable';
 
 // Prepends `/api` to route
 const api = axios.create({ baseURL: '/api' });

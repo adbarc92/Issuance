@@ -23,7 +23,4 @@ export class User {
     default: UserRole.MIDDLER,
   })
   role!: UserRole;
-
-  @Column()
-  description!: string;
 }
