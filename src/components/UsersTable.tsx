@@ -11,8 +11,10 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import BasedDialog from 'components/BasedDialog';
 
 export interface User {
   id: number;
@@ -34,12 +36,28 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     add: {
       fontSize: '200',
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.secondary.main,
+    },
+    textAlignCenter: {
+      textAlign: 'center',
     },
   })
 );
 
 const UsersTable = (): JSX.Element => {
   const classes = useStyles();
+
+  const [addingUser, setAddingUser] = React.useState(false);
+
+  const handleOpen = () => {
+    setAddingUser(true);
+  };
+
+  const handleClose = () => {
+    setAddingUser(false);
+  };
+
   const { loading, data: users, error } = useGetData(getUsers);
 
   const columnHeaders = ['ID', 'Name', 'Email', 'Role'];
@@ -60,7 +78,15 @@ const UsersTable = (): JSX.Element => {
                 {columnHeaders.map(header => {
                   return <TableCell key={header}>{header}</TableCell>;
                 })}
-                <Add color="primary" className={classes.add} />
+                <div className={classes.textAlignCenter}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOpen}
+                  >
+                    <Add />
+                  </Button>
+                </div>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -73,7 +99,7 @@ const UsersTable = (): JSX.Element => {
                         <TableCell>{name}</TableCell>
                         <TableCell>{email}</TableCell>
                         <TableCell>{role}</TableCell>
-                        <TableCell>
+                        <TableCell className={classes.textAlignCenter}>
                           <MoreVert />
                         </TableCell>
                       </TableRow>
@@ -84,6 +110,11 @@ const UsersTable = (): JSX.Element => {
           </Table>
         </TableContainer>
       )}
+      <BasedDialog
+        selectedValue={'none'}
+        open={addingUser}
+        onClose={handleClose}
+      />
     </div>
   );
 };
