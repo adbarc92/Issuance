@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
   InputLabel,
   MenuItem,
@@ -8,7 +9,21 @@ import {
   Select,
 } from '@material-ui/core';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      margin: theme.spacing(1),
+      marginLeft: 0,
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+  })
+);
+
 const BasedSelect = () => {
+  const classes = useStyles();
   const [role, setRole] = React.useState('');
 
   const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -17,7 +32,7 @@ const BasedSelect = () => {
 
   return (
     <div>
-      <FormControl>
+      <FormControl className={classes.formControl}>
         <InputLabel>Role</InputLabel>
         <Select onChange={handleChange}>
           <MenuItem value={'Boss'}>Boss</MenuItem>

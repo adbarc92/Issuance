@@ -80,7 +80,7 @@ function BasedDialog(props: SimpleDialogProps) {
           Cancel
         </Button>
         <Button onClick={handleClose} color="primary">
-          Subscribe
+          Submit
         </Button>
       </DialogActions>
     </Dialog>

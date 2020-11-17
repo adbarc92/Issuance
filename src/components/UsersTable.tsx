@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { getUser, getUsers } from 'hooks/axiosGet';
 import { useGetData } from 'hooks/useDataLoader';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { MoreVert, AddOutlined as Add } from '@material-ui/icons';
+import { MoreVert, Add, Remove } from '@material-ui/icons';
 import {
   Table,
   TableBody,
@@ -85,6 +85,13 @@ const UsersTable = (): JSX.Element => {
                     onClick={handleOpen}
                   >
                     <Add />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOpen}
+                  >
+                    <Remove />
                   </Button>
                 </div>
               </TableRow>
