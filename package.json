@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start": "concurrently \"craco start\" \"(cd src/mock-server && yarn start)\"",
     "build": "craco build",
     "test": "craco test"
   },
@@ -11,7 +11,8 @@
     "@craco/craco": "^5.6.4",
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
-    "axios": "^0.19.2",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "axios": "^0.21.0",
     "clsx": "^1.1.1",
     "moment": "^2.26.0",
     "pg": "^8.4.1",
@@ -30,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
     "babel-preset-react-app": "^9.1.2",
+    "concurrently": "^5.3.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-react-app": "^5.2.1",

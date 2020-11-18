@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+
 export enum UserRole {
   BOSS = 'boss',
   MIDDLER = 'middler',
@@ -23,7 +24,4 @@ export class User {
     default: UserRole.MIDDLER,
   })
   role!: UserRole;
-
-  @Column()
-  description!: string;
 }

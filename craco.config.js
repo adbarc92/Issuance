@@ -29,6 +29,11 @@ const removeCssHashPlugin = {
 
 module.exports = {
   plugins: [{ plugin: removeCssHashPlugin }],
+  devServer: {
+    proxy: {
+      '/api/*': 'http://localhost:4000',
+    },
+  },
   webpack: {
     configure: {
       output: {

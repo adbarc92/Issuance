@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Timestamp } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum TicketPriority {
   HIGHEST = 'highest',
@@ -23,7 +23,7 @@ export enum TicketStatus {
 @Entity()
 export class Ticket {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
   name!: string;
@@ -44,7 +44,10 @@ export class Ticket {
   })
   priority!: TicketPriority;
 
-  @Column('timestamp', {name: 'date', default: (): string => 'LOCALTIMESTAMP' })
+  @Column('timestamp', {
+    // name: 'deadline',
+    default: (): string => 'LOCALTIMESTAMP',
+  })
   deadline!: Date;
 
   @Column({
@@ -63,7 +66,10 @@ export class Ticket {
   @Column()
   assignedTo!: number;
 
-  @Column('timestamp', {name: 'date', default: (): string => 'LOCALTIMESTAMP' })
+  @Column('timestamp', {
+    name: 'createdOn',
+    default: (): string => 'LOCALTIMESTAMP',
+  })
   createdOn!: Date;
 
   @Column({

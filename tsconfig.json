@@ -26,9 +26,10 @@
 	},
 	"exclude": [
 		"craco.config.js",
-		"node_modules"
+		"node_modules",
+		"./src/mock-server"
 	],
 	"include": [
-		"./src/"
+		"./src/",
 	]
 }

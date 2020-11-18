@@ -1,5 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
-import {UserRole} from 'entity/User';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserRole } from 'entity/User';
 
 @Entity()
 export class Personnel {
@@ -16,7 +16,7 @@ export class Personnel {
   name: string;
 
   @Column()
-  role!: UserRole
+  role!: UserRole;
 
   @Column()
   project!: number;
