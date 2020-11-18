@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { getUser, getUsers } from 'hooks/axiosGet';
+import { getUser, getUsers, createUser } from 'hooks/axiosHooks';
 import { useGetData } from 'hooks/useDataLoader';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { MoreVert, Add, Remove } from '@material-ui/icons';
@@ -54,7 +54,7 @@ const UsersTable = (): JSX.Element => {
     setAddingUser(true);
   };
 
-  const handleClose = () => {
+  const closeDialog = () => {
     setAddingUser(false);
   };
 
@@ -120,7 +120,7 @@ const UsersTable = (): JSX.Element => {
       <BasedDialog
         selectedValue={'none'}
         open={addingUser}
-        onClose={handleClose}
+        onClose={closeDialog}
       />
     </div>
   );

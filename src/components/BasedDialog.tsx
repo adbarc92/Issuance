@@ -1,14 +1,17 @@
 import React from 'react';
 
 import BasedSelect from 'elements/BasedSelect';
+import {
+  useNotificationSnackbar,
+  NotificationSeverity,
+} from 'hooks/useNotification';
+
+// import { useGetData } from 'hooks/useDataLoader';
+import { createUser } from 'hooks/axiosHooks';
+import { UserRole } from 'types/user';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Avatar,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   DialogTitle,
   Dialog,
   DialogContent,
@@ -18,8 +21,6 @@ import {
   Button,
 } from '@material-ui/core';
 
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
 import { blue } from '@material-ui/core/colors';
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
@@ -30,60 +31,112 @@ const useStyles = makeStyles({
   },
 });
 
+// // Temporary - Remove
+// export enum UserRole {
+//   BOSS = 'boss',
+//   MIDDLER = 'middler',
+//   GRUNT = 'grunt',
+// }
+
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
-  onClose: (value: string) => void;
+  onClose: () => void;
 }
 
 function BasedDialog(props: SimpleDialogProps) {
   const classes = useStyles();
   const { onClose, selectedValue, open } = props;
 
+  const [newUsername, setNewUsername] = React.useState('');
+  const [newUserEmail, setNewUserEmail] = React.useState('');
+  const [newUserRole, setNewUserRole] = React.useState<UserRole>(
+    UserRole.MIDDLER
+  );
+
+  const [snackbar, showNotification] = useNotificationSnackbar();
+
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose();
   };
 
-  const handleListItemClick = (value: string) => {
-    onClose(value);
+  // Add MUI n
+  const handleSubmit = async () => {
+    const user = await createUser(newUsername, newUserEmail, newUserRole);
+    if (user) {
+      showNotification(
+        'User created successfully!',
+        NotificationSeverity.SUCCESS
+      );
+      onClose();
+    } else {
+      showNotification('User creation failed!', NotificationSeverity.ERROR);
+    }
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="simple-dialog-title"
-      open={open}
-    >
-      <DialogTitle id="form-dialog-title">Add User</DialogTitle>
-      <DialogContent>
-        <DialogContentText>Add user to application.</DialogContentText>
-        <TextField
+    <>
+      {snackbar}
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="simple-dialog-title"
+        open={open}
+      >
+        <DialogTitle id="form-dialog-title">Add User</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Add user to application.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="User Name"
+            type="text"
+            fullWidth
+            value={newUsername}
+            onChange={e => {
+              setNewUsername(e.target.value);
+            }}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+            value={newUserEmail}
+            onChange={e => {
+              setNewUserEmail(e.target.value);
+            }}
+          />
+          {/* <TextField
           autoFocus
           margin="dense"
           id="name"
-          label="User Name"
+          label="Role"
           type="email"
           fullWidth
-        />
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Email Address"
-          type="email"
-          fullWidth
-        />
-        <BasedSelect />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+          onChange={e => {
+            setNewUserRole(e.target.value);
+          }}
+        /> */}
+          <BasedSelect
+            value={newUserRole}
+            onChange={e => {
+              setNewUserRole(e.target.value);
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 

@@ -1,3 +1,9 @@
+// useDataLoader Hook
+// * Give it a function that creates a promise that gets data
+// * Given any number of functions like getUsers and a string that distinguishes the requests from each other; it returns an object that contains a boolean, loading, and a data object that
+//   * Alternatively, it could accept an array of functions and return an array of data objects
+// * This hook should combine the boilerplate atop Dashboard and UsersDisplay--including the two useState hooks, as well as the useEffect call.
+
 import { useState, useEffect } from 'react';
 
 // T is a Typescript generic; when the interface is created, you pass in any type and T will be replaced by it
@@ -55,7 +61,8 @@ export function useGetData<Datatype>(
           setLoading(false);
         })
         .catch(err => {
-          setError(err);
+          console.error(err);
+          setError('Failed to get data.'); //
           setLoading(false);
         });
     }

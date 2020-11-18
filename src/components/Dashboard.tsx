@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import { getUser, getUsers } from 'hooks/axiosGet';
+import { getUsers } from 'hooks/axiosHooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetData } from 'hooks/useDataLoader';
@@ -28,7 +28,7 @@ const Dashboard = (): JSX.Element => {
   const { loading, data: users, error } = useGetData(getUsers);
 
   if (error) {
-    return <div>There was an error: {error}</div>;
+    return <div>{error}</div>;
   }
 
   return (

@@ -48,7 +48,9 @@ createConnection()
       return res.send(results);
     });
 
+    // Return the user object
     router.post('/users', async function (req: Request, res: Response) {
+      console.log('RequestBody:', req.body);
       const user = userRepository.create(req.body);
       const results = await userRepository.save(user);
       return res.send(results);

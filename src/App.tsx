@@ -4,13 +4,7 @@ import Dashboard from 'components/Dashboard';
 import UsersTable from 'components/UsersTable';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {
-  Switch,
-  Route,
-  BrowserRouter as Router,
-  useLocation,
-  Link,
-} from 'react-router-dom';
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

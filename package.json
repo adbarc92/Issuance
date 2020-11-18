@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"craco start\" \"(cd mock-server && yarn start)\"",
+    "start": "concurrently \"craco start\" \"(cd src/mock-server && yarn start)\"",
     "build": "craco build",
     "test": "craco test"
   },
@@ -11,6 +11,7 @@
     "@craco/craco": "^5.6.4",
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.21.0",
     "clsx": "^1.1.1",
     "moment": "^2.26.0",
