@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { User } from 'components/UsersTable';
-import { UserRole } from 'types/user';
+import { User, UserRole } from 'types/user';
+import { Task } from 'types/task';
 
 // Temp
 
@@ -49,3 +49,13 @@ export const createUser = async (
 //   console.log(response);
 //   return response.data;
 // };
+
+export const getTasks = async (): Promise<Task[] | null> => {
+  try {
+    const res = await api.get('/tasks');
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};

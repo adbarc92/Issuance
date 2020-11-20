@@ -200,10 +200,14 @@ const Navigation = (): JSX.Element => {
             <ListItemText primary={'Projects'} />
           </ListItem>
           <ListItem button key={'Tasks'}>
-            <ListItemIcon>
-              <TasksIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Tasks'} />
+            <Link to="/tasks">
+              <ListItemIcon>
+                <UsersIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/tasks">
+              <ListItemText primary={'Tasks'} />
+            </Link>
           </ListItem>
           <ListItem button key={'Users'}>
             <Link to="/users">

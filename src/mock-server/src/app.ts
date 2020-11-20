@@ -2,6 +2,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
+import { Task } from 'entity/Task';
 import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 import * as winston from 'winston';
@@ -12,6 +13,8 @@ const port = 4000;
 createConnection()
   .then(connection => {
     const userRepository = connection.getRepository(User);
+
+    const taskRepository = connection.getRepository(Task);
 
     // create and setup express app
     const app = express();
@@ -50,7 +53,6 @@ createConnection()
 
     // Return the user object
     router.post('/users', async function (req: Request, res: Response) {
-      console.log('RequestBody:', req.body);
       const user = userRepository.create(req.body);
       const results = await userRepository.save(user);
       return res.send(results);
@@ -65,6 +67,22 @@ createConnection()
 
     router.delete('/users/:id', async function (req: Request, res: Response) {
       const results = await userRepository.delete(req.params.id);
+      return res.send(results);
+    });
+
+    router.get('/tasks/', async function (req: Request, res: Response) {
+      const results = await taskRepository.find();
+      res.json(results);
+    });
+
+    router.get('/tasks/:id', async function (req: Request, res: Response) {
+      const tasks = await taskRepository.findOne(req.params.id);
+      return res.send(tasks);
+    });
+
+    router.post('/tasks', async function (req: Request, res: Response) {
+      const task = taskRepository.create(req.body);
+      const results = await taskRepository.save(task);
       return res.send(results);
     });
 

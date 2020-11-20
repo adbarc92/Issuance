@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { getUser, getUsers, createUser } from 'hooks/axiosHooks';
-import { useGetData } from 'hooks/useDataLoader';
+import React from 'react';
+import { getUsers } from 'hooks/axiosHooks';
+import { useGetData } from 'hooks/useGetData';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { MoreVert, Add, Remove } from '@material-ui/icons';
 import {
@@ -14,18 +14,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import BasedDialog from 'components/BasedDialog';
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string; // fix this?
-}
-
-interface UserProps {
-  users: User[];
-}
+import UserDialog from 'components/UserDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,7 +106,7 @@ const UsersTable = (): JSX.Element => {
           </Table>
         </TableContainer>
       )}
-      <BasedDialog
+      <UserDialog
         selectedValue={'none'}
         open={addingUser}
         onClose={closeDialog}

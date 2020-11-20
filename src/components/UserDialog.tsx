@@ -6,7 +6,6 @@ import {
   NotificationSeverity,
 } from 'hooks/useNotification';
 
-// import { useGetData } from 'hooks/useDataLoader';
 import { createUser } from 'hooks/axiosHooks';
 import { UserRole } from 'types/user';
 
@@ -31,20 +30,13 @@ const useStyles = makeStyles({
   },
 });
 
-// // Temporary - Remove
-// export enum UserRole {
-//   BOSS = 'boss',
-//   MIDDLER = 'middler',
-//   GRUNT = 'grunt',
-// }
-
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
 }
 
-function BasedDialog(props: SimpleDialogProps) {
+function UserDialog(props: SimpleDialogProps): JSX.Element {
   const classes = useStyles();
   const { onClose, selectedValue, open } = props;
 
@@ -60,7 +52,6 @@ function BasedDialog(props: SimpleDialogProps) {
     onClose();
   };
 
-  // Add MUI n
   const handleSubmit = async () => {
     const user = await createUser(newUsername, newUserEmail, newUserRole);
     if (user) {
@@ -169,4 +160,4 @@ function BasedDialog(props: SimpleDialogProps) {
 //   );
 // }
 
-export default BasedDialog;
+export default UserDialog;

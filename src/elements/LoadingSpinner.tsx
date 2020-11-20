@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => {
 
 const LoadingSpinner = (): JSX.Element => {
   const classes = useStyles();
-  console.log('Classes:', classes);
+
   return (
     <div className={classes.loadingContainer}>
       <CircularProgress />

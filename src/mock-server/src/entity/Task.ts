@@ -1,27 +1,28 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// import { TaskPriority, TaskType, TaskStatus } from 'types/task';
 
-export enum TicketPriority {
-  HIGHEST = 'highest',
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
-  LOWEST = 'lowest',
+export enum TaskPriority {
+  HIGHEST = 'Highest',
+  HIGH = 'High',
+  MEDIUM = 'Medium',
+  LOW = 'Low',
+  LOWEST = 'Lowest',
 }
 
-export enum TicketType {
-  FEATURE = 'feature',
-  BUG = 'bug',
-  EPIC = 'epic',
+export enum TaskType {
+  FEATURE = 'Feature',
+  BUG = 'Bug',
+  EPIC = 'Epic',
 }
 
-export enum TicketStatus {
-  BACKLOG = 'backlog',
-  ACTIVE = 'active',
-  COMPLETE = 'complete',
+export enum TaskStatus {
+  BACKLOG = 'Backlog',
+  ACTIVE = 'Active',
+  COMPLETE = 'Complete',
 }
 
 @Entity()
-export class Ticket {
+export class Task {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -39,10 +40,10 @@ export class Ticket {
 
   @Column({
     type: 'enum',
-    enum: TicketPriority,
-    default: TicketPriority.MEDIUM,
+    enum: TaskPriority,
+    default: TaskPriority.MEDIUM,
   })
-  priority!: TicketPriority;
+  priority!: TaskPriority;
 
   @Column('timestamp', {
     // name: 'deadline',
@@ -52,16 +53,16 @@ export class Ticket {
 
   @Column({
     type: 'enum',
-    enum: TicketType,
-    default: TicketType.FEATURE,
+    enum: TaskType,
+    default: TaskType.FEATURE,
   })
-  type!: TicketType;
+  type!: TaskType;
 
   @Column()
   reportedBy!: number;
 
   @Column()
-  completedBy!: number;
+  completedBy!: number; // this can be null
 
   @Column()
   assignedTo!: number;
@@ -74,8 +75,8 @@ export class Ticket {
 
   @Column({
     type: 'enum',
-    enum: TicketStatus,
-    default: TicketStatus.BACKLOG,
+    enum: TaskStatus,
+    default: TaskStatus.BACKLOG,
   })
-  status!: TicketStatus;
+  status!: TaskStatus;
 }

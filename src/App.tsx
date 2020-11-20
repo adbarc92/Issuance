@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import UsersTable from 'components/UsersTable';
+import TasksTable from 'components/TasksTable';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
@@ -35,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const App = (): JSX.Element => {
-  // const location = useLocation();
-  // console.log('Location:', location);
-
   const classes = useStyles();
 
   console.log('Rendering');
@@ -60,6 +58,9 @@ const App = (): JSX.Element => {
                 <div className={classes.toolbar} /> */}
               <Dashboard />
               {/* </main> */}
+            </Route>
+            <Route>
+              <TasksTable />
             </Route>
           </Switch>
         </main>

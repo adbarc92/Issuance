@@ -3,7 +3,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { getUsers } from 'hooks/axiosHooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { useGetData } from 'hooks/useDataLoader';
+import { useGetData } from 'hooks/useGetData';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
