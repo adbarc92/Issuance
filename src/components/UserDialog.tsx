@@ -1,6 +1,6 @@
 import React from 'react';
 
-import BasedSelect from 'elements/BasedSelect';
+import UserSelect from 'elements/UserSelect';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
@@ -34,11 +34,12 @@ export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
+  clearUsersCache: () => void;
 }
 
 function UserDialog(props: SimpleDialogProps): JSX.Element {
   const classes = useStyles();
-  const { onClose, selectedValue, open } = props;
+  const { onClose, selectedValue, open, clearUsersCache } = props;
 
   const [newUsername, setNewUsername] = React.useState('');
   const [newUserEmail, setNewUserEmail] = React.useState('');
@@ -60,6 +61,7 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
         NotificationSeverity.SUCCESS
       );
       onClose();
+      clearUsersCache(); // calls a setState on the hook
     } else {
       showNotification('User creation failed!', NotificationSeverity.ERROR);
     }
@@ -91,7 +93,7 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="email"
             label="Email Address"
             type="email"
             fullWidth
@@ -111,7 +113,7 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
             setNewUserRole(e.target.value);
           }}
         /> */}
-          <BasedSelect
+          <UserSelect
             value={newUserRole}
             onChange={e => {
               setNewUserRole(e.target.value);

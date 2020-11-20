@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// import { UserRole } from '../types/user';
 
 export enum UserRole {
   BOSS = 'boss',

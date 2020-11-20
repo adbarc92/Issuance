@@ -1,6 +1,5 @@
 import React from 'react';
-import { getUsers } from 'hooks/axiosHooks';
-import { useGetData } from 'hooks/useGetData';
+import { useGetUsers } from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { MoreVert, Add, Remove } from '@material-ui/icons';
 import {
@@ -47,7 +46,12 @@ const UsersTable = (): JSX.Element => {
     setAddingUser(false);
   };
 
-  const { loading, data: users, error } = useGetData(getUsers);
+  const {
+    loading,
+    data: users,
+    error,
+    clearCache: clearUsersCache,
+  } = useGetUsers();
 
   const columnHeaders = ['ID', 'Name', 'Email', 'Role'];
 
@@ -110,6 +114,7 @@ const UsersTable = (): JSX.Element => {
         selectedValue={'none'}
         open={addingUser}
         onClose={closeDialog}
+        clearUsersCache={clearUsersCache}
       />
     </div>
   );

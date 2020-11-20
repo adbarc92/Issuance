@@ -17,7 +17,4 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true
 	},
-	// "include": [
-	// 	"../types/"
-	// ]
 }

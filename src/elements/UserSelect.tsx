@@ -29,7 +29,7 @@ interface SelectProps {
   value: UserRole;
 }
 
-const BasedSelect = (props: SelectProps): JSX.Element => {
+const UserSelect = (props: SelectProps): JSX.Element => {
   const classes = useStyles();
   // const { onChange } = props;
   // const [role, setRole] = React.useState('');
@@ -52,4 +52,4 @@ const BasedSelect = (props: SelectProps): JSX.Element => {
   );
 };
 
-export default BasedSelect;
+export default UserSelect;
