@@ -66,7 +66,7 @@ export function useGetData<Datatype>(
   const cacheKey = baseCacheKey + id ?? ''; // If id is 0, we still want to append it even though it would be falsy; if 0 were not appended, it would return the cached data for all users, which would be incorrect
 
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<null | Datatype>(requestCache[cacheKey]); // Data will be null in case of erroneous requests 
+  const [data, setData] = useState<null | Datatype>(requestCache[cacheKey]); // Data will be null in case of erroneous requests
   const [error, setError] = useState('');
 
   // This prevents an infinite load because state is preserved per hook
@@ -86,6 +86,8 @@ export function useGetData<Datatype>(
           setError('Failed to get data.'); //
           setLoading(false);
         });
+    } else {
+      setLoading(false);
     }
   }, [data, loader, cacheKey]);
 

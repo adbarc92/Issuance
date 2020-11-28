@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { DragEvent } from 'react';
 import { TaskPriority, TaskType, TaskStatus } from 'types/task';
 import {
   Card,
@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 
 export interface TaskProps {
   projectId: number;
+  taskId: number;
   name: string;
   summary: string;
   priority: TaskPriority;
@@ -26,12 +27,24 @@ export interface TaskProps {
 }
 
 export const TaskCard = (props: TaskProps): JSX.Element => {
-  const { name, summary, status } = props;
+  const { taskId, name, summary, status } = props;
 
   const classes = useStyles();
 
+  // let startDrag = (event: DragEvent, taskId: number) => {};
+
+  // let endDrag = (event: DragEvent, taskId: number) => {};
+
   return (
-    <Card variant="outlined">
+    <Card
+      variant="outlined"
+      // onDragStart={event => {
+      //   startDrag(event, taskId);
+      // }}
+      // onDragEnd={event => {
+
+      // }}
+    >
       <CardContent>
         <Typography variant="h5" component="h2" className={classes.title}>
           {name}

@@ -202,7 +202,7 @@ const Navigation = (): JSX.Element => {
           <ListItem button key={'Tasks'}>
             <Link to="/tasks">
               <ListItemIcon>
-                <UsersIcon />
+                <TasksIcon />
               </ListItemIcon>
             </Link>
             <Link to="/tasks">
