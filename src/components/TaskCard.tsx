@@ -16,34 +16,47 @@ const useStyles = makeStyles({
 });
 
 export interface TaskProps {
-  projectId: number;
   taskId: number;
   name: string;
   summary: string;
-  priority: TaskPriority;
-  type: TaskType;
-  status: TaskStatus;
   // description: string;
+  type: TaskType;
+  priority: TaskPriority;
+  status: TaskStatus;
+  projectId: number;
 }
 
-export const TaskCard = (props: TaskProps): JSX.Element => {
-  const { taskId, name, summary, status } = props;
+export interface TaskCardProps {
+  Task: TaskProps;
+  setDraggedTaskId: (id: number) => void;
+  newTaskStatus: string;
+}
+
+export const TaskCard = (props: TaskCardProps): JSX.Element => {
+  // const { taskId, name, summary, status } = props;
+  const { Task, setDraggedTaskId, newTaskStatus } = props;
+  const { taskId, name, summary, status } = Task;
 
   const classes = useStyles();
 
-  // let startDrag = (event: DragEvent, taskId: number) => {};
+  const startDrag = (event: DragEvent) => {
+    setDraggedTaskId(taskId);
+  };
 
-  // let endDrag = (event: DragEvent, taskId: number) => {};
+  const endDrag = (event: DragEvent) => {
+    console.log('Change status of task', name, 'to', newTaskStatus);
+  };
 
   return (
     <Card
       variant="outlined"
-      // onDragStart={event => {
-      //   startDrag(event, taskId);
-      // }}
-      // onDragEnd={event => {
-
-      // }}
+      onDragStart={event => {
+        startDrag(event);
+      }}
+      onDragEnd={event => {
+        endDrag(event);
+      }}
+      draggable
     >
       <CardContent>
         <Typography variant="h5" component="h2" className={classes.title}>

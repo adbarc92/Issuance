@@ -33,10 +33,17 @@ const Header = styled('div')((props: { colored?: boolean }) => {
 
 const TasksTable = (): JSX.Element => {
   const classes = useStyles();
+  const [draggedTaskId, setDraggedTaskId] = React.useState(0);
+  const [newTaskStatus, setNewTaskStatus] = React.useState('');
   // Figure out how many task statuses there are => variable column numbers
 
   // insert hook to get the tasks
   // feed tasks into task cards
+
+  // const printNewTaskStatus = (status: string): void => {
+  //   console.log('Task status is changing to', status);
+  //   setNewTaskStatus(status);
+  // };
 
   const { loading, data: taskData, error } = useGetTasks();
 
@@ -62,31 +69,67 @@ const TasksTable = (): JSX.Element => {
             </div>
           </div>
           <div className={classes.gridRow}>
-            <div className={classes.columnContainer}>
+            <div
+              className={classes.columnContainer}
+              onMouseEnter={() => {
+                setNewTaskStatus('Backlog');
+              }}
+              onMouseLeave={() => {
+                setNewTaskStatus('');
+              }}
+            >
               {taskData?.map((datum, index) => {
                 const {
+                  taskId,
                   name,
                   summary,
                   status,
                   priority,
                   type,
-                  project,
+                  projectId,
                 } = datum;
+                // Self-Note: Streamline this
+                const task = {
+                  taskId,
+                  name,
+                  summary,
+                  type,
+                  priority,
+                  status,
+                  projectId,
+                };
                 return (
                   <TaskCard
                     key={index}
-                    projectId={project}
-                    name={name}
-                    summary={summary}
-                    status={status}
-                    priority={priority}
-                    type={type}
+                    newTaskStatus={newTaskStatus}
+                    Task={task}
+                    setDraggedTaskId={setDraggedTaskId}
                   />
                 );
               })}
             </div>
-            <div className={classes.columnContainer}>Second Column</div>
-            <div className={classes.columnContainer}>Third Column</div>
+            <div
+              className={classes.columnContainer}
+              onMouseEnter={() => {
+                setNewTaskStatus('Active');
+              }}
+              onMouseLeave={() => {
+                setNewTaskStatus('');
+              }}
+            >
+              Second Column
+            </div>
+            <div
+              className={classes.columnContainer}
+              onMouseEnter={() => {
+                setNewTaskStatus('Complete');
+              }}
+              onMouseLeave={() => {
+                setNewTaskStatus('');
+              }}
+            >
+              Third Column
+            </div>
           </div>
         </div>
       )}
