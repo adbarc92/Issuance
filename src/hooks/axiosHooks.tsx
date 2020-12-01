@@ -66,3 +66,20 @@ export const getTasks = async (): Promise<Task[] | null> => {
 export const useGetTasks = (): IDataLoader<Task[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
+
+export const putTask = async (id: number, task: Task): Promise<Task | null> => {
+  try {
+    const response = await api.put(`/task/${id}`, task);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    // throw e;
+    return null;
+  }
+};
+
+// export const usePutTask = async (id: number, task: Task): Promise<Task> => {
+//   return useGetData(() => {
+//     return putTask(id, task);
+//   });
+// };

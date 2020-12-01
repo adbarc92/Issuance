@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 // T is a Typescript generic; when the interface is created, you pass in any type and T will be replaced by it
 export interface IDataLoader<T> {
   loading: boolean;
-  data: T | null;
+  data: T | null | undefined;
   error: string;
   clearCache: () => void;
 }
@@ -66,7 +66,9 @@ export function useGetData<Datatype>(
   const cacheKey = baseCacheKey + id ?? ''; // If id is 0, we still want to append it even though it would be falsy; if 0 were not appended, it would return the cached data for all users, which would be incorrect
 
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<null | Datatype>(requestCache[cacheKey]); // Data will be null in case of erroneous requests
+  const [data, setData] = useState<null | Datatype | undefined>(
+    requestCache[cacheKey]
+  ); // Data will be null in case of erroneous requests
   const [error, setError] = useState('');
 
   // This prevents an infinite load because state is preserved per hook
@@ -74,6 +76,7 @@ export function useGetData<Datatype>(
 
   useEffect(() => {
     if (data === undefined) {
+      setLoading(true);
       loader()
         .then((data: Datatype) => {
           setData(data);
@@ -97,7 +100,9 @@ export function useGetData<Datatype>(
     error,
     clearCache: () => {
       delete requestCache[cacheKey];
-      setData(null);
+      setData(undefined);
     },
   };
 }
+
+// export function usePostData<>

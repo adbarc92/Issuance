@@ -4,8 +4,9 @@ import { makeStyles, styled } from '@material-ui/core';
 import { TaskCard } from 'components/TaskCard';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
-import { useGetTasks } from 'hooks/axiosHooks';
+import { useGetTasks, putTask } from 'hooks/axiosHooks';
 import { useGetData } from 'hooks/useGetData';
+import theme from 'theme';
 
 const useStyles = makeStyles({
   root: {},
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
 });
 
 // This is a higher-order component
-const Header = styled('div')((props: { colored?: boolean }) => {
+const Header = styled('div')((props: any) => {
   return {
     fontSize: '24px',
     textAlign: 'center',
@@ -31,24 +32,67 @@ const Header = styled('div')((props: { colored?: boolean }) => {
   };
 });
 
+const Column = styled('div')((props: any) => {
+  return {
+    backgroundColor: props.highlighted
+      ? theme.palette.background.highlighted
+      : 'unset',
+    padding: '0.25rem',
+  };
+});
+
 const TasksTable = (): JSX.Element => {
   const classes = useStyles();
   const [draggedTaskId, setDraggedTaskId] = React.useState(0);
-  const [newTaskStatus, setNewTaskStatus] = React.useState('');
+  const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
+  // const [taskData, setTaskData] = React.useState<Task[] | null>(null);
+
+  const { loading, data: taskData, error, clearCache } = useGetTasks();
+
+  // console.log('Data:', taskData);
+
   // Figure out how many task statuses there are => variable column numbers
 
   // insert hook to get the tasks
   // feed tasks into task cards
 
-  // const printNewTaskStatus = (status: string): void => {
-  //   console.log('Task status is changing to', status);
-  //   setNewTaskStatus(status);
-  // };
+  const startDrag = (task: Task) => {
+    return (ev: React.DragEvent<HTMLDivElement>) => {
+      // console.log('Dragged Task Id:', taskId);
+      setDraggedTaskId(task.id);
+    };
+  };
 
-  const { loading, data: taskData, error } = useGetTasks();
+  const endDrag = (task: Task) => {
+    return async (ev: React.DragEvent<HTMLDivElement>) => {
+      // console.log('end drag');
+      const result = await putTask(task.id, {
+        ...task,
+        status: dragColumn as TaskStatus,
+      });
+
+      console.log('result:', result);
+      setDragColumn(null);
+      clearCache();
+    };
+  };
 
   if (error) {
     return <div>There was an error: {error}</div>;
+  }
+
+  let backlogTasks, activeTasks, completeTasks;
+
+  if (taskData) {
+    backlogTasks = taskData.filter(task => {
+      return task.status === TaskStatus.BACKLOG;
+    });
+    activeTasks = taskData.filter(task => {
+      return task.status === TaskStatus.ACTIVE;
+    });
+    completeTasks = taskData.filter(task => {
+      return task.status === TaskStatus.COMPLETE;
+    });
   }
 
   return (
@@ -62,74 +106,79 @@ const TasksTable = (): JSX.Element => {
               <Header>Backlog</Header>
             </div>
             <div className={classes.columnContainer}>
-              <Header colored={true}>Active</Header>
+              <Header>Active</Header>
             </div>
             <div className={classes.columnContainer}>
               <Header>Complete</Header>
             </div>
           </div>
           <div className={classes.gridRow}>
-            <div
+            <Column
               className={classes.columnContainer}
-              onMouseEnter={() => {
-                setNewTaskStatus('Backlog');
+              highlighted={dragColumn === TaskStatus.BACKLOG ? 'true' : ''}
+              onDragEnter={e => {
+                e.preventDefault();
+                setDragColumn(TaskStatus.BACKLOG);
               }}
-              onMouseLeave={() => {
-                setNewTaskStatus('');
+              onDragOver={e => {
+                e.preventDefault();
               }}
             >
-              {taskData?.map((datum, index) => {
-                const {
-                  taskId,
-                  name,
-                  summary,
-                  status,
-                  priority,
-                  type,
-                  projectId,
-                } = datum;
-                // Self-Note: Streamline this
-                const task = {
-                  taskId,
-                  name,
-                  summary,
-                  type,
-                  priority,
-                  status,
-                  projectId,
-                };
+              {backlogTasks?.map((task: Task, index) => {
                 return (
                   <TaskCard
                     key={index}
-                    newTaskStatus={newTaskStatus}
-                    Task={task}
-                    setDraggedTaskId={setDraggedTaskId}
+                    task={task}
+                    startDrag={startDrag(task)}
+                    endDrag={endDrag(task)}
                   />
                 );
               })}
-            </div>
-            <div
+            </Column>
+            <Column
               className={classes.columnContainer}
-              onMouseEnter={() => {
-                setNewTaskStatus('Active');
+              highlighted={dragColumn === TaskStatus.ACTIVE ? 'true' : ''}
+              onDragEnter={e => {
+                e.preventDefault();
+                setDragColumn(TaskStatus.ACTIVE);
               }}
-              onMouseLeave={() => {
-                setNewTaskStatus('');
+              onDragOver={e => {
+                e.preventDefault();
               }}
             >
-              Second Column
-            </div>
-            <div
+              {activeTasks?.map((task: Task, index) => {
+                return (
+                  <TaskCard
+                    key={index}
+                    task={task}
+                    startDrag={startDrag(task)}
+                    endDrag={endDrag(task)}
+                  />
+                );
+              })}
+            </Column>
+            <Column
               className={classes.columnContainer}
-              onMouseEnter={() => {
-                setNewTaskStatus('Complete');
+              highlighted={dragColumn === TaskStatus.COMPLETE ? 'true' : ''}
+              onDragEnter={e => {
+                e.preventDefault();
+                setDragColumn(TaskStatus.COMPLETE);
               }}
-              onMouseLeave={() => {
-                setNewTaskStatus('');
+              onDragOver={e => {
+                e.preventDefault();
               }}
             >
-              Third Column
-            </div>
+              {completeTasks?.map((task: Task, index) => {
+                return (
+                  <TaskCard
+                    key={index}
+                    task={task}
+                    startDrag={startDrag(task)}
+                    endDrag={endDrag(task)}
+                  />
+                );
+              })}
+            </Column>
           </div>
         </div>
       )}

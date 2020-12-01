@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
+import { Task as ITask } from '../../types/task';
 import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 import * as winston from 'winston';
@@ -24,8 +25,8 @@ createConnection()
       expressWinston.logger({
         transports: [new winston.transports.Console()],
         format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.json()
+          winston.format.colorize()
+          // winston.format.json()
         ),
         meta: true, // optional: control whether you want to log the meta data about the request (default to true)
         msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
@@ -76,14 +77,25 @@ createConnection()
     });
 
     router.get('/tasks/:id', async function (req: Request, res: Response) {
-      const tasks = await taskRepository.findOne(req.params.id);
-      return res.send(tasks);
+      const task = await taskRepository.findOne(req.params.id);
+      return res.send(task);
     });
 
     router.post('/tasks', async function (req: Request, res: Response) {
       const task = taskRepository.create(req.body);
       const results = await taskRepository.save(task);
       return res.send(results);
+    });
+
+    router.put('/task/:id', async function (req: Request, res: Response) {
+      const updatedTask: ITask = req.body;
+      console.log('updatedTask:', updatedTask);
+      const task = await taskRepository.findOne(req.params.id);
+      for (const prop in task) {
+        task[prop] = updatedTask[prop] ?? task[prop];
+      }
+      const result = await taskRepository.save(task);
+      return res.send(result);
     });
 
     app.use('/api', router);

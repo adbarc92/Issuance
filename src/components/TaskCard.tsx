@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
 import {
   Card,
   CardActions,
@@ -15,47 +15,24 @@ const useStyles = makeStyles({
   },
 });
 
-export interface TaskProps {
-  taskId: number;
-  name: string;
-  summary: string;
-  // description: string;
-  type: TaskType;
-  priority: TaskPriority;
-  status: TaskStatus;
-  projectId: number;
-}
-
 export interface TaskCardProps {
-  Task: TaskProps;
-  setDraggedTaskId: (id: number) => void;
-  newTaskStatus: string;
+  task: Task;
+  startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
+  endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
 }
 
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   // const { taskId, name, summary, status } = props;
-  const { Task, setDraggedTaskId, newTaskStatus } = props;
-  const { taskId, name, summary, status } = Task;
+  const { task, startDrag, endDrag } = props;
+  const { name, summary, status } = task;
 
   const classes = useStyles();
-
-  const startDrag = (event: DragEvent) => {
-    setDraggedTaskId(taskId);
-  };
-
-  const endDrag = (event: DragEvent) => {
-    console.log('Change status of task', name, 'to', newTaskStatus);
-  };
 
   return (
     <Card
       variant="outlined"
-      onDragStart={event => {
-        startDrag(event);
-      }}
-      onDragEnd={event => {
-        endDrag(event);
-      }}
+      onDragStart={startDrag}
+      onDragEnd={endDrag}
       draggable
     >
       <CardContent>
