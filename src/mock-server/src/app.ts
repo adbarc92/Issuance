@@ -7,6 +7,7 @@ import { Task as ITask } from '../../types/task';
 import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 import * as winston from 'winston';
+import { castTask } from 'cast';
 
 const port = 4000;
 
@@ -73,18 +74,18 @@ createConnection()
 
     router.get('/tasks/', async function (req: Request, res: Response) {
       const results = await taskRepository.find();
-      res.json(results);
+      res.json(results.map(castTask));
     });
 
     router.get('/tasks/:id', async function (req: Request, res: Response) {
       const task = await taskRepository.findOne(req.params.id);
-      return res.send(task);
+      return res.send(castTask(task));
     });
 
     router.post('/tasks', async function (req: Request, res: Response) {
       const task = taskRepository.create(req.body);
-      const results = await taskRepository.save(task);
-      return res.send(results);
+      const result = await taskRepository.save(task);
+      return res.send(castTask(result[0]));
     });
 
     router.put('/task/:id', async function (req: Request, res: Response) {
@@ -95,7 +96,7 @@ createConnection()
         task[prop] = updatedTask[prop] ?? task[prop];
       }
       const result = await taskRepository.save(task);
-      return res.send(result);
+      return res.send(castTask(result));
     });
 
     app.use('/api', router);

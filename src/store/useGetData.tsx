@@ -14,7 +14,10 @@ export interface IDataLoader<T> {
   clearCache: () => void;
 }
 
-const requestCache: Record<string, any> = {};
+export const requestCache: Record<
+  string,
+  any
+> = ((window as any).requestCache = {});
 
 export enum CacheKey {
   USERS = 'users',
@@ -63,7 +66,7 @@ export function useGetData<Datatype>(
   baseCacheKey: CacheKey,
   id?: string
 ): IDataLoader<Datatype> {
-  const cacheKey = baseCacheKey + id ?? ''; // If id is 0, we still want to append it even though it would be falsy; if 0 were not appended, it would return the cached data for all users, which would be incorrect
+  const cacheKey = baseCacheKey + (id ?? ''); // If id is 0, we still want to append it even though it would be falsy; if 0 were not appended, it would return the cached data for all users, which would be incorrect
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<null | Datatype | undefined>(

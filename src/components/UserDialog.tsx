@@ -4,9 +4,9 @@ import UserSelect from 'elements/UserSelect';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
-} from 'hooks/useNotification';
+} from 'store/useNotification';
 
-import { createUser } from 'hooks/axiosHooks';
+import { createUser } from 'store/axiosHooks';
 import { UserRole } from 'types/user';
 
 import { makeStyles } from '@material-ui/core/styles';

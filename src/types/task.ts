@@ -26,10 +26,11 @@ export interface Task {
   type: TaskType;
   priority: TaskPriority;
   status: TaskStatus;
-  createdOn: string;
+  createdOn: Date;
   assignedTo: number;
-  deadline: string;
+  deadline: Date;
   completedBy: number;
   projectId: number;
   reportedBy: number;
+  typeName: 'Task'; // this is server-side only
 }

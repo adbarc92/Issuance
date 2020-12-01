@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetUsers } from 'hooks/axiosHooks';
+import { useGetUsers } from 'store/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { MoreVert, Add, Remove } from '@material-ui/icons';
 import {

@@ -3,9 +3,10 @@ import React from 'react';
 import { makeStyles, styled } from '@material-ui/core';
 import { TaskCard } from 'components/TaskCard';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
-import { useGetTasks, putTask } from 'hooks/axiosHooks';
-import { useGetData } from 'hooks/useGetData';
+import { Task, TaskStatus } from 'types/task';
+import { updateTask } from 'store/actions';
+import { useGetTasks } from 'store/axiosHooks';
+import { useForceUpdate } from 'store/hooks';
 import theme from 'theme';
 
 const useStyles = makeStyles({
@@ -47,7 +48,8 @@ const TasksTable = (): JSX.Element => {
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
   // const [taskData, setTaskData] = React.useState<Task[] | null>(null);
 
-  const { loading, data: taskData, error, clearCache } = useGetTasks();
+  const { loading, data: taskData, error } = useGetTasks();
+  const reRender = useForceUpdate();
 
   // console.log('Data:', taskData);
 
@@ -66,14 +68,14 @@ const TasksTable = (): JSX.Element => {
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
       // console.log('end drag');
-      const result = await putTask(task.id, {
+      const result = await updateTask(task.id, {
         ...task,
         status: dragColumn as TaskStatus,
       });
 
       console.log('result:', result);
       setDragColumn(null);
-      clearCache();
+      reRender();
     };
   };
 

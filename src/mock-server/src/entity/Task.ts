@@ -30,7 +30,7 @@ export class Task {
   name!: string;
 
   @Column()
-  project!: number;
+  projectId!: number;
 
   @Column()
   summary!: string;

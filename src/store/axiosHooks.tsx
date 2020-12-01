@@ -1,18 +1,17 @@
-import axios, { AxiosResponse } from 'axios';
 import { User, UserRole } from 'types/user';
 import { Task } from 'types/task';
-import { useGetData, CacheKey, IDataLoader } from 'hooks/useGetData';
+import { useGetData, CacheKey, IDataLoader } from 'store/useGetData';
+import { api } from 'store/api';
 
 // Temp
 
-// Prepends `/api` to route
-const api = axios.create({ baseURL: '/api' });
-
+// Helper function for the hook below, not technically a hook
 export const getUser = async (id: number): Promise<User> => {
   const response = await api.get(`/users/${id}`);
   return response.data;
 };
 
+// This is a hook because it returns a function that contains a hook
 export const useGetUser = (id: number): IDataLoader<User> => {
   return useGetData(
     () => {
@@ -66,20 +65,3 @@ export const getTasks = async (): Promise<Task[] | null> => {
 export const useGetTasks = (): IDataLoader<Task[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
-
-export const putTask = async (id: number, task: Task): Promise<Task | null> => {
-  try {
-    const response = await api.put(`/task/${id}`, task);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    // throw e;
-    return null;
-  }
-};
-
-// export const usePutTask = async (id: number, task: Task): Promise<Task> => {
-//   return useGetData(() => {
-//     return putTask(id, task);
-//   });
-// };

@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Task } from 'types/task';
 import {
   Card,
   CardActions,
