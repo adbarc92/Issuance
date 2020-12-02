@@ -24,7 +24,7 @@ export const updateTask = async (
   task: ITask
 ): Promise<ITask | null> => {
   try {
-    const response = await api.put(`/task/${id}`, task);
+    const response = await api.put(`/tasks/${id}`, task);
     updateCache(response.data);
     return response.data;
   } catch (error) {

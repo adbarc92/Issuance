@@ -1,9 +1,13 @@
 import React from 'react';
 
-import { makeStyles, styled } from '@material-ui/core';
+import { makeStyles, styled, Button } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
+
 import { TaskCard } from 'components/TaskCard';
+import TaskDialog from 'components/TaskDialog';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { Task, TaskStatus } from 'types/task';
+
 import { updateTask } from 'store/actions';
 import { useGetTasks } from 'store/axiosHooks';
 import { useForceUpdate } from 'store/hooks';
@@ -44,23 +48,33 @@ const Column = styled('div')((props: any) => {
 
 const TasksTable = (): JSX.Element => {
   const classes = useStyles();
+  const [addingTask, setAddingTask] = React.useState(false);
   const [draggedTaskId, setDraggedTaskId] = React.useState(0);
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
-  // const [taskData, setTaskData] = React.useState<Task[] | null>(null);
 
-  const { loading, data: taskData, error } = useGetTasks();
+  const {
+    loading,
+    data: taskData,
+    error,
+    clearCache: clearTasksCache,
+  } = useGetTasks();
   const reRender = useForceUpdate();
-
-  // console.log('Data:', taskData);
 
   // Figure out how many task statuses there are => variable column numbers
 
   // insert hook to get the tasks
   // feed tasks into task cards
 
+  const handleAddingTask = () => {
+    setAddingTask(true);
+  };
+
+  const handleCloseDialog = () => {
+    setAddingTask(false);
+  };
+
   const startDrag = (task: Task) => {
     return (ev: React.DragEvent<HTMLDivElement>) => {
-      // console.log('Dragged Task Id:', taskId);
       setDraggedTaskId(task.id);
     };
   };
@@ -182,6 +196,18 @@ const TasksTable = (): JSX.Element => {
               })}
             </Column>
           </div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddingTask}
+          >
+            <Add />
+          </Button>
+          <TaskDialog
+            open={addingTask}
+            onClose={handleCloseDialog}
+            clearTasksCache={clearTasksCache}
+          />
         </div>
       )}
     </div>

@@ -79,13 +79,6 @@ const UsersTable = (): JSX.Element => {
                   >
                     <Add />
                   </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpen}
-                  >
-                    <Remove />
-                  </Button>
                 </div>
               </TableRow>
             </TableHead>

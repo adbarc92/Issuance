@@ -48,16 +48,10 @@ const App = (): JSX.Element => {
           <Navigation />
           <Switch>
             <Route path="/users">
-              {/* <main className={classes.content}> */}
-              {/* <div className={classes.toolbar} /> */}
               <UsersTable />
-              {/* </main> */}
             </Route>
             <Route exact path="/">
-              {/* <main className={classes.content}>
-                <div className={classes.toolbar} /> */}
               <Dashboard />
-              {/* </main> */}
             </Route>
             <Route>
               <TasksTable />

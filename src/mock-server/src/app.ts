@@ -88,7 +88,7 @@ createConnection()
       return res.send(castTask(result[0]));
     });
 
-    router.put('/task/:id', async function (req: Request, res: Response) {
+    router.put('/tasks/:id', async function (req: Request, res: Response) {
       const updatedTask: ITask = req.body;
       console.log('updatedTask:', updatedTask);
       const task = await taskRepository.findOne(req.params.id);
