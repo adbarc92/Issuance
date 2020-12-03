@@ -20,14 +20,28 @@ import {
   Button,
   styled,
 } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { KeyboardDatePicker } from '@material-ui/pickers';
+// import { KeyboardDatePicker } from '@material-ui/pickers';
+import DateTimePicker from 'elements/DateTimePicker';
 
-// Tasks need:
-// Dropdown: Priority, Type, Status,
-// Input: name, summary, description,
-// Date: deadline,
-// ???: project id
+const useStyles = makeStyles((theme: Theme) => {
+  createStyles({
+    taskNameContainer: {},
+    taskSummaryContainer: {},
+    taskDescriptionContainer: {},
+    taskPriorityContainer: {
+      width: '80px',
+    },
+    taskTypeContainer: {
+      width: '80px',
+    },
+    taskStatusContainer: {
+      width: '100px',
+    },
+    deadlineContainer: {},
+  });
+});
 
 const SelectContainer = styled('div')((props: any) => {
   return {
@@ -51,6 +65,8 @@ const mapEnumToArr = (
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const { open, onClose, clearTasksCache } = props;
 
+  const classes = useStyles();
+
   const [name, setName] = React.useState('');
   const [summary, setSummary] = React.useState('');
   const [description, setDescription] = React.useState('');
@@ -62,7 +78,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     TaskPriority.MEDIUM
   );
 
-  // const [deadline, setDeadline] = React.useState<Date | null>(null);
+  const [deadline, setDeadline] = React.useState<Date | null>(null);
 
   const [priorityKeys, priorityValues] = mapEnumToArr(TaskPriority);
   const [typeKeys, typeValues] = mapEnumToArr(TaskType);
@@ -171,6 +187,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               value={taskStatus}
             />
           </SelectContainer>
+          <DateTimePicker value={deadline} setValue={setDeadline} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
