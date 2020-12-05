@@ -1,27 +1,32 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
+import 'date-fns';
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 export interface DateTimeProps {
-  value: Date | null;
-  setValue: (Date) => void;
-  defaultValue?: Date;
+  value: string;
+  onChange: (date: Date | null, value?: string | null | undefined) => void;
 }
 
 const DateTimePicker = (props: DateTimeProps): JSX.Element => {
+  console.log('props.value:', props.value);
   return (
-    <form>
-      <TextField
-        id="datetime-local"
-        label="deadline"
-        type="datetime-local"
-        defaultValue={props.defaultValue}
-        InputLabelProps={{ shrink: true }}
-        value={props.value}
-        onChange={e => {
-          props.setValue(e.target.value);
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <KeyboardDatePicker
+        margin="normal"
+        label="Date picker dialog"
+        format="MM/dd/yyyy"
+        value={new Date(props.value).toISOString()}
+        // value={new Date('2014-08-18T21:11:54')}
+        onChange={props.onChange}
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
         }}
       />
-    </form>
+    </MuiPickersUtilsProvider>
   );
 };
 

@@ -116,86 +116,7 @@ const TasksTable = (): JSX.Element => {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className={classes.gridContainer}>
-          <div className={classes.gridRow}>
-            <div className={classes.columnContainer}>
-              <Header>Backlog</Header>
-            </div>
-            <div className={classes.columnContainer}>
-              <Header>Active</Header>
-            </div>
-            <div className={classes.columnContainer}>
-              <Header>Complete</Header>
-            </div>
-          </div>
-          <div className={classes.gridRow}>
-            <Column
-              className={classes.columnContainer}
-              highlighted={dragColumn === TaskStatus.BACKLOG ? 'true' : ''}
-              onDragEnter={e => {
-                e.preventDefault();
-                setDragColumn(TaskStatus.BACKLOG);
-              }}
-              onDragOver={e => {
-                e.preventDefault();
-              }}
-            >
-              {backlogTasks?.map((task: Task, index) => {
-                return (
-                  <TaskCard
-                    key={index}
-                    task={task}
-                    startDrag={startDrag(task)}
-                    endDrag={endDrag(task)}
-                  />
-                );
-              })}
-            </Column>
-            <Column
-              className={classes.columnContainer}
-              highlighted={dragColumn === TaskStatus.ACTIVE ? 'true' : ''}
-              onDragEnter={e => {
-                e.preventDefault();
-                setDragColumn(TaskStatus.ACTIVE);
-              }}
-              onDragOver={e => {
-                e.preventDefault();
-              }}
-            >
-              {activeTasks?.map((task: Task, index) => {
-                return (
-                  <TaskCard
-                    key={index}
-                    task={task}
-                    startDrag={startDrag(task)}
-                    endDrag={endDrag(task)}
-                  />
-                );
-              })}
-            </Column>
-            <Column
-              className={classes.columnContainer}
-              highlighted={dragColumn === TaskStatus.COMPLETE ? 'true' : ''}
-              onDragEnter={e => {
-                e.preventDefault();
-                setDragColumn(TaskStatus.COMPLETE);
-              }}
-              onDragOver={e => {
-                e.preventDefault();
-              }}
-            >
-              {completeTasks?.map((task: Task, index) => {
-                return (
-                  <TaskCard
-                    key={index}
-                    task={task}
-                    startDrag={startDrag(task)}
-                    endDrag={endDrag(task)}
-                  />
-                );
-              })}
-            </Column>
-          </div>
+        <>
           <Button
             variant="contained"
             color="primary"
@@ -203,12 +124,94 @@ const TasksTable = (): JSX.Element => {
           >
             <Add />
           </Button>
-          <TaskDialog
-            open={addingTask}
-            onClose={handleCloseDialog}
-            clearTasksCache={clearTasksCache}
-          />
-        </div>
+          <div className={classes.gridContainer}>
+            <div className={classes.gridRow}>
+              <div className={classes.columnContainer}>
+                <Header>Backlog</Header>
+              </div>
+              <div className={classes.columnContainer}>
+                <Header>Active</Header>
+              </div>
+              <div className={classes.columnContainer}>
+                <Header>Complete</Header>
+              </div>
+            </div>
+            <div className={classes.gridRow}>
+              <Column
+                className={classes.columnContainer}
+                highlighted={dragColumn === TaskStatus.BACKLOG ? 'true' : ''}
+                onDragEnter={e => {
+                  e.preventDefault();
+                  setDragColumn(TaskStatus.BACKLOG);
+                }}
+                onDragOver={e => {
+                  e.preventDefault();
+                }}
+              >
+                {backlogTasks?.map((task: Task, index) => {
+                  return (
+                    <TaskCard
+                      key={index}
+                      task={task}
+                      startDrag={startDrag(task)}
+                      endDrag={endDrag(task)}
+                    />
+                  );
+                })}
+              </Column>
+              <Column
+                className={classes.columnContainer}
+                highlighted={dragColumn === TaskStatus.ACTIVE ? 'true' : ''}
+                onDragEnter={e => {
+                  e.preventDefault();
+                  setDragColumn(TaskStatus.ACTIVE);
+                }}
+                onDragOver={e => {
+                  e.preventDefault();
+                }}
+              >
+                {activeTasks?.map((task: Task, index) => {
+                  return (
+                    <TaskCard
+                      key={index}
+                      task={task}
+                      startDrag={startDrag(task)}
+                      endDrag={endDrag(task)}
+                    />
+                  );
+                })}
+              </Column>
+              <Column
+                className={classes.columnContainer}
+                highlighted={dragColumn === TaskStatus.COMPLETE ? 'true' : ''}
+                onDragEnter={e => {
+                  e.preventDefault();
+                  setDragColumn(TaskStatus.COMPLETE);
+                }}
+                onDragOver={e => {
+                  e.preventDefault();
+                }}
+              >
+                {completeTasks?.map((task: Task, index) => {
+                  return (
+                    <TaskCard
+                      key={index}
+                      task={task}
+                      startDrag={startDrag(task)}
+                      endDrag={endDrag(task)}
+                    />
+                  );
+                })}
+              </Column>
+            </div>
+
+            <TaskDialog
+              open={addingTask}
+              onClose={handleCloseDialog}
+              clearTasksCache={clearTasksCache}
+            />
+          </div>
+        </>
       )}
     </div>
   );

@@ -51,29 +51,28 @@ export const createUser = async (
   }
 };
 
-export const createTask = async (
-  name: string,
-  summary: string,
-  description: string,
-  type: TaskType,
-  priority: TaskPriority,
-  status: TaskStatus
-): Promise<Task | null> => {
+export const createTask = async (task: {
+  name: string;
+  summary: string;
+  description: string;
+  type: TaskType;
+  priority: TaskPriority;
+  status: TaskStatus;
+  deadline: string;
+}): Promise<Task | null> => {
   try {
-    const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+    // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
-      name,
-      summary,
-      description,
-      type,
-      priority,
-      status,
-      createdOn: new Date(),
+      name: task.name,
+      summary: task.summary,
+      description: task.description,
+      type: task.type,
+      priority: task.priority,
+      status: task.status,
       assignedTo: 0,
-      deadline: tomorrowDate,
+      deadline: task.deadline,
       projectId: 0,
       reportedBy: 0,
-      completedBy: 0,
     });
     console.log('Task Creation Response:', response);
     return response.data;

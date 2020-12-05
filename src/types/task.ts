@@ -29,7 +29,6 @@ export interface Task {
   createdOn: Date;
   assignedTo: number;
   deadline: Date;
-  completedBy: number;
   projectId: number;
   reportedBy: number;
   typeName: 'Task'; // this is server-side only

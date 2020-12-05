@@ -62,9 +62,6 @@ export class Task {
   reportedBy!: number;
 
   @Column()
-  completedBy!: number; // this can be null
-
-  @Column()
   assignedTo!: number;
 
   @Column('timestamp', {
