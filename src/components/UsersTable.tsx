@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGetUsers } from 'store/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { MoreVert, Add, Remove } from '@material-ui/icons';
+import { MoreVert, Add } from '@material-ui/icons';
 import {
   Table,
   TableBody,

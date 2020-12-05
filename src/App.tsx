@@ -2,9 +2,10 @@ import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import UsersTable from 'components/UsersTable';
-import TasksTable from 'components/TasksTable';
+import TaskPage from 'components/TaskPage';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,12 +29,23 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
+      justifyContent: 'center',
+      display: 'flex',
     },
     pageContainer: {
       padding: '0rem 4rem',
     },
   })
 );
+
+const PageWrapper = styled('div')(() => {
+  return {
+    maxWidth: '1440px',
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  };
+});
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -43,18 +55,24 @@ const App = (): JSX.Element => {
   return (
     <Router>
       <div className={classes.pageContainer}>
+        <div className={classes.toolbar} />
+        <Navigation />
         <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Navigation />
           <Switch>
             <Route path="/users">
-              <UsersTable />
+              <PageWrapper>
+                <UsersTable />
+              </PageWrapper>
             </Route>
             <Route exact path="/">
-              <Dashboard />
+              <PageWrapper>
+                <Dashboard />
+              </PageWrapper>
             </Route>
-            <Route>
-              <TasksTable />
+            <Route path="/tasks">
+              <PageWrapper>
+                <TaskPage />
+              </PageWrapper>
             </Route>
           </Switch>
         </main>

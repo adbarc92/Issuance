@@ -1,5 +1,5 @@
 import { User, UserRole } from 'types/user';
-import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Task } from 'types/task';
 import { useGetData, CacheKey, IDataLoader } from 'store/useGetData';
 import { api } from 'store/api';
 
@@ -44,37 +44,6 @@ export const createUser = async (
   try {
     const response = await api.post('/users', { name, email, role });
     console.log(response);
-    return response.data;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-};
-
-export const createTask = async (task: {
-  name: string;
-  summary: string;
-  description: string;
-  type: TaskType;
-  priority: TaskPriority;
-  status: TaskStatus;
-  deadline: string;
-}): Promise<Task | null> => {
-  try {
-    // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-    const response = await api.post('/tasks', {
-      name: task.name,
-      summary: task.summary,
-      description: task.description,
-      type: task.type,
-      priority: task.priority,
-      status: task.status,
-      assignedTo: 0,
-      deadline: task.deadline,
-      projectId: 0,
-      reportedBy: 0,
-    });
-    console.log('Task Creation Response:', response);
     return response.data;
   } catch (e) {
     console.error(e);

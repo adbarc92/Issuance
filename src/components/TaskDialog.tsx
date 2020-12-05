@@ -3,7 +3,7 @@ import React from 'react';
 import Select, { SelectItem } from 'elements/Select';
 import { TaskPriority, TaskType, TaskStatus } from 'types/task';
 
-import { createTask } from 'store/axiosHooks';
+import { createTask } from 'store/actions';
 
 import {
   useNotificationSnackbar,
@@ -22,7 +22,6 @@ import {
   Button,
   styled,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 // import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateTimePicker from 'elements/DateTimePicker';
@@ -232,7 +231,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         NotificationSeverity.SUCCESS
       );
       handleClose();
-      clearTasksCache();
+      clearTasksCache(); // Suboptimal; task should be added to cache instead of being refetched
     } else {
       showNotification('User creation failed!', NotificationSeverity.ERROR);
     }
@@ -364,10 +363,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           </DialogContent>
         ) : null}
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} color="primary">
+          <Button variant="contained" onClick={handleSubmit} color="primary">
             Submit
           </Button>
         </DialogActions>

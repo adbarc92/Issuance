@@ -1,11 +1,6 @@
 import React from 'react';
 
-import {
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select as MuiSelect,
-} from '@material-ui/core';
+import { InputLabel, MenuItem, Select as MuiSelect } from '@material-ui/core';
 
 export interface SelectItem<T> {
   label: string;
