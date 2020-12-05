@@ -3,6 +3,7 @@ import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelPage from 'components/PersonnelPage';
 import TaskPage from 'components/TaskPage';
+import LoginPage from 'components/LoginPage';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const PageWrapper = styled('div')(() => {
+const ChildrenWrapper = styled('div')(() => {
   return {
     maxWidth: '1440px',
     display: 'flex',
@@ -46,6 +47,19 @@ const PageWrapper = styled('div')(() => {
     width: '100%',
   };
 });
+
+const PageWrapper = (props: any): JSX.Element => {
+  const classes = useStyles();
+  return (
+    <div>
+      <div className={classes.toolbar} />
+      <Navigation />
+      <main className={classes.content}>
+        <ChildrenWrapper>{props.children}</ChildrenWrapper>
+      </main>
+    </div>
+  );
+};
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -55,27 +69,26 @@ const App = (): JSX.Element => {
   return (
     <Router>
       <div className={classes.pageContainer}>
-        <div className={classes.toolbar} />
-        <Navigation />
-        <main className={classes.content}>
-          <Switch>
-            <Route path="/personnel">
-              <PageWrapper>
-                <PersonnelPage />
-              </PageWrapper>
-            </Route>
-            <Route exact path="/">
-              <PageWrapper>
-                <Dashboard />
-              </PageWrapper>
-            </Route>
-            <Route path="/tasks">
-              <PageWrapper>
-                <TaskPage />
-              </PageWrapper>
-            </Route>
-          </Switch>
-        </main>
+        <Switch>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/personnel">
+            <PageWrapper>
+              <PersonnelPage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/">
+            <PageWrapper>
+              <Dashboard />
+            </PageWrapper>
+          </Route>
+          <Route path="/tasks">
+            <PageWrapper>
+              <TaskPage />
+            </PageWrapper>
+          </Route>
+        </Switch>
       </div>
     </Router>
   );

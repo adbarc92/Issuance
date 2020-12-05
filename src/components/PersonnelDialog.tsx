@@ -74,7 +74,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             autoFocus
             margin="dense"
             id="name"
-            label="User Name"
+            label="Name"
             type="text"
             fullWidth
             value={newPersonName}
@@ -83,7 +83,6 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             }}
           />
           <TextField
-            autoFocus
             margin="dense"
             id="email"
             label="Email Address"

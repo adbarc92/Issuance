@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { Person } from 'entity/Person';
 import { Task } from 'entity/Task';
+import { Token } from 'entity/Token';
 import { Task as ITask } from '../../types/task';
 import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
@@ -18,17 +19,42 @@ createConnection()
 
     const taskRepository = connection.getRepository(Task);
 
+    const tokenRepository = connection.getRepository(Token);
+
+    const authMiddleware = async function (req, res, next) {
+      // const { rawHeaders, httpVersion, method, socket, url } = req;
+      console.log('URL:', req.url);
+      console.log('Headers:', req.headers);
+      if (req.url === '/api/login') {
+        next();
+      } else {
+        const token = req.headers.session;
+        if (!token) {
+          res.status(403);
+          res.send('Not authorized.');
+          return;
+        }
+        const session = await tokenRepository.findOne(token).catch(() => {
+          return;
+        });
+        if (session) {
+          next();
+        } else {
+          res.status(403);
+          res.send('Not authorized.');
+          return;
+        }
+      }
+    };
+
     // create and setup express app
     const app = express();
     app.use(express.json());
+    app.use(authMiddleware);
 
     app.use(
       expressWinston.logger({
         transports: [new winston.transports.Console()],
-        format: winston.format.combine(
-          winston.format.colorize()
-          // winston.format.json()
-        ),
         meta: true, // optional: control whether you want to log the meta data about the request (default to true)
         msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
         expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
@@ -99,6 +125,15 @@ createConnection()
       }
       const result = await taskRepository.save(task);
       return res.send(castTask(result));
+    });
+
+    router.put('/login', async function (req: Request, res: Response) {
+      return res.send(true);
+    });
+
+    // Take password, hash it, check against stored password (also hashed)
+    router.post('/login', async function (req: Request, res: Response) {
+      
     });
 
     app.use('/api', router);

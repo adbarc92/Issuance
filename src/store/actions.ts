@@ -64,3 +64,32 @@ export const createTask = async (task: {
     return null;
   }
 };
+
+// Returns token or null; token will expire after a day; token should be attached to all requests--all requests except a login request require a token
+//
+
+export const login = async (
+  email: string,
+  password: string
+): Promise<string | null> => {
+  try {
+    const response = await api.post('/login', {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const checkLogin = async (): Promise<boolean | null> => {
+  try {
+    const response = await api.put('/login', {});
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
