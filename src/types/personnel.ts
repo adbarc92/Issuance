@@ -1,10 +1,10 @@
-export enum UserRole {
+export enum PersonnelRole {
   BOSS = 'boss',
   MIDDLER = 'middler',
   GRUNT = 'grunt',
 }
 
-export interface User {
+export interface Personnel {
   id: number;
   name: string;
   email: string;

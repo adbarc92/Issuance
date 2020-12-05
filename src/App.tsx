@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
-import UsersTable from 'components/UsersTable';
+import PersonnelPage from 'components/PersonnelPage';
 import TaskPage from 'components/TaskPage';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -61,7 +61,7 @@ const App = (): JSX.Element => {
           <Switch>
             <Route path="/users">
               <PageWrapper>
-                <UsersTable />
+                <PersonnelPage />
               </PageWrapper>
             </Route>
             <Route exact path="/">

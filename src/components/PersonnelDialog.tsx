@@ -7,9 +7,8 @@ import {
 } from 'store/useNotification';
 
 import { createUser } from 'store/axiosHooks';
-import { UserRole } from 'types/user';
+import { PersonnelRole } from 'types/personnel';
 
-import { makeStyles } from '@material-ui/core/styles';
 import {
   DialogTitle,
   Dialog,
@@ -20,16 +19,6 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { blue } from '@material-ui/core/colors';
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-const useStyles = makeStyles({
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[600],
-  },
-});
-
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
@@ -37,14 +26,13 @@ export interface SimpleDialogProps {
   clearUsersCache: () => void;
 }
 
-function UserDialog(props: SimpleDialogProps): JSX.Element {
-  const classes = useStyles();
+function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
   const { onClose, selectedValue, open, clearUsersCache } = props;
 
-  const [newUsername, setNewUsername] = React.useState('');
-  const [newUserEmail, setNewUserEmail] = React.useState('');
-  const [newUserRole, setNewUserRole] = React.useState<UserRole>(
-    UserRole.MIDDLER
+  const [newPersonnelName, setNewPersonnelName] = React.useState('');
+  const [newPersonnelEmail, setNewPersonnelEmail] = React.useState('');
+  const [newPersonnelRole, setNewPersonnelRole] = React.useState<PersonnelRole>(
+    PersonnelRole.MIDDLER
   );
 
   const [snackbar, showNotification] = useNotificationSnackbar();
@@ -54,8 +42,12 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
   };
 
   const handleSubmit = async () => {
-    const user = await createUser(newUsername, newUserEmail, newUserRole);
-    if (user) {
+    const personnel = await createUser(
+      newPersonnelName,
+      newPersonnelEmail,
+      newPersonnelRole
+    );
+    if (personnel) {
       showNotification(
         'User created successfully!',
         NotificationSeverity.SUCCESS
@@ -85,9 +77,9 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
             label="User Name"
             type="text"
             fullWidth
-            value={newUsername}
+            value={newPersonnelName}
             onChange={e => {
-              setNewUsername(e.target.value);
+              setNewPersonnelName(e.target.value);
             }}
           />
           <TextField
@@ -97,15 +89,15 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
             label="Email Address"
             type="email"
             fullWidth
-            value={newUserEmail}
+            value={newPersonnelEmail}
             onChange={e => {
-              setNewUserEmail(e.target.value);
+              setNewPersonnelEmail(e.target.value);
             }}
           />
           <UserSelect
-            value={newUserRole}
+            value={newPersonnelRole}
             onChange={e => {
-              setNewUserRole(e.target.value);
+              setNewPersonnelRole(e.target.value);
             }}
           />
         </DialogContent>
@@ -122,4 +114,4 @@ function UserDialog(props: SimpleDialogProps): JSX.Element {
   );
 }
 
-export default UserDialog;
+export default PersonnelDialog;

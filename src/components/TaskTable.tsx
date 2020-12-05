@@ -43,11 +43,11 @@ const Column = styled('div')((props: any) => {
   };
 });
 
-export interface TaskTableDialog {
+export interface TaskTableProps {
   taskData: Task[];
 }
 
-const TaskTable = (props: TaskTableDialog): JSX.Element => {
+const TaskTable = (props: TaskTableProps): JSX.Element => {
   const { taskData } = props;
 
   const classes = useStyles();
@@ -74,6 +74,7 @@ const TaskTable = (props: TaskTableDialog): JSX.Element => {
         ...task,
         status: dragColumn as TaskStatus,
       });
+      console.log('Result:', result);
 
       setDragColumn(null);
       reRender();
