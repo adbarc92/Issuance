@@ -11,7 +11,7 @@ import {
   Paper,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Personnel } from 'types/personnel';
+import { Person } from 'types/person';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface PersonnelTableProps {
-  personnelData: Personnel[];
+  personnelData: Person[];
 }
 
 const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {

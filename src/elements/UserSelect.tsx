@@ -2,7 +2,7 @@ import React from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
-import { PersonnelRole } from 'types/personnel';
+import { PersonRole } from 'types/person';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SelectProps {
   onChange: (e: any) => void;
-  value: PersonnelRole;
+  value: PersonRole;
 }
 
 const UserSelect = (props: SelectProps): JSX.Element => {
@@ -30,9 +30,9 @@ const UserSelect = (props: SelectProps): JSX.Element => {
       <FormControl className={classes.formControl}>
         <InputLabel>Role</InputLabel>
         <Select value={props.value} onChange={props.onChange}>
-          <MenuItem value={PersonnelRole.BOSS}>Boss</MenuItem>
-          <MenuItem value={PersonnelRole.MIDDLER}>Middler</MenuItem>
-          <MenuItem value={PersonnelRole.GRUNT}>Grunt</MenuItem>
+          <MenuItem value={PersonRole.BOSS}>Boss</MenuItem>
+          <MenuItem value={PersonRole.MIDDLER}>Middler</MenuItem>
+          <MenuItem value={PersonRole.GRUNT}>Grunt</MenuItem>
         </Select>
       </FormControl>
     </div>

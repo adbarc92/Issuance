@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import { useGetUsers } from 'store/axiosHooks';
+import { useGetPersonnel } from 'store/axiosHooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
 
-  const { loading, data: users, error } = useGetUsers();
+  const { loading, data: personnel, error } = useGetPersonnel();
 
   if (error) {
     return <div>{error}</div>;

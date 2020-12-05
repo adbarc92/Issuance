@@ -59,7 +59,7 @@ const App = (): JSX.Element => {
         <Navigation />
         <main className={classes.content}>
           <Switch>
-            <Route path="/users">
+            <Route path="/personnel">
               <PageWrapper>
                 <PersonnelPage />
               </PageWrapper>

@@ -1,4 +1,4 @@
-import { Personnel, PersonnelRole } from 'types/personnel';
+import { Person, PersonRole } from 'types/person';
 import { Task } from 'types/task';
 import { useGetData, CacheKey, IDataLoader } from 'store/useGetData';
 import { api } from 'store/api';
@@ -6,25 +6,25 @@ import { api } from 'store/api';
 // Temp
 
 // Helper function for the hook below, not technically a hook
-export const getUser = async (id: number): Promise<Personnel> => {
-  const response = await api.get(`/users/${id}`);
+export const getPerson = async (id: number): Promise<Person> => {
+  const response = await api.get(`/personnel/${id}`);
   return response.data;
 };
 
 // This is a hook because it returns a function that contains a hook
-export const useGetUser = (id: number): IDataLoader<Personnel> => {
+export const useGetPerson = (id: number): IDataLoader<Person> => {
   return useGetData(
     () => {
-      return getUser(id);
+      return getPerson(id);
     },
-    CacheKey.USERS,
+    CacheKey.PERSONNEL,
     String(id)
   );
 };
 
-export const getUsers = async (): Promise<Personnel[] | null> => {
+export const getPersonnel = async (): Promise<Person[] | null> => {
   try {
-    const response = await api.get('/users');
+    const response = await api.get('/personnel');
     return response.data;
   } catch (e) {
     console.error(e);
@@ -32,17 +32,17 @@ export const getUsers = async (): Promise<Personnel[] | null> => {
   }
 };
 
-export const useGetUsers = (): IDataLoader<Personnel[] | null> => {
-  return useGetData(getUsers, CacheKey.USERS);
+export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
+  return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const createUser = async (
+export const createPerson = async (
   name: string,
   email: string,
-  role: PersonnelRole
-): Promise<Personnel | null> => {
+  role: PersonRole
+): Promise<Person | null> => {
   try {
-    const response = await api.post('/users', { name, email, role });
+    const response = await api.post('/personnel', { name, email, role });
     console.log(response);
     return response.data;
   } catch (e) {

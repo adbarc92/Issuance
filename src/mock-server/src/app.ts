@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
-import { User } from 'entity/User';
+import { Person } from 'entity/Person';
 import { Task } from 'entity/Task';
 import { Task as ITask } from '../../types/task';
 import * as expressWinston from 'express-winston';
@@ -14,7 +14,7 @@ const port = 4000;
 // create typeorm connection
 createConnection()
   .then(connection => {
-    const userRepository = connection.getRepository(User);
+    const personRepository = connection.getRepository(Person);
 
     const taskRepository = connection.getRepository(Task);
 
@@ -43,36 +43,38 @@ createConnection()
 
     // register routes
 
-    router.get('/users', async function (req: Request, res: Response) {
-      const users = await userRepository.find();
-      res.json(users);
+    router.get('/personnel', async function (req: Request, res: Response) {
+      const person = await personRepository.find();
+      res.json(person);
     });
 
-    router.get('/users/:id', async function (req: Request, res: Response) {
-      const results = await userRepository.findOne(req.params.id);
+    router.get('/personnel/:id', async function (req: Request, res: Response) {
+      const results = await personRepository.findOne(req.params.id);
       return res.send(results);
     });
 
-    // Return the user object
-    router.post('/users', async function (req: Request, res: Response) {
-      const user = userRepository.create(req.body);
-      const results = await userRepository.save(user);
+    router.post('/personnel', async function (req: Request, res: Response) {
+      const person = personRepository.create(req.body);
+      const results = await personRepository.save(person);
       return res.send(results);
     });
 
-    router.put('/users/:id', async function (req: Request, res: Response) {
-      const user = await userRepository.findOne(req.params.id);
-      userRepository.merge(user, req.body);
-      const results = await userRepository.save(user);
+    router.put('/personnel/:id', async function (req: Request, res: Response) {
+      const personnel = await personRepository.findOne(req.params.id);
+      personRepository.merge(personnel, req.body);
+      const results = await personRepository.save(personnel);
       return res.send(results);
     });
 
-    router.delete('/users/:id', async function (req: Request, res: Response) {
-      const results = await userRepository.delete(req.params.id);
+    router.delete('/personnel/:id', async function (
+      req: Request,
+      res: Response
+    ) {
+      const results = await personRepository.delete(req.params.id);
       return res.send(results);
     });
 
-    router.get('/tasks/', async function (req: Request, res: Response) {
+    router.get('/personnel/', async function (req: Request, res: Response) {
       const results = await taskRepository.find();
       res.json(results.map(castTask));
     });

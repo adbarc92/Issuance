@@ -20,7 +20,7 @@ import {
   Home as HomeIcon,
   Apps as ProjectsIcon,
   FormatListNumbered as TasksIcon,
-  People as UsersIcon,
+  People as PersonnelIcon,
   Settings as SettingsIcon,
   Search as SearchIcon,
   Notifications as NotificationsIcon,
@@ -209,14 +209,14 @@ const Navigation = (): JSX.Element => {
               <ListItemText primary={'Tasks'} />
             </Link>
           </ListItem>
-          <ListItem button key={'Users'}>
-            <Link to="/users">
+          <ListItem button key={'Personnel'}>
+            <Link to="/personnel">
               <ListItemIcon>
-                <UsersIcon />
+                <PersonnelIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/users">
-              <ListItemText primary={'Users'} />
+            <Link to="/personnel">
+              <ListItemText primary={'Personnel'} />
             </Link>
           </ListItem>
         </List>

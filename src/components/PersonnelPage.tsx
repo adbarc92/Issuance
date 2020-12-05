@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Add } from '@material-ui/icons';
 import { styled, Button } from '@material-ui/core';
-import { useGetUsers } from 'store/axiosHooks';
+import { useGetPersonnel } from 'store/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PersonnelDialog from 'components/PersonnelDialog';
-import { Personnel } from 'types/personnel';
+import { Person } from 'types/person';
 
 import PersonnelTable from 'components/PersonnelTable';
 
@@ -36,8 +36,8 @@ const PersonnelPage = (): JSX.Element => {
     loading,
     data: personnelData,
     error,
-    clearCache: clearUsersCache,
-  } = useGetUsers();
+    clearCache: clearPersonnelCache,
+  } = useGetPersonnel();
 
   const [addingUser, setAddingUser] = React.useState(false);
 
@@ -66,12 +66,12 @@ const PersonnelPage = (): JSX.Element => {
               <Add />
             </Button>
           </SubHeaderWrapper>
-          <PersonnelTable personnelData={personnelData as Personnel[]} />
+          <PersonnelTable personnelData={personnelData as Person[]} />
           <PersonnelDialog
             selectedValue={'none'}
             open={addingUser}
             onClose={closeDialog}
-            clearUsersCache={clearUsersCache}
+            clearPersonnelCache={clearPersonnelCache}
           />
         </>
       )}

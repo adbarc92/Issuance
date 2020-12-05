@@ -6,8 +6,8 @@ import {
   NotificationSeverity,
 } from 'store/useNotification';
 
-import { createUser } from 'store/axiosHooks';
-import { PersonnelRole } from 'types/personnel';
+import { createPerson } from 'store/axiosHooks';
+import { PersonRole } from 'types/person';
 
 import {
   DialogTitle,
@@ -23,16 +23,16 @@ export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
-  clearUsersCache: () => void;
+  clearPersonnelCache: () => void;
 }
 
 function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
-  const { onClose, selectedValue, open, clearUsersCache } = props;
+  const { onClose, selectedValue, open, clearPersonnelCache } = props;
 
-  const [newPersonnelName, setNewPersonnelName] = React.useState('');
-  const [newPersonnelEmail, setNewPersonnelEmail] = React.useState('');
-  const [newPersonnelRole, setNewPersonnelRole] = React.useState<PersonnelRole>(
-    PersonnelRole.MIDDLER
+  const [newPersonName, setNewPersonName] = React.useState('');
+  const [newPersonEmail, setNewPersonEmail] = React.useState('');
+  const [newPersonRole, setNewPersonRole] = React.useState<PersonRole>(
+    PersonRole.MIDDLER
   );
 
   const [snackbar, showNotification] = useNotificationSnackbar();
@@ -42,18 +42,18 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
   };
 
   const handleSubmit = async () => {
-    const personnel = await createUser(
-      newPersonnelName,
-      newPersonnelEmail,
-      newPersonnelRole
+    const person = await createPerson(
+      newPersonName,
+      newPersonEmail,
+      newPersonRole
     );
-    if (personnel) {
+    if (person) {
       showNotification(
         'User created successfully!',
         NotificationSeverity.SUCCESS
       );
       onClose();
-      clearUsersCache(); // calls a setState on the hook
+      clearPersonnelCache(); // calls a setState on the hook
     } else {
       showNotification('User creation failed!', NotificationSeverity.ERROR);
     }
@@ -77,9 +77,9 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             label="User Name"
             type="text"
             fullWidth
-            value={newPersonnelName}
+            value={newPersonName}
             onChange={e => {
-              setNewPersonnelName(e.target.value);
+              setNewPersonName(e.target.value);
             }}
           />
           <TextField
@@ -89,15 +89,15 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             label="Email Address"
             type="email"
             fullWidth
-            value={newPersonnelEmail}
+            value={newPersonEmail}
             onChange={e => {
-              setNewPersonnelEmail(e.target.value);
+              setNewPersonEmail(e.target.value);
             }}
           />
           <UserSelect
-            value={newPersonnelRole}
+            value={newPersonRole}
             onChange={e => {
-              setNewPersonnelRole(e.target.value);
+              setNewPersonRole(e.target.value);
             }}
           />
         </DialogContent>

@@ -20,8 +20,8 @@ export const requestCache: Record<
 > = ((window as any).requestCache = {});
 
 export enum CacheKey {
-  USERS = 'users',
-  TASKS = 'tasks',
+  PERSONNEL,
+  TASKS,
 }
 
 type LoaderFunction = () => Promise<any>;
@@ -56,7 +56,7 @@ export const clearCacheWithoutRender = (
   baseCacheKey: CacheKey,
   id?: string
 ): void => {
-  const cacheKey = baseCacheKey + id ?? '';
+  const cacheKey = baseCacheKey + (id ?? '');
   delete requestCache[cacheKey];
 };
 
