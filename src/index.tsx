@@ -5,12 +5,15 @@ import * as serviceWorker from './serviceWorker';
 import { isLoggedIn } from 'store/auth';
 
 const main = async () => {
-  if (await isLoggedIn()) {
-    console.log('Logged in');
+  if (window.location.pathname === '/login') {
     ReactDOM.render(<App />, document.getElementById('root'));
   } else {
-    console.log('Not logged in');
-    window.location.href = '/login';
+    if (await isLoggedIn()) {
+      console.log('Logged in');
+      ReactDOM.render(<App />, document.getElementById('root'));
+    } else {
+      window.location.href = '/login';
+    }
   }
 };
 

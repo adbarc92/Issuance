@@ -4,9 +4,9 @@ import UserSelect from 'elements/UserSelect';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
-} from 'store/useNotification';
+} from 'hooks/notification';
 
-import { createPerson } from 'store/axiosHooks';
+import { createPerson } from 'hooks/axiosHooks';
 import { PersonRole } from 'types/person';
 
 import {

@@ -6,7 +6,7 @@ import { styled, Button } from '@material-ui/core';
 import { Task } from 'types/task';
 import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { useGetTasks } from 'store/axiosHooks';
+import { useGetTasks } from 'hooks/axiosHooks';
 
 const RootWrapper = styled('div')(() => {
   return {

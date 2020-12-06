@@ -1,6 +1,6 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
-import { requestCache, CacheKey } from 'store/useGetData';
+import { requestCache, CacheKey } from 'hooks/getData';
 import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
 
 const updateCache = (obj: any, subCache?: any) => {

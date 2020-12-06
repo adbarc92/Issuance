@@ -4,5 +4,5 @@ import { getSessionToken } from './auth';
 
 export const api = axios.create({
   baseURL: '/api',
-  headers: { session: getSessionToken() },
+  headers: { session: getSessionToken() || '' },
 });

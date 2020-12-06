@@ -7,7 +7,7 @@ import { Task, TaskStatus } from 'types/task';
 
 import { updateTask } from 'store/actions';
 
-import { useForceUpdate } from 'store/hooks';
+import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 
 const useStyles = makeStyles({

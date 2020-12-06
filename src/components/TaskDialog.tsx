@@ -8,9 +8,11 @@ import { createTask } from 'store/actions';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
-} from 'store/useNotification';
+} from 'hooks/notification';
 
 import { Alert } from '@material-ui/lab';
+
+import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
 import {
   DialogTitle,
@@ -115,14 +117,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
   // Redo: Action is function that is passed dispatch and a payload
 
-  const isFilledOut = (field: any) => {
-    return ['', undefined].includes(field);
-  };
-
-  const isTooLong = (field: string, length: number) => {
-    return field.length >= length;
-  };
-
   const validateState = (
     state: TaskDialogState
   ): undefined | Record<string, string> => {
@@ -131,32 +125,26 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
     trimState(vState);
 
-    if (isFilledOut(vState.name)) {
-      errors.name = 'A name must be defined.';
+    if (isNotFilledOut(vState.name)) {
+      errors.name = 'A name must be provided.';
     }
-    if (isFilledOut(vState.description)) {
-      errors.description = 'A description must be defined.';
+    if (isNotFilledOut(vState.description)) {
+      errors.description = 'A description must be provided.';
     }
     if (isTooLong(vState.name, 180)) {
-      errors.name = 'A name cannot be longer than 180 characters';
+      errors.name = 'A name cannot be longer than 180 characters.';
     }
     if (isTooLong(vState.description, 5000)) {
       errors.description =
-        'A description cannot be longer than 5000 characters';
+        'A description cannot be longer than 5000 characters.';
     }
-    return Object.keys(errors).length === 0 ? undefined : errors;
+    return Object.keys(errors).length ? errors : undefined;
   };
 
   const resetForm = () => {
     dispatch({ type: TaskDialogAction.RESET_STATE });
     setTriedSubmit(false);
     setErrors(undefined);
-  };
-
-  const trimState = (state: TaskDialogState) => {
-    for (const i in state) {
-      state[i] = state[i].trim();
-    }
   };
 
   const dialogReducer = (

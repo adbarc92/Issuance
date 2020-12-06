@@ -1,7 +1,8 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, createQueryBuilder } from 'typeorm';
 import { Person } from 'entity/Person';
+import { User } from 'entity/User';
 import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
 import { Task as ITask } from '../../types/task';
@@ -9,6 +10,7 @@ import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 import * as winston from 'winston';
 import { castTask } from 'cast';
+import { v4 as uuid } from 'uuid';
 
 const port = 4000;
 
@@ -21,11 +23,14 @@ createConnection()
 
     const tokenRepository = connection.getRepository(Token);
 
+    const userRepository = connection.getRepository(User);
+
     const authMiddleware = async function (req, res, next) {
       // const { rawHeaders, httpVersion, method, socket, url } = req;
       console.log('URL:', req.url);
-      console.log('Headers:', req.headers);
-      if (req.url === '/api/login') {
+
+      if (req.url === '/api/login' && req.method.toUpperCase() === 'POST') {
+        console.log('Bypassing login');
         next();
       } else {
         const token = req.headers.session;
@@ -37,6 +42,7 @@ createConnection()
         const session = await tokenRepository.findOne(token).catch(() => {
           return;
         });
+        console.log('session:', session);
         if (session) {
           next();
         } else {
@@ -52,18 +58,18 @@ createConnection()
     app.use(express.json());
     app.use(authMiddleware);
 
-    app.use(
-      expressWinston.logger({
-        transports: [new winston.transports.Console()],
-        meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-        msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-        expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-        colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-        // ignoreRoute: function (req, res) {
-        //   return false;
-        // }, // optional: allows to skip some log messages based on request and/or response
-      })
-    );
+    // app.use(
+    //   expressWinston.logger({
+    //     transports: [new winston.transports.Console()],
+    //     meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+    //     msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    //     expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+    //     colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+    //     // ignoreRoute: function (req, res) {
+    //     //   return false;
+    //     // }, // optional: allows to skip some log messages based on request and/or response
+    //   })
+    // );
 
     const router = express.Router();
 
@@ -133,7 +139,36 @@ createConnection()
 
     // Take password, hash it, check against stored password (also hashed)
     router.post('/login', async function (req: Request, res: Response) {
-      
+      console.log('login post');
+      const user = await userRepository
+        .findOne({
+          login_email: req.body.email,
+        })
+        .catch();
+      if (user) {
+        const token = await tokenRepository
+          .findOne({ userId: user.id })
+          .catch();
+        if (token) {
+          console.log('user is already logged in:', req.body.email);
+          res.send(token.id);
+        } else {
+          const tokenId = uuid();
+          const token = tokenRepository.create({
+            id: tokenId,
+            userId: user.id,
+          });
+          await tokenRepository.save(token);
+          return res.send(tokenId);
+        }
+      } else {
+        console.log(
+          'login with email+pw failed: no user found with email:',
+          req.body.email
+        );
+        res.status(403);
+        return res.send('Not authorized.');
+      }
     });
 
     app.use('/api', router);
