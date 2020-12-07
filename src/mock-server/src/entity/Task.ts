@@ -30,7 +30,7 @@ export class Task {
   name!: string;
 
   @Column()
-  project!: number;
+  projectId!: number;
 
   @Column()
   summary!: string;
@@ -60,9 +60,6 @@ export class Task {
 
   @Column()
   reportedBy!: number;
-
-  @Column()
-  completedBy!: number; // this can be null
 
   @Column()
   assignedTo!: number;

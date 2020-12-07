@@ -1,15 +1,8 @@
 import React from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { InputProps as StandardInputProps } from '@material-ui/core/Input/index';
-import {
-  InputLabel,
-  MenuItem,
-  FormHelperText,
-  FormControl,
-  Select,
-} from '@material-ui/core';
-import { UserRole } from 'types/user';
+import { InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
+import { PersonRole } from 'types/person';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,26 +19,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SelectProps {
   onChange: (e: any) => void;
-  value: UserRole;
+  value: PersonRole;
 }
 
 const UserSelect = (props: SelectProps): JSX.Element => {
   const classes = useStyles();
-  // const { onChange } = props;
-  // const [role, setRole] = React.useState('');
-
-  // const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-  //   setRole(e.target.value as string);
-  // };
 
   return (
     <div>
       <FormControl className={classes.formControl}>
         <InputLabel>Role</InputLabel>
         <Select value={props.value} onChange={props.onChange}>
-          <MenuItem value={UserRole.BOSS}>Boss</MenuItem>
-          <MenuItem value={UserRole.MIDDLER}>Middler</MenuItem>
-          <MenuItem value={UserRole.GRUNT}>Grunt</MenuItem>
+          <MenuItem value={PersonRole.BOSS}>Boss</MenuItem>
+          <MenuItem value={PersonRole.MIDDLER}>Middler</MenuItem>
+          <MenuItem value={PersonRole.GRUNT}>Grunt</MenuItem>
         </Select>
       </FormControl>
     </div>

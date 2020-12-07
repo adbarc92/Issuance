@@ -1,13 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserRole } from 'entity/User';
+import { PersonRole } from '../../../types/person';
 
 @Entity()
-export class Personnel {
+export class Person {
   @PrimaryGeneratedColumn()
   id!: number; // one-to-one
-
-  @Column()
-  avatar: string;
 
   @Column()
   email: string;
@@ -16,8 +13,5 @@ export class Personnel {
   name: string;
 
   @Column()
-  role!: UserRole;
-
-  @Column()
-  project!: number;
+  role!: PersonRole;
 }

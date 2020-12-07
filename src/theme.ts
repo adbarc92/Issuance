@@ -9,6 +9,7 @@ const ColorSuccess = '#04844B';
 const ColorWarning = '#ff9800';
 const ColorNeutral = '#f4f6f9';
 const ColorInfo = '#4393f0';
+const ColorWhite = '#FFFFFF';
 
 export default {
   palette: {
@@ -29,5 +30,9 @@ export default {
       link: ColorLink,
       highlight: ColorHighlight,
     } as any,
+    background: {
+      highlighted: ColorHighlight,
+      normal: ColorWhite,
+    },
   },
 };

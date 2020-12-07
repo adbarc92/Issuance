@@ -19,17 +19,17 @@ export enum TaskStatus {
 }
 
 export interface Task {
-  assignedTo: number;
-  completedBy: number;
-  createdOn: string;
-  deadline: string;
-  description: string;
   id: number;
-  project: number;
-  reportedBy: number;
   name: string;
   summary: string;
-  priority: TaskPriority;
+  description: string;
   type: TaskType;
+  priority: TaskPriority;
   status: TaskStatus;
+  createdOn: Date;
+  assignedTo: number;
+  deadline: Date;
+  projectId: number;
+  reportedBy: number;
+  typeName: 'Task'; // this is server-side only
 }

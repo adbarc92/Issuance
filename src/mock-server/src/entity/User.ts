@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-// import { UserRole } from '../types/user';
 
 export enum UserRole {
   BOSS = 'boss',
@@ -11,6 +10,9 @@ export enum UserRole {
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Column({ nullable: true })
+  avatar?: string;
 
   @Column()
   name!: string;

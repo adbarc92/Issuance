@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Task } from 'types/task';
 import {
   Card,
   CardActions,
@@ -15,35 +15,25 @@ const useStyles = makeStyles({
   },
 });
 
-export interface TaskProps {
-  projectId: number;
-  taskId: number;
-  name: string;
-  summary: string;
-  priority: TaskPriority;
-  type: TaskType;
-  status: TaskStatus;
-  // description: string;
+export interface TaskCardProps {
+  task: Task;
+  startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
+  endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
 }
 
-export const TaskCard = (props: TaskProps): JSX.Element => {
-  const { taskId, name, summary, status } = props;
+export const TaskCard = (props: TaskCardProps): JSX.Element => {
+  // const { taskId, name, summary, status } = props;
+  const { task, startDrag, endDrag } = props;
+  const { name, summary, status } = task;
 
   const classes = useStyles();
-
-  // let startDrag = (event: DragEvent, taskId: number) => {};
-
-  // let endDrag = (event: DragEvent, taskId: number) => {};
 
   return (
     <Card
       variant="outlined"
-      // onDragStart={event => {
-      //   startDrag(event, taskId);
-      // }}
-      // onDragEnd={event => {
-
-      // }}
+      onDragStart={startDrag}
+      onDragEnd={endDrag}
+      draggable
     >
       <CardContent>
         <Typography variant="h5" component="h2" className={classes.title}>
