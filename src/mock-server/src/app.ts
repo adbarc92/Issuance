@@ -116,6 +116,11 @@ createConnection()
       return res.send(castTask(task));
     });
 
+    router.get('/tasks/', async function (req: Request, res: Response) {
+      const tasks = await taskRepository.find();
+      return res.send(tasks.map(task => castTask(task)));
+    });
+
     router.post('/tasks', async function (req: Request, res: Response) {
       const task = taskRepository.create(req.body);
       const result = await taskRepository.save(task);

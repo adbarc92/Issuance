@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-// import { TaskPriority, TaskType, TaskStatus } from 'types/task';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',

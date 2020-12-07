@@ -4,20 +4,20 @@ import React from 'react';
 
 // Requires: initialState, reducer, validation function,
 
-interface FormAction {
+export interface FormAction {
   type: string;
   payload?: any;
 }
 
 // Generalized for state of type T
-interface FormProps<T> {
+export interface FormProps<T> {
   initialState: T;
   reducer: (state: T, action: FormAction) => T;
   validateState: (state: T) => undefined | Record<string, string>;
   onSubmit: (state: T) => void;
 }
 
-interface FormReturn<T> {
+export interface FormReturn<T> {
   state: T;
   submit: () => void;
   reset: () => void;

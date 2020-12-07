@@ -9,6 +9,10 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
+import SimpleMenu from 'elements/SimpleMenu';
+
+import { MoreVert } from '@material-ui/icons';
+
 const useStyles = makeStyles({
   title: {
     fontSize: 14,
@@ -46,6 +50,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           {status}
         </Typography>
       </CardContent>
+      <MoreVert onClick={} />
     </Card>
   );
 };
