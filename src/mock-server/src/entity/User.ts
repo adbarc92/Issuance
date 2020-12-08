@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum UserRole {
-  BOSS = 'boss',
-  MIDDLER = 'middler',
-  GRUNT = 'grunt',
+  BOSS = 'BOSS',
+  MIDDLER = 'MIDDLER',
+  GRUNT = 'GRUNT',
 }
 
 @Entity()
@@ -11,14 +11,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: true })
-  avatar?: string;
-
   @Column()
-  name!: string;
-
-  @Column()
-  email!: string;
+  login_email!: string;
 
   @Column({
     type: 'enum',

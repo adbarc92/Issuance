@@ -1,16 +1,18 @@
 import React from 'react';
 
 import Select, { SelectItem } from 'elements/Select';
-import { TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
 import { createTask } from 'store/actions';
 
 import {
   useNotificationSnackbar,
   NotificationSeverity,
-} from 'store/useNotification';
+} from 'hooks/notification';
 
 import { Alert } from '@material-ui/lab';
+
+import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
 import {
   DialogTitle,
@@ -25,6 +27,8 @@ import {
 
 // import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateTimePicker from 'elements/DateTimePicker';
+
+import { useForm } from 'hooks/form';
 
 const TextFieldWrapper = styled('div')(() => {
   return {
@@ -53,6 +57,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
+  task?: TaskDialogState;
 }
 
 export interface TaskDialogState {
@@ -66,19 +71,19 @@ export interface TaskDialogState {
 }
 
 export enum TaskDialogAction {
-  SET_NAME,
-  SET_SUMMARY,
-  SET_DESCRIPTION,
-  SET_TASKTYPE,
-  SET_TASKSTATUS,
-  SET_TASKPRIORITY,
-  SET_DEADLINE,
-  RESET_STATE,
+  SET_NAME = 'setName',
+  SET_SUMMARY = 'setSummary',
+  SET_DESCRIPTION = 'setDescription',
+  SET_TASKTYPE = 'setTaskType',
+  SET_TASKSTATUS = 'setTaskStatus',
+  SET_TASKPRIORITY = 'setTaskPriority',
+  SET_DEADLINE = 'setDeadline',
+  RESET_STATE = 'setState',
 }
 
 export interface ITaskDialogActions {
-  type: TaskDialogAction;
-  payload?: string | TaskType | TaskStatus | TaskPriority | Date | null;
+  type: string;
+  payload?: any;
 }
 
 const mapEnumToSelectItems = (
@@ -90,15 +95,7 @@ const mapEnumToSelectItems = (
 };
 
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
-  const { open, onClose, clearTasksCache } = props;
-
-  const [errors, setErrors] = React.useState<
-    undefined | Record<string, string>
-  >(undefined);
-
-  const [triedSubmit, setTriedSubmit] = React.useState(false);
-
-  const initialDialogState: TaskDialogState = {
+  const initialState = props.task || {
     name: '',
     summary: '',
     description: '',
@@ -109,132 +106,108 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
   };
-  // const classes = useStyles();
+
+  const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
+    initialState,
+    reducer: (
+      state: TaskDialogState,
+      action: ITaskDialogActions
+    ): TaskDialogState => {
+      // const { type }: TaskDialogAction = action;
+      let newState = { ...state };
+      switch (action.type) {
+        case TaskDialogAction.SET_NAME:
+          newState.name = action.payload;
+          break;
+        case TaskDialogAction.SET_SUMMARY:
+          newState.summary = action.payload;
+          break;
+        case TaskDialogAction.SET_DESCRIPTION:
+          newState.description = action.payload;
+          break;
+        case TaskDialogAction.SET_TASKTYPE:
+          newState.taskType = action.payload;
+          break;
+        case TaskDialogAction.SET_TASKSTATUS:
+          newState.taskStatus = action.payload;
+          break;
+        case TaskDialogAction.SET_TASKPRIORITY:
+          newState.taskPriority = action.payload;
+          break;
+        case TaskDialogAction.SET_DEADLINE:
+          newState.deadline = action.payload;
+          break;
+        case TaskDialogAction.RESET_STATE:
+          newState = initialState;
+          break;
+      }
+      return newState;
+    },
+    validateState: (
+      state: TaskDialogState
+    ): undefined | Record<string, string> => {
+      const errors: Record<string, string> = {};
+      const vState = { ...state };
+
+      trimState(vState);
+
+      if (isNotFilledOut(vState.name)) {
+        errors.name = 'A name must be provided.';
+      }
+      if (isNotFilledOut(vState.description)) {
+        errors.description = 'A description must be provided.';
+      }
+      if (isTooLong(vState.name, 180)) {
+        errors.name = 'A name cannot be longer than 180 characters.';
+      }
+      if (isTooLong(vState.description, 5000)) {
+        errors.description =
+          'A description cannot be longer than 5000 characters.';
+      }
+      return Object.keys(errors).length ? errors : undefined;
+    },
+    onSubmit: async () => {
+      if (errors) {
+        showNotification(
+          "Task doesn't meet requirements.",
+          NotificationSeverity.ERROR
+        );
+        return;
+      }
+
+      trimState(state);
+
+      const task = await createTask({
+        name: state.name,
+        summary: state.summary,
+        description: state.description,
+        type: state.taskType,
+        priority: state.taskPriority,
+        status: state.taskStatus,
+        deadline: state.deadline as string,
+      });
+      if (task) {
+        showNotification(
+          'Task created successfully!',
+          NotificationSeverity.SUCCESS
+        );
+        handleClose();
+        clearTasksCache(); // Suboptimal; task should be added to cache instead of being refetched
+      } else {
+        showNotification('User creation failed!', NotificationSeverity.ERROR);
+      }
+    },
+  });
+
+  const { open, onClose, clearTasksCache } = props;
 
   const [snackbar, showNotification] = useNotificationSnackbar();
 
   // Redo: Action is function that is passed dispatch and a payload
 
-  const isFilledOut = (field: any) => {
-    return ['', undefined].includes(field);
-  };
-
-  const isTooLong = (field: string, length: number) => {
-    return field.length >= length;
-  };
-
-  const validateState = (
-    state: TaskDialogState
-  ): undefined | Record<string, string> => {
-    const errors: Record<string, string> = {};
-    const vState = { ...state };
-
-    trimState(vState);
-
-    if (isFilledOut(vState.name)) {
-      errors.name = 'A name must be defined.';
-    }
-    if (isFilledOut(vState.description)) {
-      errors.description = 'A description must be defined.';
-    }
-    if (isTooLong(vState.name, 180)) {
-      errors.name = 'A name cannot be longer than 180 characters';
-    }
-    if (isTooLong(vState.description, 5000)) {
-      errors.description =
-        'A description cannot be longer than 5000 characters';
-    }
-    return Object.keys(errors).length === 0 ? undefined : errors;
-  };
-
-  const resetForm = () => {
-    dispatch({ type: TaskDialogAction.RESET_STATE });
-    setTriedSubmit(false);
-    setErrors(undefined);
-  };
-
-  const trimState = (state: TaskDialogState) => {
-    for (const i in state) {
-      state[i] = state[i].trim();
-    }
-  };
-
-  const dialogReducer = (
-    state: TaskDialogState,
-    action: ITaskDialogActions
-  ): TaskDialogState => {
-    // const { type }: TaskDialogAction = action;
-    let newState = { ...state };
-    switch (action.type) {
-      case TaskDialogAction.SET_NAME:
-        newState.name = action.payload as string;
-        break;
-      case TaskDialogAction.SET_SUMMARY:
-        newState.summary = action.payload as string;
-        break;
-      case TaskDialogAction.SET_DESCRIPTION:
-        newState.description = action.payload as string;
-        break;
-      case TaskDialogAction.SET_TASKTYPE:
-        newState.taskType = action.payload as TaskType;
-        break;
-      case TaskDialogAction.SET_TASKSTATUS:
-        newState.taskStatus = action.payload as TaskStatus;
-        break;
-      case TaskDialogAction.SET_TASKPRIORITY:
-        newState.taskPriority = action.payload as TaskPriority;
-        break;
-      case TaskDialogAction.SET_DEADLINE:
-        newState.deadline = action.payload as Date;
-        break;
-      case TaskDialogAction.RESET_STATE:
-        newState = initialDialogState;
-        break;
-    }
-    const errors = validateState(newState);
-    setErrors(errors);
-    return newState;
-  };
-
-  const [state, dispatch] = React.useReducer(dialogReducer, initialDialogState);
-
   const handleClose = () => {
-    resetForm();
+    reset();
     onClose();
-  };
-
-  const handleSubmit = async () => {
-    setTriedSubmit(true);
-    const errors = validateState(state);
-    if (errors) {
-      showNotification(
-        "Task doesn't meet requirements.",
-        NotificationSeverity.ERROR
-      );
-      return;
-    }
-
-    trimState(state);
-
-    const task = await createTask({
-      name: state.name,
-      summary: state.summary,
-      description: state.description,
-      type: state.taskType,
-      priority: state.taskPriority,
-      status: state.taskStatus,
-      deadline: state.deadline as string,
-    });
-    if (task) {
-      showNotification(
-        'Task created successfully!',
-        NotificationSeverity.SUCCESS
-      );
-      handleClose();
-      clearTasksCache(); // Suboptimal; task should be added to cache instead of being refetched
-    } else {
-      showNotification('User creation failed!', NotificationSeverity.ERROR);
-    }
   };
 
   return (
@@ -366,7 +339,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSubmit} color="primary">
+          <Button variant="contained" onClick={submit} color="primary">
             Submit
           </Button>
         </DialogActions>

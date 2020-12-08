@@ -6,6 +6,9 @@ export class Person {
   @PrimaryGeneratedColumn()
   id!: number; // one-to-one
 
+  @Column({ nullable: true })
+  profilePicture: string;
+
   @Column()
   email: string;
 

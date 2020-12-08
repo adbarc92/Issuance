@@ -9,6 +9,10 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
+import SimpleMenu from 'elements/SimpleMenu';
+
+import { MoreVert } from '@material-ui/icons';
+
 const useStyles = makeStyles({
   title: {
     fontSize: 14,
@@ -25,6 +29,32 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
   // const { taskId, name, summary, status } = props;
   const { task, startDrag, endDrag } = props;
   const { name, summary, status } = task;
+  const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
+    null
+  );
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElement(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElement(null);
+  };
+
+  const menuItems = [
+    {
+      key: 'Edit',
+      onClick: () => {
+        console.log('Should delete task');
+      },
+    },
+    {
+      key: 'Delete',
+      onClick: () => {
+        console.log('Should delete task');
+      },
+    },
+  ];
 
   const classes = useStyles();
 
@@ -46,6 +76,14 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           {status}
         </Typography>
       </CardContent>
+      <Button onClick={handleClick}>
+        <MoreVert />
+      </Button>
+      <SimpleMenu
+        menuItems={menuItems}
+        anchorElement={anchorElement}
+        handleClose={handleClose}
+      />
     </Card>
   );
 };

@@ -1,6 +1,6 @@
 import { Person, PersonRole } from 'types/person';
 import { Task } from 'types/task';
-import { useGetData, CacheKey, IDataLoader } from 'store/useGetData';
+import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
 // Temp

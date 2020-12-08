@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import { useGetPersonnel } from 'store/axiosHooks';
+import { useGetPersonnel } from 'hooks/axiosHooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
