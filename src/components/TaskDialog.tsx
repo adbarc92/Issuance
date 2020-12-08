@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Select, { SelectItem } from 'elements/Select';
-import { TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
 import { createTask } from 'store/actions';
 
@@ -57,6 +57,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
+  task?: TaskDialogState;
 }
 
 export interface TaskDialogState {
@@ -94,7 +95,7 @@ const mapEnumToSelectItems = (
 };
 
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
-  const initialState: TaskDialogState = {
+  const initialState = props.task || {
     name: '',
     summary: '',
     description: '',
@@ -203,8 +204,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const [snackbar, showNotification] = useNotificationSnackbar();
 
   // Redo: Action is function that is passed dispatch and a payload
-
-  // const [state, dispatch] = React.useReducer(dialogReducer, initialState);
 
   const handleClose = () => {
     reset();

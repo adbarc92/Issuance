@@ -17,7 +17,12 @@ interface SimpleMenuProps {
 function SimpleMenu(props: SimpleMenuProps): JSX.Element {
   const { anchorElement, menuItems, handleClose } = props;
   return (
-    <Menu anchorEl={anchorElement} keepMounted open={Boolean(anchorElement)}>
+    <Menu
+      anchorEl={anchorElement}
+      onClose={handleClose}
+      keepMounted
+      open={Boolean(anchorElement)}
+    >
       {menuItems &&
         menuItems.map((item, index) => {
           return (
