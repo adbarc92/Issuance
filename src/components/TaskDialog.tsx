@@ -57,7 +57,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
-  task?: TaskDialogState;
+  dialogTask: TaskDialogState | null;
 }
 
 export interface TaskDialogState {
@@ -94,8 +94,25 @@ const mapEnumToSelectItems = (
   });
 };
 
+const isCreatingTask = (initialState: TaskDialogState): boolean => {
+  return (
+    initialState ===
+    {
+      name: '',
+      summary: '',
+      description: '',
+      taskType: TaskType.FEATURE,
+      taskStatus: TaskStatus.BACKLOG,
+      taskPriority: TaskPriority.MEDIUM,
+      deadline: new Date(
+        new Date().getTime() + 24 * 60 * 60 * 1000
+      ).toISOString(), // defaults to tomorrow
+    }
+  );
+};
+
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
-  const initialState = props.task || {
+  const initialState = props.dialogTask || {
     name: '',
     summary: '',
     description: '',
@@ -107,6 +124,14 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow
   };
 
+  console.log(
+    initialState === props.dialogTask
+      ? 'Props equals dialogTask'
+      : 'Props defaults'
+  );
+
+  console.log('initialState:', initialState);
+
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
     reducer: (
@@ -115,6 +140,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ): TaskDialogState => {
       // const { type }: TaskDialogAction = action;
       let newState = { ...state };
+      console.log('newState:', newState);
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
@@ -209,6 +235,8 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     reset();
     onClose();
   };
+
+  console.log('state:', state);
 
   return (
     <>

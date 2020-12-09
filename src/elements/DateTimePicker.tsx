@@ -12,7 +12,6 @@ export interface DateTimeProps {
 }
 
 const DateTimePicker = (props: DateTimeProps): JSX.Element => {
-  console.log('props.value:', props.value);
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker

@@ -30,30 +30,11 @@ const SubHeaderWrapper = styled('div')(() => {
   };
 });
 
-const taskToDialogState = (task: Task): TaskDialogState => {
-  const {
-    name,
-    summary,
-    description,
-    type: taskType,
-    status: taskStatus,
-    priority: taskPriority,
-    deadline,
-  } = task;
-  return {
-    name,
-    summary,
-    description,
-    taskType,
-    taskStatus,
-    taskPriority,
-    deadline,
-  };
-};
-
 const TaskPage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+  const [dialogTask, setDialogTask] = React.useState<TaskDialogState | null>(
+    null
+  );
 
   const {
     loading,
@@ -63,6 +44,7 @@ const TaskPage = (): JSX.Element => {
   } = useGetTasks();
 
   const handleAddingTask = () => {
+    setDialogTask(null);
     setAddingTask(true);
   };
 
@@ -91,12 +73,19 @@ const TaskPage = (): JSX.Element => {
               <Add />
             </Button>
           </SubHeaderWrapper>
-          <TaskTable taskData={taskData as Task[]} />
-          <TaskDialog
-            open={addingTask}
-            onClose={handleCloseDialog}
-            clearTasksCache={clearTasksCache}
+          <TaskTable
+            taskData={taskData as Task[]}
+            setDialogTask={setDialogTask}
+            setAddingTask={setAddingTask}
           />
+          {addingTask ? (
+            <TaskDialog
+              open={addingTask}
+              onClose={handleCloseDialog}
+              clearTasksCache={clearTasksCache}
+              dialogTask={dialogTask}
+            />
+          ) : null}
         </>
       )}
     </RootWrapper>

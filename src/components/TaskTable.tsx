@@ -7,6 +7,8 @@ import { Task, TaskStatus } from 'types/task';
 
 import { updateTask } from 'store/actions';
 
+import { TaskDialogState } from 'components/TaskDialog';
+
 import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 
@@ -45,10 +47,12 @@ const Column = styled('div')((props: any) => {
 
 export interface TaskTableProps {
   taskData: Task[];
+  setDialogTask: (task: TaskDialogState) => void;
+  setAddingTask: (addingTask: boolean) => void;
 }
 
 const TaskTable = (props: TaskTableProps): JSX.Element => {
-  const { taskData } = props;
+  const { taskData, setDialogTask, setAddingTask } = props;
 
   const classes = useStyles();
 
@@ -74,7 +78,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
         ...task,
         status: dragColumn as TaskStatus,
       });
-      console.log('Result:', result);
+      // console.log('Result:', result);
 
       setDragColumn(null);
       reRender();
@@ -128,6 +132,8 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   task={task}
                   startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
+                  setDialogTask={setDialogTask}
+                  setAddingTask={setAddingTask}
                 />
               );
             })}
@@ -150,6 +156,8 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   task={task}
                   startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
+                  setDialogTask={setDialogTask}
+                  setAddingTask={setAddingTask}
                 />
               );
             })}
@@ -172,6 +180,8 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   task={task}
                   startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
+                  setDialogTask={setDialogTask}
+                  setAddingTask={setAddingTask}
                 />
               );
             })}

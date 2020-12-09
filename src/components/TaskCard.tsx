@@ -13,6 +13,8 @@ import SimpleMenu from 'elements/SimpleMenu';
 
 import { MoreVert } from '@material-ui/icons';
 
+import { TaskDialogState } from 'components/TaskDialog';
+
 const useStyles = makeStyles({
   title: {
     fontSize: 14,
@@ -23,11 +25,33 @@ export interface TaskCardProps {
   task: Task;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
+  setDialogTask: (task: TaskDialogState) => void;
+  setAddingTask: (addingTask: boolean) => void;
 }
 
+const taskToDialogState = (task: Task): TaskDialogState => {
+  const {
+    name,
+    summary,
+    description,
+    type: taskType,
+    status: taskStatus,
+    priority: taskPriority,
+    deadline,
+  } = task;
+  return {
+    name,
+    summary,
+    description,
+    taskType,
+    taskStatus,
+    taskPriority,
+    deadline,
+  };
+};
+
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
-  // const { taskId, name, summary, status } = props;
-  const { task, startDrag, endDrag } = props;
+  const { task, startDrag, endDrag, setDialogTask, setAddingTask } = props;
   const { name, summary, status } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
@@ -45,13 +69,18 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     {
       key: 'Edit',
       onClick: () => {
-        console.log('Should delete task');
+        // console.log('Should edit task');
+        const dialogTask = taskToDialogState(task);
+        setDialogTask(dialogTask);
+        setAddingTask(true);
+        handleClose();
       },
     },
     {
       key: 'Delete',
       onClick: () => {
         console.log('Should delete task');
+        handleClose();
       },
     },
   ];
