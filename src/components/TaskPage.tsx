@@ -1,5 +1,5 @@
 import React from 'react';
-import TaskDialog, { TaskDialogState } from 'components/TaskDialog';
+import TaskDialog from 'components/TaskDialog';
 import { Add } from '@material-ui/icons';
 import { styled, Button } from '@material-ui/core';
 

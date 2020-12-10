@@ -2,7 +2,6 @@ import React, { DragEvent } from 'react';
 import { Task } from 'types/task';
 import {
   Card,
-  CardActions,
   CardContent,
   Button,
   Typography,
@@ -12,8 +11,6 @@ import {
 import SimpleMenu from 'elements/SimpleMenu';
 
 import { MoreVert } from '@material-ui/icons';
-
-import { TaskDialogState } from 'components/TaskDialog';
 
 const useStyles = makeStyles({
   title: {

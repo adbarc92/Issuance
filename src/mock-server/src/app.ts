@@ -1,14 +1,14 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { createConnection, createQueryBuilder } from 'typeorm';
+import { createConnection } from 'typeorm';
 import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
 import { Task as ITask } from '../../types/task';
-import * as expressWinston from 'express-winston';
+// import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
-import * as winston from 'winston';
+// import * as winston from 'winston';
 import { castTask } from 'cast';
 import { v4 as uuid } from 'uuid';
 

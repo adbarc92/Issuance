@@ -14,8 +14,6 @@ import { Alert } from '@material-ui/lab';
 
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
-import { useForceUpdate } from 'hooks/render';
-
 import {
   DialogTitle,
   Dialog,

@@ -7,8 +7,6 @@ import { Task, TaskStatus } from 'types/task';
 
 import { updateTask } from 'store/actions';
 
-import { TaskDialogState } from 'components/TaskDialog';
-
 import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 
