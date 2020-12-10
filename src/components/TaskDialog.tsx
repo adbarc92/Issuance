@@ -5,6 +5,8 @@ import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
 import { createTask, updateTask } from 'store/actions';
 
+import { reRenderApp } from 'App';
+
 import {
   useNotificationSnackbar,
   NotificationSeverity,
@@ -63,9 +65,9 @@ export interface TaskDialogProps {
 export interface TaskDialogState {
   name: string;
   description: string;
-  taskType: TaskType;
-  taskStatus: TaskStatus;
-  taskPriority: TaskPriority;
+  type: TaskType;
+  status: TaskStatus;
+  priority: TaskPriority;
   deadline?: Date | string | null;
 }
 
@@ -94,20 +96,13 @@ const mapEnumToSelectItems = (
 
 const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {
-    const {
-      name,
-      description,
-      type: taskType,
-      status: taskStatus,
-      priority: taskPriority,
-      deadline,
-    } = task;
+    const { name, description, type, status, priority, deadline } = task;
     return {
       name,
       description,
-      taskType,
-      taskStatus,
-      taskPriority,
+      type,
+      status,
+      priority,
       deadline,
     };
   }
@@ -118,9 +113,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
     description: '',
-    taskType: TaskType.FEATURE,
-    taskStatus: TaskStatus.BACKLOG,
-    taskPriority: TaskPriority.MEDIUM,
+    type: TaskType.FEATURE,
+    status: TaskStatus.BACKLOG,
+    priority: TaskPriority.MEDIUM,
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
@@ -145,13 +140,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           newState.description = action.payload;
           break;
         case TaskDialogAction.SET_TASKTYPE:
-          newState.taskType = action.payload;
+          newState.type = action.payload;
           break;
         case TaskDialogAction.SET_TASKSTATUS:
-          newState.taskStatus = action.payload;
+          newState.status = action.payload;
           break;
         case TaskDialogAction.SET_TASKPRIORITY:
-          newState.taskPriority = action.payload;
+          newState.priority = action.payload;
           break;
         case TaskDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
@@ -196,31 +191,29 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const task = addingTask
-        ? await createTask({
-            name: state.name,
-            description: state.description,
-            type: state.taskType,
-            priority: state.taskPriority,
-            status: state.taskStatus,
-            deadline: state.deadline as string,
-          })
-        : updateTask((props.dialogTask as Task).id, {
-            ...(props.dialogTask as Task),
-            name: state.name,
-            description: state.description,
-            type: state.taskType,
-            priority: state.taskPriority,
-            status: state.taskStatus,
-            deadline: state.deadline as string,
-          });
+      const taskToSubmit = {
+        name: state.name,
+        description: state.description,
+        type: state.type,
+        priority: state.priority,
+        status: state.status,
+        deadline: state.deadline as string,
+      };
+
+      const task = await (addingTask
+        ? createTask(taskToSubmit)
+        : updateTask((props.dialogTask as Task).id, taskToSubmit));
       if (task) {
         showNotification(
           `Task ${addingTask ? 'created' : 'edited'} successfully!`,
           NotificationSeverity.SUCCESS
         );
         handleClose();
-        clearTasksCache(); // Suboptimal; task should be added to cache instead of being refetched
+        if (addingTask) {
+          clearTasksCache();
+        } else {
+          reRenderApp();
+        }
       } else {
         showNotification('User creation failed!', NotificationSeverity.ERROR);
       }
@@ -302,7 +295,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskPriority}
+                value={state.priority}
               />
             </SelectWrapper>
             <SelectWrapper>
@@ -316,7 +309,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskType}
+                value={state.type}
               />
             </SelectWrapper>
             <SelectWrapper>
@@ -330,7 +323,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskStatus}
+                value={state.status}
               />
             </SelectWrapper>
           </SelectContainer>
@@ -360,7 +353,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
             Cancel
           </Button>
           <Button variant="contained" onClick={submit} color="primary">
-            Submit
+            {addingTask ? 'Submit' : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>

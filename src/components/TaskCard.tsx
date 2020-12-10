@@ -5,18 +5,16 @@ import {
   CardContent,
   Button,
   Typography,
-  makeStyles,
+  styled,
+  Avatar,
 } from '@material-ui/core';
+
+import { deleteTask } from 'store/actions';
 
 import SimpleMenu from 'elements/SimpleMenu';
 
 import { MoreVert } from '@material-ui/icons';
-
-const useStyles = makeStyles({
-  title: {
-    fontSize: 14,
-  },
-});
+import { useForceUpdate } from 'hooks/render';
 
 export interface TaskCardProps {
   task: Task;
@@ -24,11 +22,59 @@ export interface TaskCardProps {
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
+  clearTasksCache: () => void;
 }
 
+const MenuButton = styled(Button)(() => {
+  return {
+    // position: 'absolute',
+    // right: '0.5rem',
+    // bottom: '0.5rem',
+  };
+});
+
+const AvatarShell = styled(Avatar)(() => {
+  return {
+    // position: 'absolute',
+    // top: '0.8rem',
+    // right: '0.8rem',
+  };
+});
+
+const CardContainer = styled('div')(() => {
+  return {
+    // position: 'relative',
+    display: 'flex',
+  };
+});
+
+const CardInfo = styled('div')(() => {
+  return {
+    width: 'calc(100% - 2.5rem)',
+    overflow: 'hidden',
+  };
+});
+
+const CardMenu = styled('div')(() => {
+  return {
+    width: '2rem',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    display: 'flex',
+  };
+});
+
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
-  const { task, startDrag, endDrag, setDialogTask, setAddingTask } = props;
-  const { name, description, status } = task;
+  const {
+    task,
+    startDrag,
+    endDrag,
+    setDialogTask,
+    setAddingTask,
+    clearTasksCache,
+  } = props;
+  const { name, description, type, priority } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
   );
@@ -53,14 +99,13 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     },
     {
       key: 'Delete',
-      onClick: () => {
-        console.log('Should delete task');
+      onClick: async () => {
+        await deleteTask(task.id);
         handleClose();
+        clearTasksCache();
       },
     },
   ];
-
-  const classes = useStyles();
 
   return (
     <Card
@@ -70,24 +115,34 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
       draggable
     >
       <CardContent>
-        <Typography variant="h5" component="h2" className={classes.title}>
-          {name}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {description}
-        </Typography>
-        <Typography variant="body1" component="p">
-          {status}
-        </Typography>
+        <CardContainer>
+          <CardInfo>
+            <Typography variant="h5" component="h5">
+              {name}
+            </Typography>
+            <Typography variant="body1" component="p">
+              {description}
+            </Typography>
+            <Typography variant="subtitle1" component="p">
+              {type}
+            </Typography>
+            <Typography variant="caption" component="p">
+              {priority}
+            </Typography>
+          </CardInfo>
+          <CardMenu>
+            <AvatarShell />
+            <MenuButton onClick={handleClick}>
+              <MoreVert />
+            </MenuButton>
+            <SimpleMenu
+              menuItems={menuItems}
+              anchorElement={anchorElement}
+              handleClose={handleClose}
+            />
+          </CardMenu>
+        </CardContainer>
       </CardContent>
-      <Button onClick={handleClick}>
-        <MoreVert />
-      </Button>
-      <SimpleMenu
-        menuItems={menuItems}
-        anchorElement={anchorElement}
-        handleClose={handleClose}
-      />
     </Card>
   );
 };

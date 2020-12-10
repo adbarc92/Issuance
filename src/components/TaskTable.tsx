@@ -9,6 +9,7 @@ import { updateTask } from 'store/actions';
 
 import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
+import { colors } from 'theme';
 
 const useStyles = makeStyles({
   root: {},
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
   columnContainer: {
     display: 'flex',
     flexDirection: 'column',
-    border: '2px solid black',
+    border: `2px solid ${colors.grey}`,
     width: '33%',
   },
 });
@@ -30,7 +31,8 @@ const Header = styled('div')((props: any) => {
   return {
     fontSize: '24px',
     textAlign: 'center',
-    color: props.colored ? 'red' : 'black',
+    color: props.colored ? colors.red : colors.black,
+    backgroundColor: colors.white,
   };
 });
 
@@ -47,6 +49,7 @@ export interface TaskTableProps {
   taskData: Task[];
   setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
+  clearTasksCache: () => void;
 }
 
 const TaskTable = (props: TaskTableProps): JSX.Element => {
@@ -132,6 +135,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
+                  clearTasksCache={props.clearTasksCache}
                 />
               );
             })}
@@ -156,6 +160,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
+                  clearTasksCache={props.clearTasksCache}
                 />
               );
             })}
@@ -180,6 +185,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
+                  clearTasksCache={props.clearTasksCache}
                 />
               );
             })}

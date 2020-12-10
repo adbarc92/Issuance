@@ -75,6 +75,7 @@ const TaskPage = (): JSX.Element => {
             taskData={taskData as Task[]}
             setDialogTask={setDialogTask}
             setAddingTask={setAddingTask}
+            clearTasksCache={clearTasksCache}
           />
           {addingTask ? (
             <TaskDialog

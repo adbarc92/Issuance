@@ -3,6 +3,8 @@ import { Task as ITask } from 'types/task';
 import { requestCache, CacheKey } from 'hooks/getData';
 import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
 
+export type TaskInput = Partial<ITask> & Record<string, unknown>;
+
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
   for (const i in cache) {
@@ -26,18 +28,11 @@ const updateCache = (obj: any, subCache?: any) => {
 
 const addTaskToCache = (task: Task) => {
   requestCache[CacheKey.TASKS + task.id] = task;
-  // console.log(
-  //   'Task:',
-  //   task,
-  //   'has been added to request cache at index',
-  //   task.id
-  // );
-  // console.log('Resulting cache:', requestCache);
 };
 
 export const updateTask = async (
   id: number,
-  task: ITask
+  task: TaskInput
 ): Promise<ITask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
@@ -51,14 +46,7 @@ export const updateTask = async (
   }
 };
 
-export const createTask = async (task: {
-  name: string;
-  description: string;
-  type: TaskType;
-  priority: TaskPriority;
-  status: TaskStatus;
-  deadline: string;
-}): Promise<Task | null> => {
+export const createTask = async (task: TaskInput): Promise<Task | null> => {
   try {
     // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
@@ -75,6 +63,16 @@ export const createTask = async (task: {
     addTaskToCache(response.data);
     return response.data;
   } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const deleteTask = async (taskId: number) => {
+  try {
+    await api.delete(`/tasks/${taskId}`);
+  } catch (e) {
+    // Snackbar error message?
     console.error(e);
     return null;
   }

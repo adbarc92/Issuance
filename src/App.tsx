@@ -5,6 +5,8 @@ import PersonnelPage from 'components/PersonnelPage';
 import TaskPage from 'components/TaskPage';
 import LoginPage from 'components/LoginPage';
 
+import { useForceUpdate } from 'hooks/render';
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
@@ -61,8 +63,18 @@ const PageWrapper = (props: any): JSX.Element => {
   );
 };
 
+let render: any = null;
+
+export const reRenderApp = (): void => {
+  render();
+};
+
 const App = (): JSX.Element => {
   const classes = useStyles();
+
+  const rerender = useForceUpdate();
+
+  render = rerender;
 
   console.log('Rendering');
 

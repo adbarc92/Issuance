@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, createQueryBuilder } from 'typeorm';
 import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
@@ -11,6 +11,7 @@ import { Task as ITask } from '../../types/task';
 // import * as winston from 'winston';
 import { castTask } from 'cast';
 import { v4 as uuid } from 'uuid';
+import { createErrorResponse } from 'utils';
 
 const port = 4000;
 
@@ -136,6 +137,22 @@ createConnection()
       }
       const result = await taskRepository.save(task);
       return res.send(castTask(result));
+    });
+
+    router.delete('/tasks/:id', async function (req: Request, res: Response) {
+      try {
+        await connection
+          .createQueryBuilder()
+          .delete()
+          .from(Task)
+          .where('id = :id', { id: req.params.id })
+          .execute();
+        res.send(JSON.stringify({}));
+      } catch (e) {
+        res.status(500);
+        // Add more error codes
+        return res.send(createErrorResponse(e));
+      }
     });
 
     router.put('/login', async function (req: Request, res: Response) {
