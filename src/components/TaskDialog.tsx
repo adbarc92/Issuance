@@ -141,7 +141,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ): TaskDialogState => {
       // const { type }: TaskDialogAction = action;
       let newState = { ...state };
-      console.log('newState:', newState);
+      // console.log('newState:', newState);
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
@@ -204,8 +204,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      console.log('DialogTask:', props.dialogTask);
-
       const task = addingTask
         ? await createTask({
             name: state.name,
@@ -250,7 +248,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     onClose();
   };
 
-  console.log('state:', state);
+  // console.log('state:', state);
 
   return (
     <>

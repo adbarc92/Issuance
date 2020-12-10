@@ -81,7 +81,6 @@ const LoginPage = (): JSX.Element => {
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async state => {
-      // console.log(state);
       const sessionToken = await login(state.email, state.password);
       if (sessionToken) {
         setSessionToken(sessionToken);

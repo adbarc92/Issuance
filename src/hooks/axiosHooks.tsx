@@ -43,7 +43,7 @@ export const createPerson = async (
 ): Promise<Person | null> => {
   try {
     const response = await api.post('/personnel', { name, email, role });
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (e) {
     console.error(e);

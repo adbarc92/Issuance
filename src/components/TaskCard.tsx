@@ -45,7 +45,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     {
       key: 'Edit',
       onClick: () => {
-        // console.log('Should edit task');
         const dialogTask = task;
         setDialogTask(dialogTask);
         setAddingTask(true);

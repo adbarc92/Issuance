@@ -22,13 +22,13 @@ const updateCache = (obj: any, subCache?: any) => {
 
 const addTaskToCache = (task: Task) => {
   requestCache[CacheKey.TASKS + task.id] = task;
-  console.log(
-    'Task:',
-    task,
-    'has been added to request cache at index',
-    task.id
-  );
-  console.log('Resulting cache:', requestCache);
+  // console.log(
+  //   'Task:',
+  //   task,
+  //   'has been added to request cache at index',
+  //   task.id
+  // );
+  // console.log('Resulting cache:', requestCache);
 };
 
 export const updateTask = async (
