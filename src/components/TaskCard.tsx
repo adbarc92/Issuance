@@ -28,7 +28,7 @@ export interface TaskCardProps {
 
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   const { task, startDrag, endDrag, setDialogTask, setAddingTask } = props;
-  const { name, summary, status } = task;
+  const { name, description, status } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
   );
@@ -74,7 +74,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           {name}
         </Typography>
         <Typography variant="body2" component="p">
-          {summary}
+          {description}
         </Typography>
         <Typography variant="body1" component="p">
           {status}

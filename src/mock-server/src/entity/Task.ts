@@ -32,9 +32,6 @@ export class Task {
   projectId!: number;
 
   @Column()
-  summary!: string;
-
-  @Column()
   description!: string;
 
   @Column({

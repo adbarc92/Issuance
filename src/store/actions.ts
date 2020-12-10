@@ -11,7 +11,11 @@ const updateCache = (obj: any, subCache?: any) => {
     if (Array.isArray(value)) {
       updateCache(obj, value);
     } else if (typeof value === 'object') {
-      if (value.typeName === obj.typeName && value.id === obj.id) {
+      if (
+        value.typeName &&
+        value.typeName === obj.typeName &&
+        value.id === obj.id
+      ) {
         cache[i] = obj;
       } else {
         updateCache(obj, value);
@@ -49,7 +53,6 @@ export const updateTask = async (
 
 export const createTask = async (task: {
   name: string;
-  summary: string;
   description: string;
   type: TaskType;
   priority: TaskPriority;
@@ -60,7 +63,6 @@ export const createTask = async (task: {
     // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
       name: task.name,
-      summary: task.summary,
       description: task.description,
       type: task.type,
       priority: task.priority,

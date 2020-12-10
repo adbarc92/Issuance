@@ -62,7 +62,6 @@ export interface TaskDialogProps {
 
 export interface TaskDialogState {
   name: string;
-  summary: string;
   description: string;
   taskType: TaskType;
   taskStatus: TaskStatus;
@@ -72,7 +71,6 @@ export interface TaskDialogState {
 
 export enum TaskDialogAction {
   SET_NAME = 'setName',
-  SET_SUMMARY = 'setSummary',
   SET_DESCRIPTION = 'setDescription',
   SET_TASKTYPE = 'setTaskType',
   SET_TASKSTATUS = 'setTaskStatus',
@@ -98,7 +96,6 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {
     const {
       name,
-      summary,
       description,
       type: taskType,
       status: taskStatus,
@@ -107,7 +104,6 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
     } = task;
     return {
       name,
-      summary,
       description,
       taskType,
       taskStatus,
@@ -121,7 +117,6 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
-    summary: '',
     description: '',
     taskType: TaskType.FEATURE,
     taskStatus: TaskStatus.BACKLOG,
@@ -145,9 +140,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
-          break;
-        case TaskDialogAction.SET_SUMMARY:
-          newState.summary = action.payload;
           break;
         case TaskDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
@@ -207,7 +199,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       const task = addingTask
         ? await createTask({
             name: state.name,
-            summary: state.summary,
             description: state.description,
             type: state.taskType,
             priority: state.taskPriority,
@@ -217,7 +208,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         : updateTask((props.dialogTask as Task).id, {
             ...(props.dialogTask as Task),
             name: state.name,
-            summary: state.summary,
             description: state.description,
             type: state.taskType,
             priority: state.taskPriority,
@@ -277,20 +267,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
             onChange={e => {
               dispatch({
                 type: TaskDialogAction.SET_NAME,
-                payload: e.target.value,
-              });
-            }}
-          />
-          <TextField
-            margin="dense"
-            id="summary"
-            label="Task Summary"
-            type="text"
-            fullWidth
-            value={state.summary}
-            onChange={e => {
-              dispatch({
-                type: TaskDialogAction.SET_SUMMARY,
                 payload: e.target.value,
               });
             }}

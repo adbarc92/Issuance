@@ -21,7 +21,6 @@ export enum TaskStatus {
 export interface Task {
   id: number;
   name: string;
-  summary: string;
   description: string;
   type: TaskType;
   priority: TaskPriority;
