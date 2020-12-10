@@ -25,30 +25,9 @@ export interface TaskCardProps {
   task: Task;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
-  setDialogTask: (task: TaskDialogState) => void;
+  setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
 }
-
-const taskToDialogState = (task: Task): TaskDialogState => {
-  const {
-    name,
-    summary,
-    description,
-    type: taskType,
-    status: taskStatus,
-    priority: taskPriority,
-    deadline,
-  } = task;
-  return {
-    name,
-    summary,
-    description,
-    taskType,
-    taskStatus,
-    taskPriority,
-    deadline,
-  };
-};
 
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   const { task, startDrag, endDrag, setDialogTask, setAddingTask } = props;
@@ -70,7 +49,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
       key: 'Edit',
       onClick: () => {
         // console.log('Should edit task');
-        const dialogTask = taskToDialogState(task);
+        const dialogTask = task;
         setDialogTask(dialogTask);
         setAddingTask(true);
         handleClose();

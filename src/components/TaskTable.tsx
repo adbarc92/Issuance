@@ -47,7 +47,7 @@ const Column = styled('div')((props: any) => {
 
 export interface TaskTableProps {
   taskData: Task[];
-  setDialogTask: (task: TaskDialogState) => void;
+  setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
 }
 

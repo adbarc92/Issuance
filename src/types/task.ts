@@ -28,7 +28,7 @@ export interface Task {
   status: TaskStatus;
   createdOn: Date;
   assignedTo: number;
-  deadline: Date;
+  deadline: Date | string;
   projectId: number;
   reportedBy: number;
   typeName: 'Task'; // this is server-side only

@@ -3,7 +3,7 @@ import React from 'react';
 import Select, { SelectItem } from 'elements/Select';
 import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
-import { createTask } from 'store/actions';
+import { createTask, updateTask } from 'store/actions';
 
 import {
   useNotificationSnackbar,
@@ -13,6 +13,8 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+
+import { useForceUpdate } from 'hooks/render';
 
 import {
   DialogTitle,
@@ -57,7 +59,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
-  dialogTask: TaskDialogState | null;
+  dialogTask: Task | null;
 }
 
 export interface TaskDialogState {
@@ -94,25 +96,32 @@ const mapEnumToSelectItems = (
   });
 };
 
-const isCreatingTask = (initialState: TaskDialogState): boolean => {
-  return (
-    initialState ===
-    {
-      name: '',
-      summary: '',
-      description: '',
-      taskType: TaskType.FEATURE,
-      taskStatus: TaskStatus.BACKLOG,
-      taskPriority: TaskPriority.MEDIUM,
-      deadline: new Date(
-        new Date().getTime() + 24 * 60 * 60 * 1000
-      ).toISOString(), // defaults to tomorrow
-    }
-  );
+const taskToDialogState = (task: Task | null): TaskDialogState | null => {
+  if (task) {
+    const {
+      name,
+      summary,
+      description,
+      type: taskType,
+      status: taskStatus,
+      priority: taskPriority,
+      deadline,
+    } = task;
+    return {
+      name,
+      summary,
+      description,
+      taskType,
+      taskStatus,
+      taskPriority,
+      deadline,
+    };
+  }
+  return null;
 };
 
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
-  const initialState = props.dialogTask || {
+  const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
     summary: '',
     description: '',
@@ -124,13 +133,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow
   };
 
-  console.log(
-    initialState === props.dialogTask
-      ? 'Props equals dialogTask'
-      : 'Props defaults'
-  );
-
-  console.log('initialState:', initialState);
+  const addingTask = taskToDialogState(props.dialogTask) ? false : true;
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -203,18 +206,31 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const task = await createTask({
-        name: state.name,
-        summary: state.summary,
-        description: state.description,
-        type: state.taskType,
-        priority: state.taskPriority,
-        status: state.taskStatus,
-        deadline: state.deadline as string,
-      });
+      console.log('DialogTask:', props.dialogTask);
+
+      const task = addingTask
+        ? await createTask({
+            name: state.name,
+            summary: state.summary,
+            description: state.description,
+            type: state.taskType,
+            priority: state.taskPriority,
+            status: state.taskStatus,
+            deadline: state.deadline as string,
+          })
+        : updateTask((props.dialogTask as Task).id, {
+            ...(props.dialogTask as Task),
+            name: state.name,
+            summary: state.summary,
+            description: state.description,
+            type: state.taskType,
+            priority: state.taskPriority,
+            status: state.taskStatus,
+            deadline: state.deadline as string,
+          });
       if (task) {
         showNotification(
-          'Task created successfully!',
+          `Task ${addingTask ? 'created' : 'edited'} successfully!`,
           NotificationSeverity.SUCCESS
         );
         handleClose();
@@ -247,9 +263,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle id="task-dialog-title">Add Task</DialogTitle>
+        <DialogTitle id="task-dialog-title">
+          {addingTask ? 'Add' : 'Edit'} Task
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>Add a Task to the database</DialogContentText>
+          <DialogContentText>
+            {addingTask ? 'Add a task to' : 'Edit a task in'} the database
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"

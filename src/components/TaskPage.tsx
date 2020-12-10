@@ -32,9 +32,7 @@ const SubHeaderWrapper = styled('div')(() => {
 
 const TaskPage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<TaskDialogState | null>(
-    null
-  );
+  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
 
   const {
     loading,
