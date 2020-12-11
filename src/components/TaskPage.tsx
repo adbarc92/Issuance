@@ -20,6 +20,7 @@ export interface TaskPageProps {
 interface InfoBoxProps {
   title: string;
   children?: any;
+  gridArea?: string;
 }
 
 const InfoBoxHeader = styled('div')(() => {
@@ -33,8 +34,13 @@ const InfoBoxHeader = styled('div')(() => {
   };
 });
 
-const InfoBoxWrapper = styled('div')(() => {
+interface InfoBoxWrapperProps {
+  gridArea?: string;
+}
+
+const InfoBoxWrapper = styled('div')((props: InfoBoxWrapperProps) => {
   return {
+    gridArea: props.gridArea,
     border: `2px solid ${colors.grey}`,
     borderRadius: '4px',
     padding: '0.5rem',
@@ -43,7 +49,7 @@ const InfoBoxWrapper = styled('div')(() => {
 
 const InfoBox = (props: InfoBoxProps): JSX.Element => {
   return (
-    <InfoBoxWrapper>
+    <InfoBoxWrapper gridArea={props.gridArea}>
       <InfoBoxHeader>{props.title}</InfoBoxHeader>
       {props.children}
     </InfoBoxWrapper>
@@ -82,6 +88,15 @@ const Title = (props: TitleProps): JSX.Element => {
   );
 };
 
+const GridWrapper = styled('div')(() => {
+  return {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto auto',
+    gridTemplateRows: 'auto auto',
+    gridTemplateAreas: "'details description comments' 'people dates comments'",
+  };
+});
+
 const TaskPage = (props: TaskPageProps): JSX.Element => {
   const { loading, data, error, clearCache } = useGetTask(props.taskId);
 
@@ -96,26 +111,27 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
       ) : (
         <>
           <Title task={task} />
+          <GridWrapper>
+            <InfoBox title="Details" gridArea="details">
+              <div>Type: {task.type}</div>
+              <Chip>Priority: {task.priority}</Chip>
+              <div>Status: {task.status}</div>
+            </InfoBox>
 
-          <InfoBox title="Details">
-            <div>type:{task.type}</div>
-            <div>priority:{task.priority}</div>
-            <div>status:{task.status}</div>
-          </InfoBox>
+            <InfoBox title="Description" gridArea="description">
+              <div>{task.description}</div>
+            </InfoBox>
 
-          <InfoBox title="Description">
-            <div>description:{task.description}</div>
-          </InfoBox>
+            <InfoBox title="Dates" gridArea="dates">
+              <div>Created On: {task.createdOn}</div>
+              <div>Deadline: {task.deadline}</div>
+            </InfoBox>
 
-          <InfoBox title="Dates">
-            <div>createdOn:{task.createdOn}</div>
-            <div>deadline:{task.deadline}</div>
-          </InfoBox>
-
-          <InfoBox title="People">
-            <div>assignedTo:{task.assignedTo}</div>
-            <div>reportedBy:{task.reportedBy}</div>
-          </InfoBox>
+            <InfoBox title="People" gridArea="people">
+              <div>Assignee ID: {task.assignedTo}</div>
+              <div>Reporter ID: {task.reportedBy}</div>
+            </InfoBox>
+          </GridWrapper>
         </>
       )}
     </RootWrapper>
