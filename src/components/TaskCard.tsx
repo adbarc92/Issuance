@@ -8,13 +8,13 @@ import {
   styled,
   Avatar,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 import { deleteTask } from 'store/actions';
 
 import SimpleMenu from 'elements/SimpleMenu';
 
 import { MoreVert } from '@material-ui/icons';
-import { useForceUpdate } from 'hooks/render';
 
 export interface TaskCardProps {
   task: Task;
@@ -74,7 +74,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     setAddingTask,
     clearTasksCache,
   } = props;
-  const { name, description, type, priority } = task;
+  const { name, description, type, priority, id } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
   );
@@ -117,9 +117,11 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
       <CardContent>
         <CardContainer>
           <CardInfo>
-            <Typography variant="h5" component="h5">
-              {name}
-            </Typography>
+            <Link to={`/tasks/${id}`}>
+              <Typography variant="h5" component="h5">
+                {name}
+              </Typography>
+            </Link>
             <Typography variant="body1" component="p">
               {description}
             </Typography>

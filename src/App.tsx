@@ -2,8 +2,9 @@ import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelPage from 'components/PersonnelPage';
-import TaskPage from 'components/TaskPage';
+import TaskTablePage from 'components/TaskTablePage';
 import LoginPage from 'components/LoginPage';
+import TaskPage from 'components/TaskPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -95,9 +96,19 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PageWrapper>
           </Route>
+          <Route
+            path="/tasks/:taskId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <TaskPage taskId={match.params.taskId} />
+                </PageWrapper>
+              );
+            }}
+          ></Route>
           <Route path="/tasks">
             <PageWrapper>
-              <TaskPage />
+              <TaskTablePage />
             </PageWrapper>
           </Route>
         </Switch>

@@ -1,7 +1,9 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
 import { requestCache, CacheKey } from 'hooks/getData';
-import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Task } from 'types/task';
+
+// Actions change things
 
 export type TaskInput = Partial<ITask> & Record<string, unknown>;
 
@@ -68,7 +70,7 @@ export const createTask = async (task: TaskInput): Promise<Task | null> => {
   }
 };
 
-export const deleteTask = async (taskId: number) => {
+export const deleteTask = async (taskId: number): Promise<undefined | null> => {
   try {
     await api.delete(`/tasks/${taskId}`);
   } catch (e) {

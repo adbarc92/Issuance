@@ -1,12 +1,11 @@
 import React from 'react';
-import TaskDialog from 'components/TaskDialog';
-import { Add } from '@material-ui/icons';
-import { styled, Button } from '@material-ui/core';
-
+import { styled } from '@material-ui/core';
 import { Task } from 'types/task';
-import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { useGetTasks } from 'hooks/axiosHooks';
+
+import { useGetTask } from 'hooks/axiosHooks';
+
+import theme, { colors } from 'theme';
 
 const RootWrapper = styled('div')(() => {
   return {
@@ -14,45 +13,81 @@ const RootWrapper = styled('div')(() => {
   };
 });
 
-const HeaderWrapper = styled('div')(() => {
+export interface TaskPageProps {
+  taskId: number;
+}
+
+interface InfoBoxProps {
+  title: string;
+  children?: any;
+}
+
+const InfoBoxHeader = styled('div')(() => {
   return {
-    fontSize: '3rem',
-    margin: '0',
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    padding: '0.25rem 0',
+    margin: '0.25rem 0',
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
+    // backgroundColor: colors.grey,
   };
 });
 
-const SubHeaderWrapper = styled('div')(() => {
+const InfoBoxWrapper = styled('div')(() => {
   return {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: '1%',
-    marginBottom: '0.5rem',
+    border: `2px solid ${colors.grey}`,
+    borderRadius: '4px',
+    padding: '0.5rem',
   };
 });
 
-const TaskPage = (): JSX.Element => {
-  const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+const InfoBox = (props: InfoBoxProps): JSX.Element => {
+  return (
+    <InfoBoxWrapper>
+      <InfoBoxHeader>{props.title}</InfoBoxHeader>
+      {props.children}
+    </InfoBoxWrapper>
+  );
+};
 
-  const {
-    loading,
-    data: taskData,
-    error,
-    clearCache: clearTasksCache,
-  } = useGetTasks();
+interface TitleProps {
+  task: Task;
+}
 
-  const handleAddingTask = () => {
-    setDialogTask(null);
-    setAddingTask(true);
+const TitleWrapper = styled('div')(() => {
+  return {
+    padding: '0.5rem',
   };
+});
 
-  const handleCloseDialog = () => {
-    setAddingTask(false);
+const ProjectLabel = styled('div')(() => {
+  return {
+    paddingBottom: '0.25rem',
+    fontSize: '1rem',
   };
+});
 
-  if (error) {
-    return <div>There was an error: {error}</div>;
-  }
+const TitleHeader = styled('div')(() => {
+  return {
+    fontSize: '2rem',
+  };
+});
+
+const Title = (props: TitleProps): JSX.Element => {
+  return (
+    <TitleWrapper>
+      <ProjectLabel>Project ID: {props.task.projectId}</ProjectLabel>
+      <TitleHeader>{props.task.name}</TitleHeader>
+    </TitleWrapper>
+  );
+};
+
+const TaskPage = (props: TaskPageProps): JSX.Element => {
+  const { loading, data, error, clearCache } = useGetTask(props.taskId);
+
+  const task = data as Task;
+
+  console.log('data:', data);
 
   return (
     <RootWrapper>
@@ -60,31 +95,27 @@ const TaskPage = (): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <HeaderWrapper>Tasks</HeaderWrapper>
-          <SubHeaderWrapper>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddingTask}
-            >
-              Create Task
-              <Add />
-            </Button>
-          </SubHeaderWrapper>
-          <TaskTable
-            taskData={taskData as Task[]}
-            setDialogTask={setDialogTask}
-            setAddingTask={setAddingTask}
-            clearTasksCache={clearTasksCache}
-          />
-          {addingTask ? (
-            <TaskDialog
-              open={addingTask}
-              onClose={handleCloseDialog}
-              clearTasksCache={clearTasksCache}
-              dialogTask={dialogTask}
-            />
-          ) : null}
+          <Title task={task} />
+
+          <InfoBox title="Details">
+            <div>type:{task.type}</div>
+            <div>priority:{task.priority}</div>
+            <div>status:{task.status}</div>
+          </InfoBox>
+
+          <InfoBox title="Description">
+            <div>description:{task.description}</div>
+          </InfoBox>
+
+          <InfoBox title="Dates">
+            <div>createdOn:{task.createdOn}</div>
+            <div>deadline:{task.deadline}</div>
+          </InfoBox>
+
+          <InfoBox title="People">
+            <div>assignedTo:{task.assignedTo}</div>
+            <div>reportedBy:{task.reportedBy}</div>
+          </InfoBox>
         </>
       )}
     </RootWrapper>

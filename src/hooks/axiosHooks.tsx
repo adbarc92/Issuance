@@ -65,3 +65,24 @@ export const getTasks = async (): Promise<Task[] | null> => {
 export const useGetTasks = (): IDataLoader<Task[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
+
+export const getTask = async (taskId: number): Promise<Task | null> => {
+  try {
+    const res = await api.get(`/tasks/${taskId}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    // throw e;
+    return null;
+  }
+};
+
+export const useGetTask = (id: number): IDataLoader<Task | null> => {
+  return useGetData(
+    () => {
+      return getTask(id);
+    },
+    CacheKey.TASKS,
+    String(id)
+  );
+};

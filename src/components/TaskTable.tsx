@@ -75,7 +75,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
-      const result = await updateTask(task.id, {
+      await updateTask(task.id, {
         ...task,
         status: dragColumn as TaskStatus,
       });
