@@ -114,7 +114,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
           <GridWrapper>
             <InfoBox title="Details" gridArea="details">
               <div>Type: {task.type}</div>
-              <Chip>Priority: {task.priority}</Chip>
+              <div>Priority: {task.priority}</div>
               <div>Status: {task.status}</div>
             </InfoBox>
 
