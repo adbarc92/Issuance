@@ -32,6 +32,8 @@ import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
 
+import { mapEnumToSelectItems } from 'utils';
+
 const TextFieldWrapper = styled('div')(() => {
   return {
     margin: '1rem 0',
@@ -85,14 +87,6 @@ export interface ITaskDialogActions {
   type: string;
   payload?: any;
 }
-
-const mapEnumToSelectItems = (
-  set: typeof TaskPriority | typeof TaskType | typeof TaskStatus
-): SelectItem<string>[] => {
-  return Object.keys(set).map(key => {
-    return { label: set[key], value: set[key] };
-  });
-};
 
 const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {

@@ -3,6 +3,7 @@ import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelPage from 'components/PersonnelPage';
 import TaskTablePage from 'components/TaskTablePage';
+import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
 import TaskPage from 'components/TaskPage';
 
@@ -110,6 +111,9 @@ const App = (): JSX.Element => {
             <PageWrapper>
               <TaskTablePage />
             </PageWrapper>
+          </Route>
+          <Route path="/register">
+            <RegisterUserPage />
           </Route>
         </Switch>
       </div>

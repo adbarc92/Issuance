@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { createConnection, createQueryBuilder } from 'typeorm';
+import { createConnection } from 'typeorm';
 import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
@@ -188,6 +188,19 @@ createConnection()
           'login with email+pw failed: no user found with email:',
           req.body.email
         );
+        res.status(403);
+        return res.send('Not authorized.');
+      }
+    });
+
+    router.post('/users', async function (req: Request, res: Response) {
+      // Check for existing user
+      try {
+        const user = userRepository.create(req.body);
+        const results = await userRepository.save(user);
+        return res.send(results);
+      } catch (e) {
+        console.error('Error occurred:', e);
         res.status(403);
         return res.send('Not authorized.');
       }

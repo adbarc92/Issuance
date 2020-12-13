@@ -8,17 +8,18 @@ import { useForm } from 'hooks/form';
 
 import ErrorBox from 'elements/ErrorBox';
 import CenteredForm from 'elements/CenteredForm';
+import LinkLessText from 'elements/LinkLessText';
 
 import { login } from 'store/actions';
 import { setSessionToken } from 'store/auth';
 
 import FormButtonContainer from 'elements/FormButtonContainer';
 
-const WideDiv = styled('div')(() => {
-  return {
-    width: '25rem',
-  };
-});
+// const WideDiv = styled('div')(() => {
+//   return {
+//     width: '25rem',
+//   };
+// });
 
 const ErrorBoxWrapper = styled('div')(() => {
   return {
@@ -84,8 +85,8 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <CenteredForm>
-      {/* <WideDiv> */}
       <div>
+        {/* <WideDiv> */}
         <TextField
           variant="outlined"
           margin="dense"
@@ -118,6 +119,16 @@ const LoginPage = (): JSX.Element => {
             color="primary"
           >
             Log In
+          </Button>
+        </FormButtonContainer>
+        <FormButtonContainer>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => console.log('LMAO')}
+            color="primary"
+          >
+            <LinkLessText to="/register">Create User</LinkLessText>
           </Button>
         </FormButtonContainer>
         {errors && triedSubmit ? (

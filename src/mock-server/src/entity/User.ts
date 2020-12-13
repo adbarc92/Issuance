@@ -1,10 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-export enum UserRole {
-  BOSS = 'BOSS',
-  MIDDLER = 'MIDDLER',
-  GRUNT = 'GRUNT',
-}
+import { UserRole } from '../../../types/user';
 
 @Entity()
 export class User {

@@ -1,7 +1,7 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
+import { User, UserInput } from 'types/user';
 import { requestCache, CacheKey } from 'hooks/getData';
-import { Task } from 'types/task';
 
 // Actions change things
 
@@ -28,7 +28,7 @@ const updateCache = (obj: any, subCache?: any) => {
   }
 };
 
-const addTaskToCache = (task: Task) => {
+const addTaskToCache = (task: ITask) => {
   requestCache[CacheKey.TASKS + task.id] = task;
 };
 
@@ -48,7 +48,7 @@ export const updateTask = async (
   }
 };
 
-export const createTask = async (task: TaskInput): Promise<Task | null> => {
+export const createTask = async (task: TaskInput): Promise<ITask | null> => {
   try {
     // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
@@ -62,7 +62,7 @@ export const createTask = async (task: TaskInput): Promise<Task | null> => {
       projectId: 0,
       reportedBy: 0,
     });
-    addTaskToCache(response.data);
+    // addTaskToCache(response.data); // SELF-NOTE: Discuss further
     return response.data;
   } catch (e) {
     console.error(e);
@@ -102,6 +102,20 @@ export const login = async (
 export const checkLogin = async (): Promise<boolean | null> => {
   try {
     const response = await api.put('/login', {});
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createUser = async (user: UserInput): Promise<User | null> => {
+  try {
+    const response = await api.post('/users', {
+      loginEmail: user.loginEmail,
+      userPassword: user.password,
+      userRole: user.role,
+    });
     return response.data;
   } catch (e) {
     console.error(e);
