@@ -1,36 +1,28 @@
 import React from 'react';
+import { TextField, Button } from '@material-ui/core';
+import CenteredForm from 'elements/CenteredForm';
+import FormButtonContainer from 'elements/FormButtonContainer';
 
-import { styled, TextField, Button } from '@material-ui/core';
+import Select from 'elements/Select';
 
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
 import { useForm } from 'hooks/form';
 
-import ErrorBox from 'elements/ErrorBox';
-import CenteredForm from 'elements/CenteredForm';
-
-import { login } from 'store/actions';
-import { setSessionToken } from 'store/auth';
-
-import FormButtonContainer from 'elements/FormButtonContainer';
-
-const WideDiv = styled('div')(() => {
-  return {
-    width: '25rem',
-  };
-});
-
-const ErrorBoxWrapper = styled('div')(() => {
-  return {
-    marginTop: '1rem',
-  };
-});
-
-const LoginPage = (): JSX.Element => {
+const CreateUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
     password: '',
+    confirmPassword: '',
+    role: 2,
   };
+
+  // Fix Roles to be drawn from types
+  const userRoles = [
+    { label: 'Boss', value: 0 },
+    { label: 'Middler', value: 1 },
+    { label: 'Grunt', value: 2 },
+  ];
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -42,6 +34,10 @@ const LoginPage = (): JSX.Element => {
         newState.email = payload;
       } else if (type === 'setPassword') {
         newState.password = payload;
+      } else if (type === 'setConfirmPassword') {
+        newState.confirmPassword = payload;
+      } else if (type === 'setRole') {
+        newState.role = payload;
       }
       return newState;
     },
@@ -66,13 +62,14 @@ const LoginPage = (): JSX.Element => {
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async state => {
-      const sessionToken = await login(state.email, state.password);
-      if (sessionToken) {
-        setSessionToken(sessionToken);
-        window.location.href = '/';
-      } else {
-        console.error('failed to login');
-      }
+      console.log('Here is a submission');
+      // const sessionToken = await login(state.email, state.password);
+      // if (sessionToken) {
+      //   setSessionToken(sessionToken);
+      //   window.location.href = '/';
+      // } else {
+      //   console.error('failed to login');
+      // }
     },
   });
 
@@ -84,7 +81,6 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <CenteredForm>
-      {/* <WideDiv> */}
       <div>
         <TextField
           variant="outlined"
@@ -110,6 +106,26 @@ const LoginPage = (): JSX.Element => {
           }}
           onKeyDown={handleKeyDown}
         />
+        <TextField
+          variant="outlined"
+          margin="dense"
+          label="Confirm Password"
+          type="password"
+          fullWidth
+          value={state.confirmPassword}
+          onChange={e => {
+            dispatch({ type: 'setConfirmPassword', payload: e.target.value });
+          }}
+          onKeyDown={handleKeyDown}
+        />
+        <Select
+          onChange={e => {
+            dispatch({ type: 'setRole', payload: e.target.value });
+          }}
+          value={state.role}
+          title="User Role"
+          items={userRoles}
+        ></Select>
         <FormButtonContainer>
           <Button
             fullWidth
@@ -120,15 +136,9 @@ const LoginPage = (): JSX.Element => {
             Log In
           </Button>
         </FormButtonContainer>
-        {errors && triedSubmit ? (
-          <ErrorBoxWrapper>
-            <ErrorBox errors={errors} />
-          </ErrorBoxWrapper>
-        ) : null}
-        {/* </WideDiv> */}
       </div>
     </CenteredForm>
   );
 };
 
-export default LoginPage;
+export default CreateUserPage;
