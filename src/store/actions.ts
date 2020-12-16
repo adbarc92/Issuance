@@ -33,7 +33,7 @@ const addTaskToCache = (task: ITask) => {
 };
 
 export const updateTask = async (
-  id: number,
+  id: string,
   task: TaskInput
 ): Promise<ITask | null> => {
   try {
@@ -70,7 +70,7 @@ export const createTask = async (task: TaskInput): Promise<ITask | null> => {
   }
 };
 
-export const deleteTask = async (taskId: number): Promise<undefined | null> => {
+export const deleteTask = async (taskId: string): Promise<undefined | null> => {
   try {
     await api.delete(`/tasks/${taskId}`);
   } catch (e) {

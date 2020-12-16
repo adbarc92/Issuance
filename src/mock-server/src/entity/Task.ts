@@ -22,10 +22,10 @@ export enum TaskStatus {
 
 @Entity()
 export class Task {
-  // @PrimaryGeneratedColumn('uuid')
-  // id!: string;
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+  // @PrimaryGeneratedColumn()
+  // id: number;
 
   @Column()
   name!: string;

@@ -57,7 +57,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const classes = useStyles();
 
-  const [draggedTaskId, setDraggedTaskId] = React.useState(0);
+  const [draggedTaskId, setDraggedTaskId] = React.useState('');
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
 
   const reRender = useForceUpdate();
