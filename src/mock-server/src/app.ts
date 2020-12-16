@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, RelationQueryBuilder } from 'typeorm';
 import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
@@ -32,6 +32,12 @@ createConnection()
 
       if (req.url === '/api/login' && req.method.toUpperCase() === 'POST') {
         console.log('Bypassing login');
+        next();
+      } else if (
+        req.url === '/api/users' &&
+        req.method.toUpperCase() === 'POST'
+      ) {
+        console.log('Registering new user');
         next();
       } else {
         const token = req.headers.session;
@@ -196,7 +202,17 @@ createConnection()
     router.post('/users', async function (req: Request, res: Response) {
       // Check for existing user
       try {
-        const user = userRepository.create(req.body);
+        console.log('req.body:', req.body);
+        const {
+          loginEmail: login_email,
+          userPassword: user_password,
+          userRole: user_role,
+        } = req.body;
+        const user = userRepository.create({
+          login_email,
+          user_password,
+          user_role,
+        });
         const results = await userRepository.save(user);
         return res.send(results);
       } catch (e) {

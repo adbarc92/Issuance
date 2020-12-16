@@ -3,8 +3,8 @@ import { PersonRole } from '../../../types/person';
 
 @Entity()
 export class Person {
-  @PrimaryGeneratedColumn()
-  id!: number; // one-to-one
+  @PrimaryGeneratedColumn('uuid')
+  id!: string; // one-to-one
 
   @Column({ nullable: true })
   profilePicture: string;

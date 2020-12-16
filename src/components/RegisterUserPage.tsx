@@ -78,6 +78,7 @@ const CreateUserPage = (): JSX.Element => {
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async () => {
+      console.log('State:', state);
       if (errors) {
         showNotification(
           "Task doesn't meet requirements.",
@@ -93,6 +94,7 @@ const CreateUserPage = (): JSX.Element => {
       };
 
       const user = await createUser(userToSubmit);
+      console.log('User:', user);
       if (user) {
         const sessionToken = await login(state.email, state.password);
         if (sessionToken) {
@@ -118,6 +120,7 @@ const CreateUserPage = (): JSX.Element => {
 
   return (
     <CenteredForm>
+      {snackbar}
       <div>
         <TextField
           variant="outlined"

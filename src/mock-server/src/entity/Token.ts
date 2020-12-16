@@ -12,5 +12,5 @@ export class Token {
   createdOn!: string;
 
   @Column()
-  userId!: number;
+  userId!: string;
 }
