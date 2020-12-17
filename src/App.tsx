@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
-import PersonnelPage from 'components/PersonnelPage';
+import PersonnelTablePage from 'components/PersonnelTablePage';
 import TaskTablePage from 'components/TaskTablePage';
 import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
@@ -89,7 +89,7 @@ const App = (): JSX.Element => {
           </Route>
           <Route path="/personnel">
             <PageWrapper>
-              <PersonnelPage />
+              <PersonnelTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/">

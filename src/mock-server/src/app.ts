@@ -1,7 +1,7 @@
-import * as express from 'express';
+import express from 'express';
 import { Request, Response } from 'express';
 import { createConnection, RelationQueryBuilder } from 'typeorm';
-import { Person } from 'entity/Person';
+// import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
@@ -11,14 +11,28 @@ import { Task as ITask } from '../../types/task';
 // import * as winston from 'winston';
 import { castTask } from 'cast';
 import { v4 as uuid } from 'uuid';
-import { createErrorResponse } from 'utils';
+import { createErrorResponse, sha256, saltHashPassword } from 'utils';
+
+import ormconfig from '../ormconfig.json';
+
+import personnelController from 'controllers/personnel.controller';
 
 const port = 4000;
 
+const init = async () => {
+  const connection = await createConnection({
+    ...ormconfig,
+    synchronize: false,
+  } as any);
+  await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+  await connection.close();
+};
+
 // create typeorm connection
-createConnection()
-  .then(connection => {
-    const personRepository = connection.getRepository(Person);
+const start = async () => {
+  const connection = await createConnection();
+  try {
+    // const personRepository = connection.getRepository(Person);
 
     const taskRepository = connection.getRepository(Task);
 
@@ -43,8 +57,7 @@ createConnection()
         const token = req.headers.session;
         if (!token) {
           res.status(403);
-          res.send('Not authorized.');
-          return;
+          return res.send(createErrorResponse(['Not authorized.']));
         }
         const session = await tokenRepository.findOne(token).catch(() => {
           return;
@@ -54,8 +67,7 @@ createConnection()
           next();
         } else {
           res.status(403);
-          res.send('Not authorized.');
-          return;
+          return res.send(createErrorResponse(['Not authorized.']));
         }
       }
     };
@@ -81,42 +93,7 @@ createConnection()
     const router = express.Router();
 
     // register routes
-
-    router.get('/personnel', async function (req: Request, res: Response) {
-      const person = await personRepository.find();
-      res.json(person);
-    });
-
-    router.get('/personnel/:id', async function (req: Request, res: Response) {
-      const results = await personRepository.findOne(req.params.id);
-      return res.send(results);
-    });
-
-    router.post('/personnel', async function (req: Request, res: Response) {
-      const person = personRepository.create(req.body);
-      const results = await personRepository.save(person);
-      return res.send(results);
-    });
-
-    router.put('/personnel/:id', async function (req: Request, res: Response) {
-      const personnel = await personRepository.findOne(req.params.id);
-      personRepository.merge(personnel, req.body);
-      const results = await personRepository.save(personnel);
-      return res.send(results);
-    });
-
-    router.delete('/personnel/:id', async function (
-      req: Request,
-      res: Response
-    ) {
-      const results = await personRepository.delete(req.params.id);
-      return res.send(results);
-    });
-
-    router.get('/personnel/', async function (req: Request, res: Response) {
-      const results = await taskRepository.find();
-      res.json(results.map(castTask));
-    });
+    personnelController(router);
 
     router.get('/tasks/:id', async function (req: Request, res: Response) {
       const task = await taskRepository.findOne(req.params.id);
@@ -127,6 +104,11 @@ createConnection()
       const tasks = await taskRepository.find();
       return res.send(tasks.map(task => castTask(task)));
     });
+
+    // router.get('/tasks', async function (req: Request, res: Response) {
+    //   const results = await taskRepository.find();
+    //   res.json(results.map(castTask));
+    // });
 
     router.post('/tasks', async function (req: Request, res: Response) {
       const task = taskRepository.create(req.body);
@@ -161,6 +143,28 @@ createConnection()
       }
     });
 
+    router.post('/users', async function (req: Request, res: Response) {
+      // Check for existing user
+      try {
+        const { loginEmail: email, userPassword, userRole: role } = req.body;
+        const { salt, passwordHash: hashed_password } = saltHashPassword(
+          userPassword
+        );
+        const user = userRepository.create({
+          email,
+          hashed_password,
+          salt,
+          role,
+        });
+        const results = await userRepository.save(user);
+        return res.send(results);
+      } catch (e) {
+        console.error('Error occurred:', e);
+        res.status(403);
+        return res.send(createErrorResponse(['Not authorized.']));
+      }
+    });
+
     router.put('/login', async function (req: Request, res: Response) {
       return res.send(true);
     });
@@ -170,24 +174,33 @@ createConnection()
       console.log('login post');
       const user = await userRepository
         .findOne({
-          login_email: req.body.email,
+          email: req.body.email,
         })
         .catch();
       if (user) {
-        const token = await tokenRepository
-          .findOne({ userId: user.id })
-          .catch();
-        if (token) {
-          console.log('user is already logged in:', req.body.email);
-          res.send(token.id);
+        const userSalt = user.salt;
+        const password = req.body.password;
+        const isPasswordCorrect =
+          sha256(password, userSalt).passwordHash === user.hashed_password;
+        if (isPasswordCorrect) {
+          const token = await tokenRepository
+            .findOne({ userId: user.id })
+            .catch();
+          if (token) {
+            console.log('user is already logged in:', req.body.email);
+            res.send(token.id);
+          } else {
+            const tokenId = uuid();
+            const token = tokenRepository.create({
+              id: tokenId,
+              userId: user.id,
+            });
+            await tokenRepository.save(token);
+            return res.send(tokenId);
+          }
         } else {
-          const tokenId = uuid();
-          const token = tokenRepository.create({
-            id: tokenId,
-            userId: user.id,
-          });
-          await tokenRepository.save(token);
-          return res.send(tokenId);
+          res.status(403);
+          return res.send(createErrorResponse(['Not authorized.']));
         }
       } else {
         console.log(
@@ -195,30 +208,7 @@ createConnection()
           req.body.email
         );
         res.status(403);
-        return res.send('Not authorized.');
-      }
-    });
-
-    router.post('/users', async function (req: Request, res: Response) {
-      // Check for existing user
-      try {
-        console.log('req.body:', req.body);
-        const {
-          loginEmail: login_email,
-          userPassword: user_password,
-          userRole: user_role,
-        } = req.body;
-        const user = userRepository.create({
-          login_email,
-          user_password,
-          user_role,
-        });
-        const results = await userRepository.save(user);
-        return res.send(results);
-      } catch (e) {
-        console.error('Error occurred:', e);
-        res.status(403);
-        return res.send('Not authorized.');
+        return res.send(createErrorResponse(['Not authorized.']));
       }
     });
 
@@ -227,5 +217,14 @@ createConnection()
     app.listen(port);
 
     console.log(`Mock-server running on port ${port}`);
-  })
-  .catch(err => console.error(`Error ${err} has occurred`));
+  } catch (e) {
+    console.error(`Error ${e} has occurred`);
+  }
+};
+
+const main = async () => {
+  await init();
+  await start();
+};
+
+main();

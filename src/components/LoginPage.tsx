@@ -5,6 +5,10 @@ import { styled, TextField, Button } from '@material-ui/core';
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
 import { useForm } from 'hooks/form';
+import {
+  useNotificationSnackbar,
+  NotificationSeverity,
+} from 'hooks/notification';
 
 import ErrorBox from 'elements/ErrorBox';
 import CenteredForm from 'elements/CenteredForm';
@@ -32,6 +36,8 @@ const LoginPage = (): JSX.Element => {
     email: '',
     password: '',
   };
+
+  const [snackbar, showNotification] = useNotificationSnackbar('top');
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -72,7 +78,11 @@ const LoginPage = (): JSX.Element => {
         setSessionToken(sessionToken);
         window.location.href = '/';
       } else {
-        console.error('failed to login');
+        console.error('Failed to login.');
+        showNotification('Login Failed', NotificationSeverity.ERROR);
+        const email = state.email;
+        reset();
+        dispatch({ payload: email, type: 'setEmail' });
       }
     },
   });
@@ -86,7 +96,7 @@ const LoginPage = (): JSX.Element => {
   return (
     <CenteredForm>
       <div>
-        {/* <WideDiv> */}
+        {snackbar}
         <TextField
           variant="outlined"
           margin="dense"
@@ -122,12 +132,7 @@ const LoginPage = (): JSX.Element => {
           </Button>
         </FormButtonContainer>
         <FormButtonContainer>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => console.log('LMAO')}
-            color="primary"
-          >
+          <Button fullWidth variant="contained" color="secondary">
             <LinkLessText to="/register">Create User</LinkLessText>
           </Button>
         </FormButtonContainer>
@@ -136,7 +141,6 @@ const LoginPage = (): JSX.Element => {
             <ErrorBox errors={errors} />
           </ErrorBoxWrapper>
         ) : null}
-        {/* </WideDiv> */}
       </div>
     </CenteredForm>
   );

@@ -1,4 +1,5 @@
 import { TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { PersonJob } from 'types/person';
 import { UserRole } from 'types/user';
 import { SelectItem } from 'elements/Select';
 
@@ -22,6 +23,7 @@ export const mapEnumToSelectItems = (
     | typeof TaskType
     | typeof TaskStatus
     | typeof UserRole
+    | typeof PersonJob
 ): SelectItem<string>[] => {
   return Object.keys(set).map(key => {
     return { label: set[key], value: set[key] };

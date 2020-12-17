@@ -1,4 +1,4 @@
-import { Person, PersonRole } from 'types/person';
+import { Person, PersonJob } from 'types/person';
 import { Task } from 'types/task';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
@@ -39,7 +39,7 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
 export const createPerson = async (
   name: string,
   email: string,
-  role: PersonRole
+  role: PersonJob
 ): Promise<Person | null> => {
   try {
     const response = await api.post('/personnel', { name, email, role });

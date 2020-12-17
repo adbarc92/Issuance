@@ -7,6 +7,7 @@ const CenteredForm = styled('div')(() => {
     width: '100%',
     position: 'fixed',
     paddingTop: '10rem',
+    left: '0',
   };
 });
 

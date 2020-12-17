@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { PersonRole } from '../../../types/person';
+import { PersonJob } from '../../../types/person';
 
 @Entity()
 export class Person {
@@ -7,14 +7,17 @@ export class Person {
   id!: string; // one-to-one
 
   @Column({ nullable: true })
-  profilePicture: string;
+  profile_picture: string;
+
+  @Column({ nullable: true })
+  contact_email: string;
 
   @Column()
-  email: string;
+  first_name: string;
+
+  @Column({ nullable: true })
+  last_name: string;
 
   @Column()
-  name: string;
-
-  @Column()
-  role!: PersonRole;
+  job!: PersonJob;
 }

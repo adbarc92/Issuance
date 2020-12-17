@@ -31,7 +31,7 @@ const SubHeaderWrapper = styled('div')(() => {
   };
 });
 
-const PersonnelPage = (): JSX.Element => {
+const PersonnelTablePage = (): JSX.Element => {
   const {
     loading,
     data: personnelData,
@@ -79,4 +79,4 @@ const PersonnelPage = (): JSX.Element => {
   );
 };
 
-export default PersonnelPage;
+export default PersonnelTablePage;

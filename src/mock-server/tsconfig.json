@@ -1,20 +1,16 @@
 {
-	"compilerOptions": {
-		"baseUrl": "./src/",
-		"paths": {
-			"*": [
-				"*"
-			]
-		},
-		"lib": [
-			"es5",
-			"es6",
-			"dom"
-		],
-		"target": "es5",
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true
-	},
+  "compilerOptions": {
+    "baseUrl": "./src/",
+    "paths": {
+      "*": ["*"]
+    },
+    "lib": ["es5", "es6", "dom"],
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  }
 }

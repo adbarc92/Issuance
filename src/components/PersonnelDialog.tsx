@@ -1,13 +1,15 @@
 import React from 'react';
 
-import UserSelect from 'elements/UserSelect';
+// import UserSelect from 'elements/UserSelect';
+import Select from 'elements/Select';
+import { mapEnumToSelectItems } from 'utils';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
 } from 'hooks/notification';
 
 import { createPerson } from 'hooks/axiosHooks';
-import { PersonRole } from 'types/person';
+import { PersonJob } from 'types/person';
 
 import {
   DialogTitle,
@@ -31,8 +33,8 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
   const [newPersonName, setNewPersonName] = React.useState('');
   const [newPersonEmail, setNewPersonEmail] = React.useState('');
-  const [newPersonRole, setNewPersonRole] = React.useState<PersonRole>(
-    PersonRole.MIDDLER
+  const [newPersonJob, setNewPersonJob] = React.useState<PersonJob>(
+    PersonJob.CODER
   );
 
   const [snackbar, showNotification] = useNotificationSnackbar();
@@ -45,7 +47,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     const person = await createPerson(
       newPersonName,
       newPersonEmail,
-      newPersonRole
+      newPersonJob
     );
     if (person) {
       showNotification(
@@ -93,10 +95,12 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
               setNewPersonEmail(e.target.value);
             }}
           />
-          <UserSelect
-            value={newPersonRole}
+          <Select
+            title="Job"
+            items={mapEnumToSelectItems(PersonJob)}
+            value={newPersonJob}
             onChange={e => {
-              setNewPersonRole(e.target.value);
+              setNewPersonJob(e.target.value);
             }}
           />
         </DialogContent>

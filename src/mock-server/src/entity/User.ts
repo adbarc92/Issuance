@@ -8,15 +8,22 @@ export class User {
   id!: string;
 
   @Column()
-  login_email!: string;
+  email!: string;
 
   @Column()
-  user_password!: string;
+  hashed_password!: string;
+
+  @Column()
+  salt!: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
     default: UserRole.MIDDLER,
   })
-  user_role!: UserRole;
+  role!: UserRole;
+
+  // Foreign
+  @Column('uuid')
+  person_id!: string;
 }
