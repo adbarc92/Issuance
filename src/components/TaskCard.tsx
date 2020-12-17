@@ -2,7 +2,6 @@ import React, { DragEvent } from 'react';
 import { Task } from 'types/task';
 import {
   Card,
-  CardActions,
   CardContent,
   Button,
   Typography,
@@ -23,11 +22,12 @@ export interface TaskCardProps {
   task: Task;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
+  setDialogTask: (task: Task) => void;
+  setAddingTask: (addingTask: boolean) => void;
 }
 
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
-  // const { taskId, name, summary, status } = props;
-  const { task, startDrag, endDrag } = props;
+  const { task, startDrag, endDrag, setDialogTask, setAddingTask } = props;
   const { name, summary, status } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
@@ -45,13 +45,17 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     {
       key: 'Edit',
       onClick: () => {
-        console.log('Should delete task');
+        const dialogTask = task;
+        setDialogTask(dialogTask);
+        setAddingTask(true);
+        handleClose();
       },
     },
     {
       key: 'Delete',
       onClick: () => {
         console.log('Should delete task');
+        handleClose();
       },
     },
   ];

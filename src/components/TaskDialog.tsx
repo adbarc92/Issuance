@@ -3,7 +3,7 @@ import React from 'react';
 import Select, { SelectItem } from 'elements/Select';
 import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
-import { createTask } from 'store/actions';
+import { createTask, updateTask } from 'store/actions';
 
 import {
   useNotificationSnackbar,
@@ -57,7 +57,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
-  task?: TaskDialogState;
+  dialogTask: Task | null;
 }
 
 export interface TaskDialogState {
@@ -94,8 +94,32 @@ const mapEnumToSelectItems = (
   });
 };
 
+const taskToDialogState = (task: Task | null): TaskDialogState | null => {
+  if (task) {
+    const {
+      name,
+      summary,
+      description,
+      type: taskType,
+      status: taskStatus,
+      priority: taskPriority,
+      deadline,
+    } = task;
+    return {
+      name,
+      summary,
+      description,
+      taskType,
+      taskStatus,
+      taskPriority,
+      deadline,
+    };
+  }
+  return null;
+};
+
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
-  const initialState = props.task || {
+  const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
     summary: '',
     description: '',
@@ -107,6 +131,8 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow
   };
 
+  const addingTask = taskToDialogState(props.dialogTask) ? false : true;
+
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
     reducer: (
@@ -115,6 +141,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     ): TaskDialogState => {
       // const { type }: TaskDialogAction = action;
       let newState = { ...state };
+      // console.log('newState:', newState);
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
@@ -177,18 +204,29 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const task = await createTask({
-        name: state.name,
-        summary: state.summary,
-        description: state.description,
-        type: state.taskType,
-        priority: state.taskPriority,
-        status: state.taskStatus,
-        deadline: state.deadline as string,
-      });
+      const task = addingTask
+        ? await createTask({
+            name: state.name,
+            summary: state.summary,
+            description: state.description,
+            type: state.taskType,
+            priority: state.taskPriority,
+            status: state.taskStatus,
+            deadline: state.deadline as string,
+          })
+        : updateTask((props.dialogTask as Task).id, {
+            ...(props.dialogTask as Task),
+            name: state.name,
+            summary: state.summary,
+            description: state.description,
+            type: state.taskType,
+            priority: state.taskPriority,
+            status: state.taskStatus,
+            deadline: state.deadline as string,
+          });
       if (task) {
         showNotification(
-          'Task created successfully!',
+          `Task ${addingTask ? 'created' : 'edited'} successfully!`,
           NotificationSeverity.SUCCESS
         );
         handleClose();
@@ -210,6 +248,8 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     onClose();
   };
 
+  // console.log('state:', state);
+
   return (
     <>
       {snackbar}
@@ -219,9 +259,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle id="task-dialog-title">Add Task</DialogTitle>
+        <DialogTitle id="task-dialog-title">
+          {addingTask ? 'Add' : 'Edit'} Task
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>Add a Task to the database</DialogContentText>
+          <DialogContentText>
+            {addingTask ? 'Add a task to' : 'Edit a task in'} the database
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
