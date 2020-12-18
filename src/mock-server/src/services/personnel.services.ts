@@ -2,6 +2,7 @@ import { getConnection, Repository } from 'typeorm';
 import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { PersonJob, Person as IPerson } from '../../../types/person';
+import { snakeCasify } from 'utils';
 
 export class PersonService {
   personRepository: Repository<Person>;
@@ -22,9 +23,9 @@ export class PersonService {
     person: Partial<Person> & { firstName: string }
   ): Promise<any> {
     const curPerson = this.personRepository.create({
+      ...snakeCasify(person),
       first_name: person.firstName,
-      job: PersonJob.CODER,
-      ...person,
+      job: person.job ? person.job : PersonJob.CODER,
     });
     return this.personRepository.save(curPerson);
   }

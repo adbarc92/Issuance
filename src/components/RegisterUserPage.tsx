@@ -29,6 +29,18 @@ const MarginTopWrapper = styled('div')(() => {
   };
 });
 
+const UserRoleLabelsMap = {
+  [UserRole.BOSS]: {
+    label: 'Boss',
+  },
+  [UserRole.MIDDLER]: {
+    label: 'Middler',
+  },
+  [UserRole.GRUNT]: {
+    label: 'Grunt',
+  },
+};
+
 const CreateUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
@@ -166,7 +178,12 @@ const CreateUserPage = (): JSX.Element => {
             }}
             value={state.role}
             title="User Role"
-            items={mapEnumToSelectItems(UserRole)}
+            items={Object.keys(UserRoleLabelsMap).map(key => {
+              return {
+                label: UserRoleLabelsMap[key].label,
+                value: key,
+              };
+            })}
           />
         </MarginTopWrapper>
         <FormButtonContainer>

@@ -37,12 +37,18 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
 };
 
 export const createPerson = async (
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
   role: PersonJob
 ): Promise<Person | null> => {
   try {
-    const response = await api.post('/personnel', { name, email, role });
+    const response = await api.post('/personnel', {
+      firstName,
+      lastName,
+      email,
+      role,
+    });
     // console.log(response);
     return response.data;
   } catch (e) {

@@ -32,8 +32,6 @@ import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
 
-import { mapEnumToSelectItems } from 'utils';
-
 const TextFieldWrapper = styled('div')(() => {
   return {
     margin: '1rem 0',
@@ -87,6 +85,42 @@ export interface ITaskDialogActions {
   type: string;
   payload?: any;
 }
+
+const TaskPriorityMap = {
+  [TaskPriority.HIGHEST]: {
+    label: 'Highest',
+  },
+  [TaskPriority.HIGH]: {
+    label: 'High',
+  },
+  [TaskPriority.MEDIUM]: {
+    label: 'Medium',
+  },
+  [TaskPriority.LOW]: {
+    label: 'Low',
+  },
+  [TaskPriority.LOWEST]: {
+    label: 'Lowest',
+  },
+};
+
+const TaskStatusMap = {
+  [TaskStatus.BACKLOG]: {
+    label: 'Backlog',
+  },
+  [TaskStatus.ACTIVE]: {
+    label: 'Active',
+  },
+  [TaskStatus.COMPLETE]: {
+    label: 'Complete',
+  },
+};
+
+const TaskTypeMap = {
+  [TaskType.FEATURE]: { label: 'Feature' },
+  [TaskType.BUG]: { label: 'Bug' },
+  [TaskType.EPIC]: { label: 'Epic' },
+};
 
 const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {
@@ -282,7 +316,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               <Select
                 fullWidth
                 title={'Task Priority'}
-                items={mapEnumToSelectItems(TaskPriority)}
+                items={Object.keys(TaskPriorityMap).map(key => {
+                  return {
+                    label: TaskPriorityMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKPRIORITY,
@@ -296,7 +335,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               <Select
                 fullWidth
                 title={'Task Type'}
-                items={mapEnumToSelectItems(TaskType)}
+                items={Object.keys(TaskTypeMap).map(key => {
+                  return {
+                    label: TaskTypeMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKTYPE,
@@ -310,7 +354,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               <Select
                 fullWidth
                 title={'Task Status'}
-                items={mapEnumToSelectItems(TaskStatus)}
+                items={Object.keys(TaskStatusMap).map(key => {
+                  return {
+                    label: TaskStatusMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKSTATUS,

@@ -17,7 +17,8 @@ const personnelController = (router: Router): void => {
   });
 
   router.post('/personnel', async function (req: Request, res: Response) {
-    const results = await personService.createPerson(req.body.firstName);
+    console.log('req.body:', req.body);
+    const results = await personService.createPerson(req.body);
     return res.send(results);
   });
 
