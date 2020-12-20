@@ -54,12 +54,12 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
         <TableBody>
           {personnelData
             ? personnelData.map((person, index) => {
-                const { id, name, email, role } = person;
+                const { id, username, contactEmail, role } = person;
                 return (
                   <TableRow key={index}>
                     <TableCell>{id}</TableCell>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{email}</TableCell>
+                    <TableCell>{username}</TableCell>
+                    <TableCell>{contactEmail}</TableCell>
                     <TableCell>{role}</TableCell>
                     <TableCell className={classes.textAlignCenter}>
                       <MoreVert />

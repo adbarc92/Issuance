@@ -1,7 +1,8 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
+import { Person as IPerson } from 'types/person';
 import { User, UserInput } from 'types/user';
-import { requestCache, CacheKey } from 'hooks/getData';
+import { requestCache } from 'hooks/getData';
 
 // Actions change things
 
@@ -26,10 +27,6 @@ const updateCache = (obj: any, subCache?: any) => {
       }
     }
   }
-};
-
-const addTaskToCache = (task: ITask) => {
-  requestCache[CacheKey.TASKS + task.id] = task;
 };
 
 export const updateTask = async (
@@ -115,7 +112,23 @@ export const createUser = async (user: UserInput): Promise<User | null> => {
       loginEmail: user.loginEmail,
       userPassword: user.password,
       userRole: user.role,
+      personId: user.id,
     });
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createPerson = async (
+  person: Partial<IPerson> & { username: string }
+): Promise<IPerson | null> => {
+  try {
+    const response = await api.post('/personnel', {
+      username: person.username,
+    });
+    console.log('response:', response);
     return response.data;
   } catch (e) {
     console.error(e);

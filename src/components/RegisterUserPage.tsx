@@ -11,16 +11,17 @@ import {
 import Select from 'elements/Select';
 import ErrorBox from 'elements/ErrorBox';
 
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+import { isNotFilledOut, isTooLong } from 'utils/index';
 
 import { useForm } from 'hooks/form';
-import { createUser } from 'store/actions';
+import { createUser, createPerson } from 'store/actions';
 
 import { UserRole } from 'types/user';
 
-import { mapEnumToSelectItems } from 'utils';
 import { setSessionToken } from 'store/auth';
 import { login } from 'store/actions';
+
+import { Person } from 'types/person';
 
 // DRY-candidate
 const MarginTopWrapper = styled('div')(() => {
@@ -99,25 +100,38 @@ const CreateUserPage = (): JSX.Element => {
         return;
       }
 
-      const userToSubmit = {
-        loginEmail: state.email,
-        password: state.password,
-        role: state.role,
-      };
+      const person = await createPerson({ username: state.email });
 
-      const user = await createUser(userToSubmit);
-      console.log('User:', user);
-      if (user) {
-        const sessionToken = await login(state.email, state.password);
-        if (sessionToken) {
-          setSessionToken(sessionToken);
-          window.location.href = '/';
+      const { id } = person as Person;
+
+      if (person) {
+        const userToSubmit = {
+          loginEmail: state.email,
+          password: state.password,
+          role: state.role,
+          id,
+        };
+        const user = await createUser(userToSubmit);
+        console.log('User:', user);
+        if (user) {
+          const sessionToken = await login(state.email, state.password);
+          if (sessionToken) {
+            setSessionToken(sessionToken);
+            window.location.href = '/';
+          } else {
+            console.error('failed to login');
+          }
         } else {
-          console.error('failed to login');
+          console.log('Failed to create user');
         }
       } else {
-        console.log('Failed to create user');
+        console.log('Person could not be created');
       }
+
+      // S/N: remove variable assignment when testing is complete
+
+      console.log('person:', person);
+
       // Could use DRY
     },
   });

@@ -7,7 +7,9 @@ export enum PersonJob {
 
 export interface Person {
   id: string;
-  name: string;
-  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  contactEmail: string;
   role: PersonJob;
 }

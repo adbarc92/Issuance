@@ -6,13 +6,16 @@ export class Person {
   @PrimaryGeneratedColumn('uuid')
   id!: string; // one-to-one
 
+  @Column()
+  username: string;
+
   @Column({ nullable: true })
   profile_picture: string;
 
   @Column({ nullable: true })
   contact_email: string;
 
-  @Column()
+  @Column({ nullable: true })
   first_name: string;
 
   @Column({ nullable: true })

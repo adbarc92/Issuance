@@ -1,7 +1,6 @@
 import { getConnection, Repository } from 'typeorm';
 import { Person } from 'entity/Person';
-import { User } from 'entity/User';
-import { PersonJob, Person as IPerson } from '../../../types/person';
+import { PersonJob } from '../../../types/person';
 import { snakeCasify } from 'utils';
 
 export class PersonService {
@@ -10,8 +9,12 @@ export class PersonService {
   constructor() {
     this.personRepository = getConnection().getRepository(Person);
   }
-  async getPerson(id: string): Promise<Person> {
+  async getPersonById(id: string): Promise<Person> {
     return this.personRepository.findOne(id);
+  }
+
+  async getPersonByUsername(username: string): Promise<Person> {
+    return this.personRepository.findOne({ username });
   }
 
   async getPersonnel(): Promise<Person[]> {
@@ -20,11 +23,11 @@ export class PersonService {
 
   // Needs to be fixed
   async createPerson(
-    person: Partial<Person> & { firstName: string }
+    person: Partial<Person> & { username: string }
   ): Promise<any> {
     const curPerson = this.personRepository.create({
       ...snakeCasify(person),
-      first_name: person.firstName,
+      username: person.username,
       job: person.job ? person.job : PersonJob.CODER,
     });
     return this.personRepository.save(curPerson);
@@ -33,7 +36,7 @@ export class PersonService {
   async modifyPerson(
     person: Partial<Person> & { id: string }
   ): Promise<Person> {
-    const curPerson = await this.getPerson(person.id);
+    const curPerson = await this.getPersonById(person.id);
     this.personRepository.merge(curPerson, person);
     return this.personRepository.save(curPerson);
   }

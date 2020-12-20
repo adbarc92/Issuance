@@ -12,7 +12,17 @@ const personnelController = (router: Router): void => {
   });
 
   router.get('/personnel/:id', async function (req: Request, res: Response) {
-    const results = await personService.getPerson(req.params.id);
+    const results = await personService.getPersonById(req.params.id);
+    return res.send(results);
+  });
+
+  router.get('/personnel/:username', async function (
+    req: Request,
+    res: Response
+  ) {
+    const results = await personService.getPersonByUsername(
+      req.params.username
+    );
     return res.send(results);
   });
 

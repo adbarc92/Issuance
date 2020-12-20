@@ -6,20 +6,33 @@ import { api } from 'store/api';
 // Temp
 
 // Helper function for the hook below, not technically a hook
-export const getPerson = async (id: number): Promise<Person> => {
+export const getPersonById = async (id: number): Promise<Person> => {
   const response = await api.get(`/personnel/${id}`);
   return response.data;
 };
 
+export const getPersonByUsername = async (
+  username: string
+): Promise<Person> => {
+  const response = await api.get(`/personnel/${username}`);
+  return response.data;
+};
+
 // This is a hook because it returns a function that contains a hook
-export const useGetPerson = (id: number): IDataLoader<Person> => {
+export const useGetPersonById = (id: number): IDataLoader<Person> => {
   return useGetData(
     () => {
-      return getPerson(id);
+      return getPersonById(id);
     },
     CacheKey.PERSONNEL,
     String(id)
   );
+};
+
+export const useGetPersonByUsername = (
+  username: string
+): IDataLoader<Person> => {
+  return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
 };
 
 export const getPersonnel = async (): Promise<Person[] | null> => {
