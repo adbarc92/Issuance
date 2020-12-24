@@ -17,6 +17,8 @@ import ormconfig from '../ormconfig.json';
 
 import personnelController from 'controllers/personnel.controller';
 
+import { snakeCasify } from 'utils';
+
 const port = 4000;
 
 const init = async () => {
@@ -106,18 +108,26 @@ const start = async () => {
       return res.send(castTask(task));
     });
 
-    router.get('/tasks/', async function (req: Request, res: Response) {
-      const tasks = await taskRepository.find();
-      return res.send(tasks.map(task => castTask(task)));
+    router.get('/tasks', async function (req: Request, res: Response) {
+      try {
+        // Group by Status, Order by Row Index
+        const tasks = await taskRepository
+          .createQueryBuilder('task')
+          .select('*')
+          .orderBy('task.row_index')
+          .execute();
+        console.log('Tasks:', tasks);
+        // const tasks = await taskRepository.find();
+        return res.send(tasks.map(task => castTask(task)));
+      } catch (e) {
+        res.status(500);
+        // Add more error codes
+        return res.send(createErrorResponse(e));
+      }
     });
 
-    // router.get('/tasks', async function (req: Request, res: Response) {
-    //   const results = await taskRepository.find();
-    //   res.json(results.map(castTask));
-    // });
-
     router.post('/tasks', async function (req: Request, res: Response) {
-      const task = taskRepository.create(req.body);
+      const task = taskRepository.create(snakeCasify(req.body));
       const result = await taskRepository.save(task);
       return res.send(castTask(result[0]));
     });
@@ -199,7 +209,7 @@ const start = async () => {
           sha256(password, userSalt).passwordHash === user.hashed_password;
         if (isPasswordCorrect) {
           const token = await tokenRepository
-            .findOne({ userId: user.id })
+            .findOne({ user_id: user.id })
             .catch();
           if (token) {
             console.log('user is already logged in:', req.body.email);
@@ -208,7 +218,7 @@ const start = async () => {
             const tokenId = uuid();
             const token = tokenRepository.create({
               id: tokenId,
-              userId: user.id,
+              user_id: user.id,
             });
             await tokenRepository.save(token);
             return res.send(tokenId);

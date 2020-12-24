@@ -2,7 +2,6 @@ import React from 'react';
 
 // import UserSelect from 'elements/UserSelect';
 import Select from 'elements/Select';
-import { mapEnumToSelectItems } from 'utils';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
@@ -25,7 +24,7 @@ import {
 
 import { useForm } from 'hooks/form';
 
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+import { isNotFilledOut, trimState } from 'utils/index';
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -76,7 +75,7 @@ export enum PersonnelDialogAction {
 }
 
 function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
-  const { onClose, selectedValue, open, clearPersonnelCache } = props;
+  const { onClose, open, clearPersonnelCache } = props;
   const initialState: PersonnelDialogState = {
     firstName: '',
     lastName: '',
@@ -84,7 +83,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     job: PersonJob.CODER,
   };
 
-  const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
+  const { state, submit, dispatch } = useForm({
     initialState,
     reducer: (
       state: PersonnelDialogState,

@@ -17,3 +17,15 @@ export interface UserInput {
   role: UserRole;
   id: string;
 }
+
+export const UserRoleLabelsMap = {
+  [UserRole.BOSS]: {
+    label: 'Boss',
+  },
+  [UserRole.MIDDLER]: {
+    label: 'Middler',
+  },
+  [UserRole.GRUNT]: {
+    label: 'Grunt',
+  },
+};

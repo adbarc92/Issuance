@@ -41,6 +41,8 @@ const TaskTablePage = (): JSX.Element => {
     clearCache: clearTasksCache,
   } = useGetTasks();
 
+  console.log('Task Data:', taskData);
+
   const handleAddingTask = () => {
     setDialogTask(null);
     setAddingTask(true);

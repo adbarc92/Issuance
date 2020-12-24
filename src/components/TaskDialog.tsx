@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Select, { SelectItem } from 'elements/Select';
+import Select from 'elements/Select';
 import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
 import { createTask, updateTask } from 'store/actions';
@@ -147,6 +147,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
+    projectId: 0,
   };
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
@@ -226,6 +227,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         priority: state.priority,
         status: state.status,
         deadline: state.deadline as string,
+        projectId: 0,
       };
 
       const task = await (addingTask

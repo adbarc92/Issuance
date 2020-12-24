@@ -13,7 +13,9 @@ export const isTooLong = (field: string, length: number): boolean => {
 
 export const trimState = function <T>(state: T): void {
   for (const i in state) {
-    state[i] = (state[i] as any).trim();
+    if (typeof state[i] === 'string') {
+      state[i] = (state[i] as any).trim();
+    }
   }
 };
 

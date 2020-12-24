@@ -18,7 +18,6 @@ import { MoreVert } from '@material-ui/icons';
 
 export interface TaskCardProps {
   task: Task;
-  startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
@@ -68,7 +67,6 @@ const CardMenu = styled('div')(() => {
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   const {
     task,
-    startDrag,
     endDrag,
     setDialogTask,
     setAddingTask,
@@ -108,12 +106,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
   ];
 
   return (
-    <Card
-      variant="outlined"
-      onDragStart={startDrag}
-      onDragEnd={endDrag}
-      draggable
-    >
+    <Card variant="outlined" onDragEnd={endDrag} draggable>
       <CardContent>
         <CardContainer>
           <CardInfo>

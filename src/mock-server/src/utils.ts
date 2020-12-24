@@ -49,6 +49,16 @@ export const toCamelCase = (str: string): string => {
   return ret;
 };
 
+export const camelCasify = (obj: any): any => {
+  const retObj = {};
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const newKey = toCamelCase(keys[i]);
+    retObj[newKey] = obj[keys[i]];
+  }
+  return retObj;
+};
+
 export const toSnakeCase = (str: string): string => {
   let ret = '';
   for (let i = 0; i < str.length; i++) {
@@ -61,19 +71,6 @@ export const toSnakeCase = (str: string): string => {
   return ret;
 };
 
-// // JS for browser testing
-// const toSnakeCase = str => {
-//   let ret = '';
-//   for (let i = 0; i < str.length; i++) {
-//     if (str[i] === str[i].toUpperCase()) {
-//       ret += '_' + str[i].toLowerCase();
-//     } else {
-//       ret += str[i];
-//     }
-//   }
-//   return ret;
-// };
-
 export const snakeCasify = (obj: any): any => {
   const retObj = {};
   const keys = Object.keys(obj);
@@ -83,15 +80,3 @@ export const snakeCasify = (obj: any): any => {
   }
   return retObj;
 };
-
-// JS for browser testing
-// const snakeCasify = obj => {
-//   const retObj = {};
-//   const keys = Object.keys(obj);
-//   for (let i = 0; i < keys.length; i++) {
-//     const newKey = toSnakeCase(keys[i]);
-//     console.log(newKey);
-//     retObj[newKey] = obj[keys[i]];
-//   }
-//   return retObj;
-// };

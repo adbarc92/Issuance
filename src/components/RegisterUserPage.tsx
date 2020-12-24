@@ -8,7 +8,6 @@ import {
   NotificationSeverity,
 } from 'hooks/notification';
 
-import Select from 'elements/Select';
 import ErrorBox from 'elements/ErrorBox';
 
 import { isNotFilledOut, isTooLong } from 'utils/index';
@@ -30,18 +29,6 @@ const MarginTopWrapper = styled('div')(() => {
   };
 });
 
-const UserRoleLabelsMap = {
-  [UserRole.BOSS]: {
-    label: 'Boss',
-  },
-  [UserRole.MIDDLER]: {
-    label: 'Middler',
-  },
-  [UserRole.GRUNT]: {
-    label: 'Grunt',
-  },
-};
-
 const CreateUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
@@ -50,7 +37,7 @@ const CreateUserPage = (): JSX.Element => {
     role: UserRole.MIDDLER,
   };
 
-  const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
+  const { state, submit, errors, triedSubmit, dispatch } = useForm({
     initialState,
     reducer: (state, action) => {
       const { payload, type } = action;
@@ -184,22 +171,6 @@ const CreateUserPage = (): JSX.Element => {
           }}
           onKeyDown={handleKeyDown}
         />
-        <MarginTopWrapper>
-          <Select
-            fullWidth
-            onChange={e => {
-              dispatch({ type: 'setRole', payload: e.target.value });
-            }}
-            value={state.role}
-            title="User Role"
-            items={Object.keys(UserRoleLabelsMap).map(key => {
-              return {
-                label: UserRoleLabelsMap[key].label,
-                value: key,
-              };
-            })}
-          />
-        </MarginTopWrapper>
         <FormButtonContainer>
           <Button
             fullWidth

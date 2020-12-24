@@ -9,8 +9,8 @@ export class Token {
     // name: 'deadline',
     default: (): string => 'LOCALTIMESTAMP',
   })
-  createdOn!: string;
+  created_on!: string;
 
   @Column()
-  userId!: string;
+  user_id!: string;
 }

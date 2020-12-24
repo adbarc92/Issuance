@@ -111,7 +111,7 @@ const Navigation = (): JSX.Element => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
-  const [searchString, setSearchString] = React.useState<string>('');
+  // const [searchString, setSearchString] = React.useState<string>('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -152,7 +152,7 @@ const Navigation = (): JSX.Element => {
               onChange={e => {
                 const val = (e as any).target.value;
                 setInputString(val);
-                setSearchString(val);
+                // setSearchString(val);
               }}
             ></SearchInput>
           </div>

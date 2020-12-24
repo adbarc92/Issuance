@@ -98,11 +98,13 @@ const GridWrapper = styled('div')(() => {
 });
 
 const TaskPage = (props: TaskPageProps): JSX.Element => {
-  const { loading, data, error, clearCache } = useGetTask(props.taskId);
+  const { loading, data, error } = useGetTask(props.taskId);
 
   const task = data as Task;
 
-  console.log('data:', data);
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <RootWrapper>

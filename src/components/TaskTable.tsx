@@ -57,7 +57,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const classes = useStyles();
 
-  const [draggedTaskId, setDraggedTaskId] = React.useState('');
+  // const [draggedTaskId, setDraggedTaskId] = React.useState('');
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
 
   const reRender = useForceUpdate();
@@ -66,12 +66,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   // insert hook to get the tasks
   // feed tasks into task cards
-
-  const startDrag = (task: Task) => {
-    return (ev: React.DragEvent<HTMLDivElement>) => {
-      setDraggedTaskId(task.id);
-    };
-  };
 
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
@@ -118,20 +112,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
           <Column
             className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.BACKLOG ? 'true' : ''}
-            onDragEnter={e => {
+            onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
               setDragColumn(TaskStatus.BACKLOG);
             }}
-            onDragOver={e => {
+            onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
             }}
           >
-            {backlogTasks?.map((task: Task, index) => {
+            {backlogTasks?.map((task: Task, index: number) => {
               return (
                 <TaskCard
                   key={index}
                   task={task}
-                  startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
@@ -143,20 +136,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
           <Column
             className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.ACTIVE ? 'true' : ''}
-            onDragEnter={e => {
+            onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
               setDragColumn(TaskStatus.ACTIVE);
             }}
-            onDragOver={e => {
+            onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
             }}
           >
-            {activeTasks?.map((task: Task, index) => {
+            {activeTasks?.map((task: Task, index: number) => {
               return (
                 <TaskCard
                   key={index}
                   task={task}
-                  startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
@@ -168,20 +160,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
           <Column
             className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.COMPLETE ? 'true' : ''}
-            onDragEnter={e => {
+            onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
               setDragColumn(TaskStatus.COMPLETE);
             }}
-            onDragOver={e => {
+            onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
             }}
           >
-            {completeTasks?.map((task: Task, index) => {
+            {completeTasks?.map((task: Task, index: number) => {
               return (
                 <TaskCard
                   key={index}
                   task={task}
-                  startDrag={startDrag(task)}
                   endDrag={endDrag(task)}
                   setDialogTask={setDialogTask}
                   setAddingTask={setAddingTask}
