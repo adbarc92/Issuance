@@ -30,8 +30,6 @@ const Dashboard = (): JSX.Element => {
     return <div>{error}</div>;
   }
 
-  console.log();
-
   return (
     <div className={classes.root}>
       {loading ? (
