@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"craco start\" \"(cd src/mock-server && yarn start)\"",
+    "start": "concurrently \"craco start\" \"(cd src/server && yarn start)\"",
     "start:ui": "craco start",
-    "start:server": "cd src/mock-server && yarn start",
+    "start:server": "cd src/server && yarn start",
     "build": "craco build",
     "test": "craco test"
   },

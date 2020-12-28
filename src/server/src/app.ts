@@ -1,7 +1,6 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
-// import { Person } from 'entity/Person';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
@@ -114,6 +113,7 @@ const start = async () => {
         const tasks = await taskRepository
           .createQueryBuilder('task')
           .select('*')
+          .orderBy('task.status')
           .orderBy('task.row_index')
           .execute();
         console.log('Tasks:', tasks);

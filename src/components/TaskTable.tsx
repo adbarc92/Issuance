@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import { makeStyles, styled } from '@material-ui/core';
+import { makeStyles, styled, Card } from '@material-ui/core';
 
 import { TaskCard } from 'components/TaskCard';
 import { Task, TaskStatus } from 'types/task';
@@ -45,6 +45,19 @@ const Column = styled('div')((props: any) => {
   };
 });
 
+const PlusCard = styled(Card)(
+  (props: { highlighted: 'true' | 'false' | '' }) => {
+    return {
+      border: `2px dashed ${
+        props.highlighted === 'true' ? colors.black : colors.grey
+      }`,
+      minHeight: '64px',
+      backgroundColor:
+        props.highlighted === 'true' ? colors.grey : colors.white,
+    };
+  }
+);
+
 export interface TaskTableProps {
   taskData: Task[];
   setDialogTask: (task: Task) => void;
@@ -57,8 +70,9 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const classes = useStyles();
 
-  // const [draggedTaskId, setDraggedTaskId] = React.useState('');
+  const [draggedTask, setDraggedTask] = React.useState<Task | null>(null);
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
+  const [hoveredTask, setHoveredTask] = React.useState<Task | null>(null);
 
   const reRender = useForceUpdate();
 
@@ -76,6 +90,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
       // console.log('Result:', result);
 
       setDragColumn(null);
+      setDraggedTask(null);
       reRender();
     };
   };
@@ -93,6 +108,25 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
       return task.status === TaskStatus.COMPLETE;
     });
   }
+
+  const renderTask = (task: Task, index: number) => {
+    return (
+      <TaskCard
+        key={index}
+        task={task}
+        endDrag={endDrag(task)}
+        startDrag={() => {
+          setDraggedTask(task);
+        }}
+        hoveredTask={hoveredTask}
+        draggedTask={draggedTask}
+        setHoveredTask={setHoveredTask}
+        setDialogTask={setDialogTask}
+        setAddingTask={setAddingTask}
+        clearTasksCache={props.clearTasksCache}
+      />
+    );
+  };
 
   return (
     <>
@@ -120,18 +154,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
               e.preventDefault();
             }}
           >
-            {backlogTasks?.map((task: Task, index: number) => {
-              return (
-                <TaskCard
-                  key={index}
-                  task={task}
-                  endDrag={endDrag(task)}
-                  setDialogTask={setDialogTask}
-                  setAddingTask={setAddingTask}
-                  clearTasksCache={props.clearTasksCache}
-                />
-              );
-            })}
+            {backlogTasks?.map(renderTask)}
+            {draggedTask ? (
+              <PlusCard
+                onDragEnter={(ev: React.DragEvent<HTMLDivElement>) => {
+                  setHoveredTask(null);
+                }}
+                highlighted={
+                  hoveredTask === null && dragColumn === TaskStatus.BACKLOG
+                    ? 'true'
+                    : 'false'
+                }
+              />
+            ) : null}
           </Column>
           <Column
             className={classes.columnContainer}
@@ -144,18 +179,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
               e.preventDefault();
             }}
           >
-            {activeTasks?.map((task: Task, index: number) => {
-              return (
-                <TaskCard
-                  key={index}
-                  task={task}
-                  endDrag={endDrag(task)}
-                  setDialogTask={setDialogTask}
-                  setAddingTask={setAddingTask}
-                  clearTasksCache={props.clearTasksCache}
-                />
-              );
-            })}
+            {activeTasks?.map(renderTask)}
+            {draggedTask ? (
+              <PlusCard
+                onDragEnter={(ev: React.DragEvent<HTMLDivElement>) => {
+                  setHoveredTask(null);
+                }}
+                highlighted={
+                  hoveredTask === null && dragColumn === TaskStatus.ACTIVE
+                    ? 'true'
+                    : 'false'
+                }
+              />
+            ) : null}
           </Column>
           <Column
             className={classes.columnContainer}
@@ -168,18 +204,19 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
               e.preventDefault();
             }}
           >
-            {completeTasks?.map((task: Task, index: number) => {
-              return (
-                <TaskCard
-                  key={index}
-                  task={task}
-                  endDrag={endDrag(task)}
-                  setDialogTask={setDialogTask}
-                  setAddingTask={setAddingTask}
-                  clearTasksCache={props.clearTasksCache}
-                />
-              );
-            })}
+            {completeTasks?.map(renderTask)}
+            {draggedTask ? (
+              <PlusCard
+                onDragEnter={(ev: React.DragEvent<HTMLDivElement>) => {
+                  setHoveredTask(null);
+                }}
+                highlighted={
+                  hoveredTask === null && dragColumn === TaskStatus.COMPLETE
+                    ? 'true'
+                    : 'false'
+                }
+              />
+            ) : null}
           </Column>
         </div>
       </div>

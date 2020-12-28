@@ -15,13 +15,18 @@ import { deleteTask } from 'store/actions';
 import SimpleMenu from 'elements/SimpleMenu';
 
 import { MoreVert } from '@material-ui/icons';
+import theme, { colors } from 'theme';
 
 export interface TaskCardProps {
   task: Task;
+  startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   setDialogTask: (task: Task) => void;
+  setHoveredTask: (task: Task | null) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
+  draggedTask: Task | null;
+  hoveredTask: Task | null;
 }
 
 const MenuButton = styled(Button)(() => {
@@ -40,10 +45,13 @@ const AvatarShell = styled(Avatar)(() => {
   };
 });
 
-const CardContainer = styled('div')(() => {
+const CardContainer = styled('div')((props: any) => {
   return {
     // position: 'relative',
     display: 'flex',
+    backgroundColor: props.highlighted
+      ? theme.palette.background.highlighted
+      : 'unset',
   };
 });
 
@@ -64,6 +72,28 @@ const CardMenu = styled('div')(() => {
   };
 });
 
+const HighlightCard = styled(Card)(
+  (props: { highlighted: 'true' | 'false' | '' }) => {
+    return {
+      backgroundColor:
+        props.highlighted === 'true' ? colors.grey : colors.white,
+    };
+  }
+);
+
+const NullPtrEventWrapper = styled('div')((props: any) => {
+  return {
+    pointerEvents: props.enabled === 'true' ? 'none' : 'unset',
+  };
+});
+
+const TaskPlaceholder = styled('div')((props: any) => {
+  return {
+    height: '8px',
+    backgroundColor: props.black ? colors.black : colors.white,
+  };
+});
+
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   const {
     task,
@@ -71,6 +101,9 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     setDialogTask,
     setAddingTask,
     clearTasksCache,
+    startDrag,
+    setHoveredTask,
+    hoveredTask,
   } = props;
   const { name, description, type, priority, id } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
@@ -106,38 +139,83 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
   ];
 
   return (
-    <Card variant="outlined" onDragEnd={endDrag} draggable>
-      <CardContent>
-        <CardContainer>
-          <CardInfo>
-            <Link to={`/tasks/${id}`}>
-              <Typography variant="h5" component="h5">
-                {name}
-              </Typography>
-            </Link>
-            <Typography variant="body1" component="p">
-              {description}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {type}
-            </Typography>
-            <Typography variant="caption" component="p">
-              {priority}
-            </Typography>
-          </CardInfo>
-          <CardMenu>
-            <AvatarShell />
-            <MenuButton onClick={handleClick}>
-              <MoreVert />
-            </MenuButton>
-            <SimpleMenu
-              menuItems={menuItems}
-              anchorElement={anchorElement}
-              handleClose={handleClose}
-            />
-          </CardMenu>
-        </CardContainer>
-      </CardContent>
-    </Card>
+    <>
+      {props.draggedTask ? (
+        <TaskPlaceholder
+          black={hoveredTask?.id === task.id ? 'true' : ''}
+          key={task.id}
+          onDragEnter={() => {
+            if (hoveredTask?.id !== task.id) {
+              console.log('OnDragEnter Placeholder');
+              setHoveredTask(task);
+            }
+          }}
+          // onDragLeave={() => {
+          //   if (hoveredTask?.id === task.id) {
+          //     console.log('OnDragLeave Placeholder');
+          //     setHoveredTask(null);
+          //   }
+          // }}
+        />
+      ) : null}
+      <HighlightCard
+        variant="outlined"
+        draggable
+        onDragStart={startDrag}
+        onDragEnd={(ev: React.DragEvent<HTMLDivElement>) => {
+          endDrag(ev);
+          setHoveredTask(null);
+        }}
+        onDragEnter={() => {
+          console.log('OnDragEnter HighlightCard');
+          setHoveredTask(task);
+        }}
+        // onDragLeave={() => {
+        //   if (hoveredTask?.id === task.id) {
+        //     console.log('OnDragLeave HighlightCard');
+        //     setHoveredTask(null);
+        //   }
+        // }}
+        highlighted={
+          props.draggedTask?.id !== task.id && hoveredTask?.id === task.id
+            ? 'true'
+            : ''
+        }
+      >
+        <NullPtrEventWrapper enabled={String(props.draggedTask !== null)}>
+          <CardContent>
+            <CardContainer>
+              <CardInfo>
+                <Link to={`/tasks/${id}`}>
+                  <Typography variant="h5" component="h5">
+                    {name}
+                  </Typography>
+                </Link>
+                <Typography variant="body1" component="p">
+                  {description}
+                </Typography>
+                <Typography variant="subtitle1" component="p">
+                  {type}
+                </Typography>
+                <Typography variant="caption" component="p">
+                  {priority}
+                </Typography>
+              </CardInfo>
+              <CardMenu>
+                <AvatarShell />
+                <MenuButton onClick={handleClick}>
+                  <MoreVert />
+                </MenuButton>
+                <SimpleMenu
+                  menuItems={menuItems}
+                  anchorElement={anchorElement}
+                  handleClose={handleClose}
+                />
+              </CardMenu>
+            </CardContainer>
+          </CardContent>
+        </NullPtrEventWrapper>
+      </HighlightCard>
+    </>
   );
 };
