@@ -10,15 +10,15 @@ export class PersonService {
     this.personRepository = getConnection().getRepository(Person);
   }
   async getPersonById(id: string): Promise<Person> {
-    return this.personRepository.findOne(id);
+    return await this.personRepository.findOne(id);
   }
 
   async getPersonByUsername(username: string): Promise<Person> {
-    return this.personRepository.findOne({ username });
+    return await this.personRepository.findOne({ username });
   }
 
   async getPersonnel(): Promise<Person[]> {
-    return this.personRepository.find();
+    return await this.personRepository.find();
   }
 
   // Needs to be fixed
@@ -30,7 +30,7 @@ export class PersonService {
       username: person.username,
       job: person.job ? person.job : PersonJob.CODER,
     });
-    return this.personRepository.save(curPerson);
+    return await this.personRepository.save(curPerson);
   }
 
   async modifyPerson(
@@ -38,10 +38,10 @@ export class PersonService {
   ): Promise<Person> {
     const curPerson = await this.getPersonById(person.id);
     this.personRepository.merge(curPerson, person);
-    return this.personRepository.save(curPerson);
+    return await this.personRepository.save(curPerson);
   }
 
   async removePerson(id: string): Promise<any> {
-    return this.personRepository.delete(id);
+    return await this.personRepository.delete(id);
   }
 }

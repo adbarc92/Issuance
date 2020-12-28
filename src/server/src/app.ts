@@ -4,19 +4,17 @@ import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
 import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
-import { Task as ITask } from '../../types/task';
 // import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 // import * as winston from 'winston';
-import { castTask } from 'cast';
+
 import { v4 as uuid } from 'uuid';
 import { createErrorResponse, sha256, saltHashPassword } from 'utils';
 
 import ormconfig from '../ormconfig.json';
 
 import personnelController from 'controllers/personnel.controller';
-
-import { snakeCasify } from 'utils';
+import taskController from 'controllers/tasks.controller';
 
 const port = 4000;
 
@@ -101,63 +99,7 @@ const start = async () => {
 
     // register routes
     personnelController(router);
-
-    router.get('/tasks/:id', async function (req: Request, res: Response) {
-      const task = await taskRepository.findOne(req.params.id);
-      return res.send(castTask(task));
-    });
-
-    router.get('/tasks', async function (req: Request, res: Response) {
-      try {
-        // Group by Status, Order by Row Index
-        const tasks = await taskRepository
-          .createQueryBuilder('task')
-          .select('*')
-          .orderBy('task.status')
-          .orderBy('task.row_index')
-          .execute();
-        console.log('Tasks:', tasks);
-        // const tasks = await taskRepository.find();
-        return res.send(tasks.map(task => castTask(task)));
-      } catch (e) {
-        res.status(500);
-        // Add more error codes
-        return res.send(createErrorResponse(e));
-      }
-    });
-
-    router.post('/tasks', async function (req: Request, res: Response) {
-      const task = taskRepository.create(snakeCasify(req.body));
-      const result = await taskRepository.save(task);
-      return res.send(castTask(result[0]));
-    });
-
-    router.put('/tasks/:id', async function (req: Request, res: Response) {
-      const updatedTask: ITask = req.body;
-      console.log('updatedTask:', updatedTask);
-      const task = await taskRepository.findOne(req.params.id);
-      for (const prop in task) {
-        task[prop] = updatedTask[prop] ?? task[prop];
-      }
-      const result = await taskRepository.save(task);
-      return res.send(castTask(result));
-    });
-
-    router.delete('/tasks/:id', async function (req: Request, res: Response) {
-      try {
-        await connection
-          .createQueryBuilder()
-          .delete()
-          .from(Task)
-          .where('id = :id', { id: req.params.id })
-          .execute();
-        res.send(JSON.stringify({}));
-      } catch (e) {
-        res.status(500);
-        // Add more error codes
-        return res.send(createErrorResponse(e));
-      }
-    });
+    taskController(router);
 
     router.post('/users', async function (req: Request, res: Response) {
       // Check for existing user
