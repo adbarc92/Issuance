@@ -21,7 +21,6 @@ const port = 4000;
 const init = async () => {
   const connection = await createConnection({
     ...ormconfig,
-    synchronize: false,
   } as any);
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
   await connection.close();
@@ -29,7 +28,9 @@ const init = async () => {
 
 // create typeorm connection
 const start = async () => {
-  const connection = await createConnection();
+  const connection = await createConnection({
+    ...ormconfig,
+  } as any);
   try {
     // const personRepository = connection.getRepository(Person);
 
