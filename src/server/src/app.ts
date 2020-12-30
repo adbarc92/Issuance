@@ -34,7 +34,7 @@ const start = async () => {
   try {
     // const personRepository = connection.getRepository(Person);
 
-    const taskRepository = connection.getRepository(Task);
+    // const taskRepository = connection.getRepository(Task);
 
     const tokenRepository = connection.getRepository(Token);
 

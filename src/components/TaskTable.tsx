@@ -87,7 +87,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
         ...task,
         status: dragColumn as TaskStatus,
       });
-      // console.log('Result:', result);
 
       setDragColumn(null);
       setDraggedTask(null);

@@ -8,6 +8,7 @@ export enum PersonJob {
 export interface Person {
   id: string;
   username: string;
+  profilePicture: string;
   firstName: string;
   lastName: string;
   contactEmail: string;

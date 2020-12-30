@@ -7,6 +7,7 @@ import { Task } from 'types/task';
 import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
+import { requestCache } from 'hooks/getData';
 
 const RootWrapper = styled('div')(() => {
   return {
@@ -41,7 +42,8 @@ const TaskTablePage = (): JSX.Element => {
     clearCache: clearTasksCache,
   } = useGetTasks();
 
-  console.log('Task Data:', taskData);
+  // console.log('Task Data:', taskData);
+  // console.log('Request Cache:', requestCache);
 
   const handleAddingTask = () => {
     setDialogTask(null);

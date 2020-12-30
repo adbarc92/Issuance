@@ -25,9 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.secondary.main,
     },
-    textAlignCenter: {
-      textAlign: 'center',
-    },
   })
 );
 
@@ -39,7 +36,15 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
   const { personnelData } = props;
   const classes = useStyles();
 
-  const columnHeaders = ['ID', 'Name', 'Email', 'Role'];
+  const columnHeaders = [
+    '',
+    'Username',
+    'First Name',
+    'Last Name',
+    'Email',
+    'Role',
+    'Actions',
+  ];
 
   return (
     <TableContainer component={Paper}>
@@ -54,14 +59,23 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
         <TableBody>
           {personnelData
             ? personnelData.map((person, index) => {
-                const { id, username, contactEmail, role } = person;
+                const {
+                  profilePicture,
+                  username,
+                  firstName,
+                  lastName,
+                  contactEmail,
+                  role,
+                } = person;
                 return (
                   <TableRow key={index}>
-                    <TableCell>{id}</TableCell>
+                    <TableCell>{profilePicture}</TableCell>
                     <TableCell>{username}</TableCell>
+                    <TableCell>{firstName}</TableCell>
+                    <TableCell>{lastName}</TableCell>
                     <TableCell>{contactEmail}</TableCell>
                     <TableCell>{role}</TableCell>
-                    <TableCell className={classes.textAlignCenter}>
+                    <TableCell>
                       <MoreVert />
                     </TableCell>
                   </TableRow>
