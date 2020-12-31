@@ -7,7 +7,6 @@ import { Task } from 'types/task';
 import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
-import { requestCache } from 'hooks/getData';
 
 const RootWrapper = styled('div')(() => {
   return {

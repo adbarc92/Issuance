@@ -10,23 +10,7 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Person } from 'types/person';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    addContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    add: {
-      fontSize: '200',
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.secondary.main,
-    },
-  })
-);
 
 export interface PersonnelTableProps {
   personnelData: Person[];
@@ -34,7 +18,6 @@ export interface PersonnelTableProps {
 
 const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
   const { personnelData } = props;
-  const classes = useStyles();
 
   const columnHeaders = [
     '',
