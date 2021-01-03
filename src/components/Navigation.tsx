@@ -19,6 +19,7 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Apps as ProjectsIcon,
+  Timeline as TimelineIcon,
   FormatListNumbered as TasksIcon,
   People as PersonnelIcon,
   Settings as SettingsIcon,
@@ -152,7 +153,7 @@ const Navigation = (): JSX.Element => {
                 const val = (e as any).target.value;
                 setInputString(val);
               }}
-            ></SearchInput>
+            />
           </div>
         </Toolbar>
       </AppBar>
@@ -207,6 +208,16 @@ const Navigation = (): JSX.Element => {
               <ListItemText primary={'Tasks'} />
             </Link>
           </ListItem>
+          <ListItem button key={'Timeline'}>
+            <Link to="/timeline">
+              <ListItemIcon>
+                <TimelineIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/timeline">
+              <ListItemText primary={'Timeline'} />
+            </Link>
+          </ListItem>
           <ListItem button key={'Personnel'}>
             <Link to="/personnel">
               <ListItemIcon>
@@ -215,6 +226,16 @@ const Navigation = (): JSX.Element => {
             </Link>
             <Link to="/personnel">
               <ListItemText primary={'Personnel'} />
+            </Link>
+          </ListItem>
+          <ListItem button key={'Notifications Feed'}>
+            <Link to="/notifications">
+              <ListItemIcon>
+                <NotificationsIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/notifications">
+              <ListItemText primary={'Notifications Feed'} />
             </Link>
           </ListItem>
         </List>
@@ -226,17 +247,15 @@ const Navigation = (): JSX.Element => {
             </ListItemIcon>
             <ListItemText primary={'Settings'} />
           </ListItem>
-          <ListItem button key={'Search'}>
-            <ListItemIcon>
-              <SearchIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Search'} />
-          </ListItem>
-          <ListItem button key={'Notifications'}>
-            <ListItemIcon>
-              <NotificationsIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Notifications'} />
+          <ListItem button key={'Log Out'}>
+            <Link to="/logout">
+              <ListItemIcon>
+                <PersonnelIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/logout">
+              <ListItemText primary={'Log Out'} />
+            </Link>
           </ListItem>
         </List>
       </Drawer>

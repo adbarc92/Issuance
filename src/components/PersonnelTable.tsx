@@ -9,12 +9,20 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
+  styled,
 } from '@material-ui/core';
 import { Person } from 'types/person';
+
+import SimpleMenu from 'elements/SimpleMenu';
 
 export interface PersonnelTableProps {
   personnelData: Person[];
 }
+
+const VertIconWrapper = styled(Button)(() => {
+  return {};
+});
 
 const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
   const { personnelData } = props;
@@ -29,6 +37,39 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
     'Actions',
   ];
 
+  const menuItems = [
+    {
+      key: 'View Page',
+      onClick: () => {
+        console.log('View Page');
+      },
+    },
+    {
+      key: 'Edit',
+      onClick: () => {
+        console.log('Edit');
+      },
+    },
+    {
+      key: 'Hide',
+      onClick: () => {
+        console.log('Edit');
+      },
+    },
+  ];
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElement(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElement(null);
+  };
+
+  const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
+    null
+  );
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -42,24 +83,23 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
         <TableBody>
           {personnelData
             ? personnelData.map((person, index) => {
-                const {
-                  profilePicture,
-                  username,
-                  firstName,
-                  lastName,
-                  contactEmail,
-                  role,
-                } = person;
                 return (
                   <TableRow key={index}>
-                    <TableCell>{profilePicture}</TableCell>
-                    <TableCell>{username}</TableCell>
-                    <TableCell>{firstName}</TableCell>
-                    <TableCell>{lastName}</TableCell>
-                    <TableCell>{contactEmail}</TableCell>
-                    <TableCell>{role}</TableCell>
+                    <TableCell>{person.profilePicture}</TableCell>
+                    <TableCell>{person.username}</TableCell>
+                    <TableCell>{person.firstName}</TableCell>
+                    <TableCell>{person.lastName}</TableCell>
+                    <TableCell>{person.contactEmail}</TableCell>
+                    <TableCell>{person.role}</TableCell>
                     <TableCell>
-                      <MoreVert />
+                      <VertIconWrapper onClick={handleClick}>
+                        <MoreVert />
+                      </VertIconWrapper>
+                      <SimpleMenu
+                        menuItems={menuItems}
+                        anchorElement={anchorElement}
+                        handleClose={handleClose}
+                      />
                     </TableCell>
                   </TableRow>
                 );

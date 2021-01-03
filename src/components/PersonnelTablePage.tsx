@@ -8,6 +8,7 @@ import PersonnelDialog from 'components/PersonnelDialog';
 import { Person } from 'types/person';
 
 import PersonnelTable from 'components/PersonnelTable';
+import PageTitle from 'elements/PageTitle';
 
 const RootWrapper = styled('div')(() => {
   return {
@@ -59,7 +60,7 @@ const PersonnelTablePage = (): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <HeaderWrapper>Personnel</HeaderWrapper>
+          <PageTitle title={'Personnel'} />
           <SubHeaderWrapper>
             <Button variant="contained" color="primary" onClick={handleOpen}>
               Add Personnel

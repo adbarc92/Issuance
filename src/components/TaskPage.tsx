@@ -4,6 +4,7 @@ import { Task } from 'types/task';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { useGetTask } from 'hooks/axiosHooks';
+import PageTitle from 'elements/PageTitle';
 
 import theme, { colors } from 'theme';
 
@@ -30,7 +31,6 @@ const InfoBoxHeader = styled('div')(() => {
     padding: '0.25rem 0',
     margin: '0.25rem 0',
     borderBottom: `2px solid ${theme.palette.primary.main}`,
-    // backgroundColor: colors.grey,
   };
 });
 
@@ -53,38 +53,6 @@ const InfoBox = (props: InfoBoxProps): JSX.Element => {
       <InfoBoxHeader>{props.title}</InfoBoxHeader>
       {props.children}
     </InfoBoxWrapper>
-  );
-};
-
-interface TitleProps {
-  task: Task;
-}
-
-const TitleWrapper = styled('div')(() => {
-  return {
-    padding: '0.5rem',
-  };
-});
-
-const ProjectLabel = styled('div')(() => {
-  return {
-    paddingBottom: '0.25rem',
-    fontSize: '1rem',
-  };
-});
-
-const TitleHeader = styled('div')(() => {
-  return {
-    fontSize: '2rem',
-  };
-});
-
-const Title = (props: TitleProps): JSX.Element => {
-  return (
-    <TitleWrapper>
-      <ProjectLabel>Project ID: {props.task.projectId}</ProjectLabel>
-      <TitleHeader>{props.task.name}</TitleHeader>
-    </TitleWrapper>
   );
 };
 
@@ -112,7 +80,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <Title task={task} />
+          <PageTitle title={task.name} projectId={task.projectId} />
           <GridWrapper>
             <InfoBox title="Details" gridArea="details">
               <div>Type: {task.type}</div>
