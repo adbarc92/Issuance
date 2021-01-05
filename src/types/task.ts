@@ -27,6 +27,7 @@ export interface Task {
   status: TaskStatus;
   createdOn: Date;
   assignedTo: number;
+  rowIndex: number;
   deadline: Date | string;
   projectId: number;
   reportedBy: number;

@@ -11,6 +11,8 @@ import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 import { colors } from 'theme';
 
+import { getRowIndex } from 'components/TaskTablePage';
+
 const useStyles = makeStyles({
   root: {},
   gridContainer: {},
@@ -59,14 +61,25 @@ const PlusCard = styled(Card)(
 );
 
 export interface TaskTableProps {
-  taskData: Task[];
+  taskData: {
+    backlogTasks: Task[];
+    activeTasks: Task[];
+    completeTasks: Task[];
+  };
   setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
+  columnSizeState: {
+    backlogTasks: number;
+    activeTasks: number;
+    completeTasks: number;
+  };
 }
 
 const TaskTable = (props: TaskTableProps): JSX.Element => {
-  const { taskData, setDialogTask, setAddingTask } = props;
+  const { taskData, setDialogTask, setAddingTask, columnSizeState } = props;
+
+  const { backlogTasks, activeTasks, completeTasks } = taskData;
 
   const classes = useStyles();
 
@@ -78,14 +91,16 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   // Figure out how many task statuses there are => variable column numbers
 
-  // insert hook to get the tasks
-  // feed tasks into task cards
-
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
+      const rowIndex = hoveredTask
+        ? hoveredTask.rowIndex
+        : getRowIndex(dragColumn as TaskStatus, columnSizeState);
+      console.log('rowIndex:', rowIndex);
       await updateTask(task.id, {
         ...task,
         status: dragColumn as TaskStatus,
+        rowIndex,
       });
 
       setDragColumn(null);
@@ -93,20 +108,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
       reRender();
     };
   };
-
-  let backlogTasks, activeTasks, completeTasks;
-
-  if (taskData) {
-    backlogTasks = taskData.filter(task => {
-      return task.status === TaskStatus.BACKLOG;
-    });
-    activeTasks = taskData.filter(task => {
-      return task.status === TaskStatus.ACTIVE;
-    });
-    completeTasks = taskData.filter(task => {
-      return task.status === TaskStatus.COMPLETE;
-    });
-  }
 
   const renderTask = (task: Task, index: number) => {
     return (

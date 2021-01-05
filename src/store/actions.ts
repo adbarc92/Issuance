@@ -16,6 +16,7 @@ const updateCache = (obj: any, subCache?: any) => {
     if (Array.isArray(value)) {
       updateCache(obj, value);
     } else if (typeof value === 'object') {
+      // console.log('value:', value);
       if (
         value.typeName &&
         value.typeName === obj.typeName &&
@@ -47,7 +48,6 @@ export const updateTask = async (
 
 export const createTask = async (task: TaskInput): Promise<ITask | null> => {
   try {
-    // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
       name: task.name,
       description: task.description,
@@ -59,7 +59,6 @@ export const createTask = async (task: TaskInput): Promise<ITask | null> => {
       projectId: 0,
       reportedBy: 0,
     });
-    // addTaskToCache(response.data); // SELF-NOTE: Discuss further
     return response.data;
   } catch (e) {
     console.error(e);
@@ -71,14 +70,10 @@ export const deleteTask = async (taskId: string): Promise<undefined | null> => {
   try {
     await api.delete(`/tasks/${taskId}`);
   } catch (e) {
-    // Snackbar error message?
     console.error(e);
     return null;
   }
 };
-
-// Returns token or null; token will expire after a day; token should be attached to all requests--all requests except a login request require a token
-//
 
 export const login = async (
   email: string,

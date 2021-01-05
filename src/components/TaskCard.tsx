@@ -47,7 +47,6 @@ const AvatarShell = styled(Avatar)(() => {
 
 const CardContainer = styled('div')((props: any) => {
   return {
-    // position: 'relative',
     display: 'flex',
     backgroundColor: props.highlighted
       ? theme.palette.background.highlighted
@@ -150,12 +149,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
               setHoveredTask(task);
             }
           }}
-          // onDragLeave={() => {
-          //   if (hoveredTask?.id === task.id) {
-          //     console.log('OnDragLeave Placeholder');
-          //     setHoveredTask(null);
-          //   }
-          // }}
         />
       ) : null}
       <HighlightCard
@@ -170,12 +163,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           console.log('OnDragEnter HighlightCard');
           setHoveredTask(task);
         }}
-        // onDragLeave={() => {
-        //   if (hoveredTask?.id === task.id) {
-        //     console.log('OnDragLeave HighlightCard');
-        //     setHoveredTask(null);
-        //   }
-        // }}
         highlighted={
           props.draggedTask?.id !== task.id && hoveredTask?.id === task.id
             ? 'true'

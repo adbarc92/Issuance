@@ -27,10 +27,11 @@ import {
   styled,
 } from '@material-ui/core';
 
-// import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
+
+import { getRowIndex } from 'components/TaskTablePage';
 
 const TextFieldWrapper = styled('div')(() => {
   return {
@@ -60,6 +61,21 @@ export interface TaskDialogProps {
   onClose: () => void;
   clearTasksCache: () => void;
   dialogTask: Task | null;
+  columnSizeState: {
+    backlogTasks: number;
+    activeTasks: number;
+    completeTasks: number;
+  };
+  columnSizeDispatch: React.Dispatch<{
+    key: string;
+    payload:
+      | number
+      | {
+          backlogTasks: number;
+          activeTasks: number;
+          completeTasks: number;
+        };
+  }>;
 }
 
 export interface TaskDialogState {
@@ -158,9 +174,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       state: TaskDialogState,
       action: ITaskDialogActions
     ): TaskDialogState => {
-      // const { type }: TaskDialogAction = action;
       let newState = { ...state };
-      // console.log('newState:', newState);
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
@@ -220,6 +234,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
+      const rowIndex = getRowIndex(state.status, props.columnSizeState);
+
+      console.log('rowIndex:', rowIndex);
+
       const taskToSubmit = {
         name: state.name,
         description: state.description,
@@ -228,6 +246,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         status: state.status,
         deadline: state.deadline as string,
         projectId: 0,
+        rowIndex,
       };
 
       const task = await (addingTask
@@ -260,8 +279,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     reset();
     onClose();
   };
-
-  // console.log('state:', state);
 
   return (
     <>

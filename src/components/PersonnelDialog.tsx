@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import UserSelect from 'elements/UserSelect';
 import Select from 'elements/Select';
 import {
   useNotificationSnackbar,
@@ -111,21 +110,6 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
       if (isNotFilledOut(vState.firstName)) {
         errors.firstName = 'A first name must be provided.';
       }
-      // if (isNotFilledOut(vState.lastName)) {
-      //   errors.lastName = 'A last name must be provided.';
-      // }
-      // if (isNotFilledOut(vState.contactEmail)) {
-      //   errors.contactEmail = 'An email must be provided.';
-      // }
-      // if (isTooLong(vState.firstName, 120)) {
-      //   errors.firstName = 'A first name must be less than 120 characters.';
-      // }
-      // if (isTooLong(vState.lastName, 120)) {
-      //   errors.lastName = 'A last name must be less than 120 characters.';
-      // }
-      // if (isTooLong(vState.contactEmail, 120)) {
-      //   errors.contactEmail = 'An email must be less than 120 characters.';
-      // }
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async state => {
@@ -148,21 +132,11 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     },
   });
 
-  // const [newPersonName, setNewPersonName] = React.useState('');
-  // const [newPersonEmail, setNewPersonEmail] = React.useState('');
-  // const [newPersonJob, setNewPersonJob] = React.useState<PersonJob>(
-  //   PersonJob.CODER
-  // );
-
   const [snackbar, showNotification] = useNotificationSnackbar();
 
   const handleClose = () => {
     onClose();
   };
-
-  // const handleSubmit = async () => {
-
-  // };
 
   return (
     <>
