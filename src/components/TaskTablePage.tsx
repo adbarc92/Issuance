@@ -33,18 +33,18 @@ const SubHeaderWrapper = styled('div')(() => {
 export const getRowIndex = (
   taskStatus: TaskStatus,
   columnSizeState: {
-    backlogTasks: number;
-    activeTasks: number;
-    completeTasks: number;
+    backlogTasksCount: number;
+    activeTasksCount: number;
+    completeTasksCount: number;
   }
 ): number => {
   switch (taskStatus) {
     case 'Backlog':
-      return columnSizeState.backlogTasks;
+      return columnSizeState.backlogTasksCount;
     case 'Active':
-      return columnSizeState.activeTasks;
+      return columnSizeState.activeTasksCount;
     case 'Complete':
-      return columnSizeState.completeTasks;
+      return columnSizeState.completeTasksCount;
     default:
       return 0;
   }
@@ -57,54 +57,54 @@ const TaskTablePage = (): JSX.Element => {
   const [columnSizeState, columnSizeDispatch] = React.useReducer(
     (
       state: {
-        backlogTasks: number;
-        activeTasks: number;
-        completeTasks: number;
+        backlogTasksCount: number;
+        activeTasksCount: number;
+        completeTasksCount: number;
       },
       action: {
         key: string;
         payload:
           | number
           | {
-              backlogTasks: number;
-              activeTasks: number;
-              completeTasks: number;
+              backlogTasksCount: number;
+              activeTasksCount: number;
+              completeTasksCount: number;
             };
       }
     ) => {
       const newState = { ...state };
       switch (action.key) {
         case 'updateBacklogSize':
-          newState.backlogTasks = action.payload as number;
+          newState.backlogTasksCount = action.payload as number;
           break;
         case 'updateActiveSize':
-          newState.activeTasks = action.payload as number;
+          newState.activeTasksCount = action.payload as number;
           break;
         case 'updateCompleteSize':
-          newState.completeTasks = action.payload as number;
+          newState.completeTasksCount = action.payload as number;
           break;
         case 'updateAll':
           const {
-            backlogTasks,
-            activeTasks,
-            completeTasks,
+            backlogTasksCount,
+            activeTasksCount,
+            completeTasksCount,
           } = action.payload as {
-            backlogTasks: number;
-            activeTasks: number;
-            completeTasks: number;
+            backlogTasksCount: number;
+            activeTasksCount: number;
+            completeTasksCount: number;
           };
-          newState.backlogTasks = backlogTasks;
-          newState.activeTasks = activeTasks;
-          newState.completeTasks = completeTasks;
+          newState.backlogTasksCount = backlogTasksCount;
+          newState.activeTasksCount = activeTasksCount;
+          newState.completeTasksCount = completeTasksCount;
           break;
       }
       console.log('newState:', newState);
       return newState;
     },
     {
-      backlogTasks: 0,
-      activeTasks: 0,
-      completeTasks: 0,
+      backlogTasksCount: 0,
+      activeTasksCount: 0,
+      completeTasksCount: 0,
     }
   );
 

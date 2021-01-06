@@ -62,18 +62,18 @@ export interface TaskDialogProps {
   clearTasksCache: () => void;
   dialogTask: Task | null;
   columnSizeState: {
-    backlogTasks: number;
-    activeTasks: number;
-    completeTasks: number;
+    backlogTasksCount: number;
+    activeTasksCount: number;
+    completeTasksCount: number;
   };
   columnSizeDispatch: React.Dispatch<{
     key: string;
     payload:
       | number
       | {
-          backlogTasks: number;
-          activeTasks: number;
-          completeTasks: number;
+          backlogTasksCount: number;
+          activeTasksCount: number;
+          completeTasksCount: number;
         };
   }>;
 }
@@ -164,6 +164,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
     projectId: 0,
+    rowIndex: props.columnSizeState.backlogTasksCount,
   };
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
@@ -234,7 +235,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const rowIndex = getRowIndex(state.status, props.columnSizeState);
+      // Troubleshooting - Start
+      const columnSize = props.columnSizeState;
+      console.log('columnSize:', columnSize);
+      const rowIndex = getRowIndex(state.status, columnSize);
 
       console.log('rowIndex:', rowIndex);
 
@@ -246,7 +250,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         status: state.status,
         deadline: state.deadline as string,
         projectId: 0,
-        rowIndex,
+        rowIndex: 0,
       };
 
       const task = await (addingTask

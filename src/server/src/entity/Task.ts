@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',
@@ -21,6 +21,7 @@ export enum TaskStatus {
 }
 
 @Entity()
+// @Unique(['row_index'])
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

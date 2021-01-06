@@ -70,9 +70,9 @@ export interface TaskTableProps {
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
   columnSizeState: {
-    backlogTasks: number;
-    activeTasks: number;
-    completeTasks: number;
+    backlogTasksCount: number;
+    activeTasksCount: number;
+    completeTasksCount: number;
   };
 }
 
@@ -93,9 +93,11 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
-      const rowIndex = hoveredTask
-        ? hoveredTask.rowIndex
-        : getRowIndex(dragColumn as TaskStatus, columnSizeState);
+      const gottenRowIndex = getRowIndex(
+        dragColumn as TaskStatus,
+        columnSizeState
+      );
+      const rowIndex = hoveredTask ? hoveredTask.rowIndex : gottenRowIndex;
       console.log('rowIndex:', rowIndex);
       await updateTask(task.id, {
         ...task,

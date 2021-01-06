@@ -25,6 +25,12 @@ export class TaskService {
 
   async createTask(task: ITask): Promise<Task[]> {
     const curTask = this.taskRepository.create(snakeCasify(task));
+    await this.taskRepository
+      .createQueryBuilder()
+      .update('task')
+      .set({ row_index: () => 'row_index + 1' })
+      .where('row_index >= 0')
+      .execute();
     return await this.taskRepository.save(curTask);
   }
 
@@ -33,6 +39,7 @@ export class TaskService {
     for (const prop in task) {
       task[prop] = updatedTask[prop] ?? task[prop];
     }
+
     return await this.taskRepository.save(task);
   }
 
