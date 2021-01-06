@@ -44,14 +44,20 @@ export class TaskService {
   }
 
   async removeTask(id: string): Promise<any> {
+    const taskToDelete = await this.taskRepository.findOne(id);
+    const deletedIndex = taskToDelete.row_index;
     await getConnection()
       .createQueryBuilder()
       .delete()
       .from(Task)
       .where('id = :id', { id })
       .execute();
-    // const result = await this.taskRepository.delete(id);
-    // console.log('Result:', result);
-    // return result;
+    await this.taskRepository
+      .createQueryBuilder()
+      .update('task')
+      .set({ row_index: () => 'row_index - 1' })
+      .where('row_index >= :id', { id: deletedIndex })
+      .execute();
+    // return await this.taskRepository.save();
   }
 }
