@@ -36,8 +36,25 @@ export class TaskService {
 
   async modifyTask(updatedTask: ITask, id: string): Promise<Task> {
     const task = await this.taskRepository.findOne(id);
+
     for (const prop in task) {
       task[prop] = updatedTask[prop] ?? task[prop];
+    }
+    // Fill in gap
+    if (updatedTask.rowIndex !== task.row_index) {
+      await this.taskRepository
+        .createQueryBuilder()
+        .update('task')
+        .set({ row_index: () => 'row_index - 1' })
+        .where('row_index >= :id', { id: task.row_index })
+        .execute();
+
+      await this.taskRepository
+        .createQueryBuilder()
+        .update('task')
+        .set({ row_index: () => 'row_index - 1' })
+        .where('row_index >= :id', { id: updatedTask.rowIndex })
+        .execute();
     }
 
     return await this.taskRepository.save(task);

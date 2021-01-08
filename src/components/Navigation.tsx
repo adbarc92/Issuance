@@ -209,12 +209,13 @@ const Navigation = (): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Timeline'}>
-            <Link to="/timeline">
+            <Link to="/">
               <ListItemIcon>
                 <TimelineIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/timeline">
+            <Link to="/">
+              {/*='/timeline'*/}
               <ListItemText primary={'Timeline'} />
             </Link>
           </ListItem>

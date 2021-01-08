@@ -11,7 +11,7 @@ import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 import { colors } from 'theme';
 
-import { getRowIndex } from 'components/TaskTablePage';
+import { getRowSize } from 'components/TaskTablePage';
 
 const useStyles = makeStyles({
   root: {},
@@ -93,11 +93,9 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   const endDrag = (task: Task) => {
     return async (ev: React.DragEvent<HTMLDivElement>) => {
-      const gottenRowIndex = getRowIndex(
-        dragColumn as TaskStatus,
-        columnSizeState
-      );
-      const rowIndex = hoveredTask ? hoveredTask.rowIndex : gottenRowIndex;
+      const rowIndex = hoveredTask
+        ? hoveredTask.rowIndex
+        : getRowSize(dragColumn as TaskStatus, columnSizeState);
       console.log('rowIndex:', rowIndex);
       await updateTask(task.id, {
         ...task,

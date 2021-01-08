@@ -30,7 +30,7 @@ const SubHeaderWrapper = styled('div')(() => {
   };
 });
 
-export const getRowIndex = (
+export const getRowSize = (
   taskStatus: TaskStatus,
   columnSizeState: {
     backlogTasksCount: number;
@@ -131,16 +131,18 @@ const TaskTablePage = (): JSX.Element => {
     return <div>There was an error: {error}</div>;
   }
 
-  let backlogTasks, activeTasks, completeTasks;
+  let backlogTasks: Task[] = [],
+    activeTasks: Task[] = [],
+    completeTasks: Task[] = [];
 
   if (taskData) {
-    (backlogTasks as Task[]) = taskData.filter(task => {
+    backlogTasks = taskData.filter(task => {
       return task.status === TaskStatus.BACKLOG;
     });
-    (activeTasks as Task[]) = taskData.filter(task => {
+    activeTasks = taskData.filter(task => {
       return task.status === TaskStatus.ACTIVE;
     });
-    (completeTasks as Task[]) = taskData.filter(task => {
+    completeTasks = taskData.filter(task => {
       return task.status === TaskStatus.COMPLETE;
     });
   }

@@ -31,7 +31,7 @@ import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
 
-import { getRowIndex } from 'components/TaskTablePage';
+import { getRowSize } from 'components/TaskTablePage';
 
 const TextFieldWrapper = styled('div')(() => {
   return {
@@ -238,7 +238,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       // Troubleshooting - Start
       const columnSize = props.columnSizeState;
       console.log('columnSize:', columnSize);
-      const rowIndex = getRowIndex(state.status, columnSize);
+      const rowIndex = getRowSize(state.status, columnSize);
 
       console.log('rowIndex:', rowIndex);
 
