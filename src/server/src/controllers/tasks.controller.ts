@@ -26,8 +26,10 @@ const taskController = (router: Router): void => {
 
   router.post('/tasks', async function (req: Request, res: Response) {
     try {
-      const tasks = taskService.createTask(req.body);
-      return res.send(castTask(tasks[0]));
+      const tasks = await taskService.createTask(req.body);
+      const taskOrder = await taskService.getTaskOrdering();
+      // return res.send(castTask(tasks[0]));
+      return res.send({ updatedTask: castTask(tasks[0]), ordering: taskOrder });
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -35,15 +37,23 @@ const taskController = (router: Router): void => {
   });
 
   router.put('/tasks/:id', async function (req: Request, res: Response) {
-    const updatedTask: ITask = req.body;
-    const task = await taskService.modifyTask(updatedTask, req.params.id);
-    return res.send(castTask(task));
+    try {
+      const updatedTask: ITask = req.body;
+      const task = await taskService.modifyTask(updatedTask, req.params.id);
+      const taskOrder = await taskService.getTaskOrdering();
+      console.log('taskOrder:', taskOrder);
+      return res.send({ task: castTask(task), ordering: taskOrder });
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
   });
 
   router.delete('/tasks/:id', async function (req: Request, res: Response) {
     try {
       await taskService.removeTask(req.params.id);
-      res.send(JSON.stringify({}));
+      const taskOrder = await taskService.getTaskOrdering();
+      res.send({ task: JSON.stringify({}), ordering: taskOrder });
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

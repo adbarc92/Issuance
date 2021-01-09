@@ -7,11 +7,8 @@ import { Task, TaskStatus } from 'types/task';
 
 import { updateTask } from 'store/actions';
 
-import { useForceUpdate } from 'hooks/render';
 import theme from 'theme';
 import { colors } from 'theme';
-
-import { getRowSize } from 'components/TaskTablePage';
 
 const useStyles = makeStyles({
   root: {},
@@ -74,12 +71,25 @@ export interface TaskTableProps {
     activeTasksCount: number;
     completeTasksCount: number;
   };
+  reRender: () => void;
 }
 
 const TaskTable = (props: TaskTableProps): JSX.Element => {
-  const { taskData, setDialogTask, setAddingTask, columnSizeState } = props;
+  const {
+    taskData,
+    setDialogTask,
+    setAddingTask,
+    columnSizeState,
+    reRender,
+  } = props;
 
   const { backlogTasks, activeTasks, completeTasks } = taskData;
+
+  const taskLengths = {
+    [TaskStatus.BACKLOG]: backlogTasks.length,
+    [TaskStatus.ACTIVE]: activeTasks.length,
+    [TaskStatus.COMPLETE]: completeTasks.length,
+  };
 
   const classes = useStyles();
 
@@ -87,16 +97,20 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
   const [hoveredTask, setHoveredTask] = React.useState<Task | null>(null);
 
-  const reRender = useForceUpdate();
-
   // Figure out how many task statuses there are => variable column numbers
 
   const endDrag = (task: Task) => {
-    return async (ev: React.DragEvent<HTMLDivElement>) => {
-      const rowIndex = hoveredTask
-        ? hoveredTask.rowIndex
-        : getRowSize(dragColumn as TaskStatus, columnSizeState);
-      console.log('rowIndex:', rowIndex);
+    return async () => {
+      let rowIndex = 0;
+      if (hoveredTask) {
+        rowIndex = hoveredTask.rowIndex;
+      } else if (dragColumn) {
+        rowIndex = taskLengths[dragColumn];
+        if (dragColumn !== task.status) {
+          rowIndex++;
+        }
+      }
+      console.log('rowIndex:', rowIndex, 'hoveredTask:', hoveredTask);
       await updateTask(task.id, {
         ...task,
         status: dragColumn as TaskStatus,

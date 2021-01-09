@@ -2,7 +2,7 @@ import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { User, UserInput } from 'types/user';
-import { requestCache } from 'hooks/getData';
+import { CacheKey, requestCache } from 'hooks/getData';
 
 // Actions change things
 
@@ -30,14 +30,35 @@ const updateCache = (obj: any, subCache?: any) => {
   }
 };
 
+// Should be generic,
+export const updateCacheOrdering = (
+  orderingArray: { id: string }[],
+  cacheKey: CacheKey
+): void => {
+  const cache = requestCache[cacheKey];
+  const hashedCache = cache.reduce((prev, current) => {
+    prev[current.id] = current;
+    return prev;
+  }, {});
+  const newArray = orderingArray.map((elem: { id: string }) => {
+    return hashedCache[elem.id];
+  });
+  // requestCache[cacheKey] = newArray;
+  for (let i = 0; i < newArray.length; i++) {
+    requestCache[cacheKey][i] = newArray[i];
+  }
+};
+
 export const updateTask = async (
   id: string,
   task: TaskInput
 ): Promise<ITask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
-    console.log('Response:', response.data);
-    updateCache(response.data);
+    console.log('Update Task Response:', response.data);
+    updateCache(response.data.task);
+    updateCacheOrdering(response.data.ordering, CacheKey.TASKS);
+    console.log('Cache:', requestCache[CacheKey.TASKS]);
     return response.data;
   } catch (error) {
     console.error(error);

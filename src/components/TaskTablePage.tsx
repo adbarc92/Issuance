@@ -8,6 +8,8 @@ import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
 
+import { useForceUpdate } from 'hooks/render';
+
 const RootWrapper = styled('div')(() => {
   return {
     width: '100%',
@@ -98,7 +100,6 @@ const TaskTablePage = (): JSX.Element => {
           newState.completeTasksCount = completeTasksCount;
           break;
       }
-      console.log('newState:', newState);
       return newState;
     },
     {
@@ -115,8 +116,9 @@ const TaskTablePage = (): JSX.Element => {
     clearCache: clearTasksCache,
   } = useGetTasks();
 
-  // console.log('Task Data:', taskData);
-  // console.log('Request Cache:', requestCache);
+  const reRender = useForceUpdate();
+
+  console.log('taskData:', taskData);
 
   const handleAddingTask = () => {
     setDialogTask(null);
@@ -139,9 +141,11 @@ const TaskTablePage = (): JSX.Element => {
     backlogTasks = taskData.filter(task => {
       return task.status === TaskStatus.BACKLOG;
     });
+
     activeTasks = taskData.filter(task => {
       return task.status === TaskStatus.ACTIVE;
     });
+
     completeTasks = taskData.filter(task => {
       return task.status === TaskStatus.COMPLETE;
     });
@@ -170,6 +174,7 @@ const TaskTablePage = (): JSX.Element => {
             setAddingTask={setAddingTask}
             clearTasksCache={clearTasksCache}
             columnSizeState={columnSizeState}
+            reRender={reRender}
           />
           {addingTask ? (
             <TaskDialog

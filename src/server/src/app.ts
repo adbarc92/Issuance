@@ -2,7 +2,6 @@ import express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
-import { Task } from 'entity/Task';
 import { Token } from 'entity/Token';
 // import * as expressWinston from 'express-winston';
 // import { format } from 'winston';

@@ -53,7 +53,7 @@ const ChildrenWrapper = styled('div')(() => {
 });
 
 const PageWrapper = (props: any): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   return (
     <div>
       <div className={classes.toolbar} />
@@ -72,13 +72,13 @@ export const reRenderApp = (): void => {
 };
 
 const App = (): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles({} as any);
 
   const rerender = useForceUpdate();
 
   render = rerender;
 
-  console.log('Rendering');
+  // console.log('Rendering');
 
   return (
     <Router>
