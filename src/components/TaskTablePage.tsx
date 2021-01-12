@@ -56,59 +56,6 @@ const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
   const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
 
-  const [columnSizeState, columnSizeDispatch] = React.useReducer(
-    (
-      state: {
-        backlogTasksCount: number;
-        activeTasksCount: number;
-        completeTasksCount: number;
-      },
-      action: {
-        key: string;
-        payload:
-          | number
-          | {
-              backlogTasksCount: number;
-              activeTasksCount: number;
-              completeTasksCount: number;
-            };
-      }
-    ) => {
-      const newState = { ...state };
-      switch (action.key) {
-        case 'updateBacklogSize':
-          newState.backlogTasksCount = action.payload as number;
-          break;
-        case 'updateActiveSize':
-          newState.activeTasksCount = action.payload as number;
-          break;
-        case 'updateCompleteSize':
-          newState.completeTasksCount = action.payload as number;
-          break;
-        case 'updateAll':
-          const {
-            backlogTasksCount,
-            activeTasksCount,
-            completeTasksCount,
-          } = action.payload as {
-            backlogTasksCount: number;
-            activeTasksCount: number;
-            completeTasksCount: number;
-          };
-          newState.backlogTasksCount = backlogTasksCount;
-          newState.activeTasksCount = activeTasksCount;
-          newState.completeTasksCount = completeTasksCount;
-          break;
-      }
-      return newState;
-    },
-    {
-      backlogTasksCount: 0,
-      activeTasksCount: 0,
-      completeTasksCount: 0,
-    }
-  );
-
   const {
     loading,
     data: taskData,
@@ -173,7 +120,6 @@ const TaskTablePage = (): JSX.Element => {
             setDialogTask={setDialogTask}
             setAddingTask={setAddingTask}
             clearTasksCache={clearTasksCache}
-            columnSizeState={columnSizeState}
             reRender={reRender}
           />
           {addingTask ? (
@@ -182,8 +128,6 @@ const TaskTablePage = (): JSX.Element => {
               onClose={handleCloseDialog}
               clearTasksCache={clearTasksCache}
               dialogTask={dialogTask}
-              columnSizeState={columnSizeState}
-              columnSizeDispatch={columnSizeDispatch}
             />
           ) : null}
         </>

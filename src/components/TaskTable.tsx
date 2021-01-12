@@ -66,22 +66,11 @@ export interface TaskTableProps {
   setDialogTask: (task: Task) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
-  columnSizeState: {
-    backlogTasksCount: number;
-    activeTasksCount: number;
-    completeTasksCount: number;
-  };
   reRender: () => void;
 }
 
 const TaskTable = (props: TaskTableProps): JSX.Element => {
-  const {
-    taskData,
-    setDialogTask,
-    setAddingTask,
-    columnSizeState,
-    reRender,
-  } = props;
+  const { taskData, setDialogTask, setAddingTask, reRender } = props;
 
   const { backlogTasks, activeTasks, completeTasks } = taskData;
 

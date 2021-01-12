@@ -23,7 +23,6 @@ import {
   FormatListNumbered as TasksIcon,
   People as PersonnelIcon,
   Settings as SettingsIcon,
-  Search as SearchIcon,
   Notifications as NotificationsIcon,
 } from '@material-ui/icons';
 import {

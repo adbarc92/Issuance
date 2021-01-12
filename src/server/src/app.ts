@@ -52,12 +52,6 @@ const start = async () => {
       ) {
         console.log('Registering new user');
         next();
-      } else if (
-        req.url === '/api/personnel' &&
-        req.method.toUpperCase() === 'POST'
-      ) {
-        console.log('Bypassing login');
-        next();
       } else {
         const token = req.headers.session;
         if (!token) {

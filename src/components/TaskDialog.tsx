@@ -31,8 +31,6 @@ import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
 
-import { getRowSize } from 'components/TaskTablePage';
-
 const TextFieldWrapper = styled('div')(() => {
   return {
     margin: '1rem 0',
@@ -61,21 +59,6 @@ export interface TaskDialogProps {
   onClose: () => void;
   clearTasksCache: () => void;
   dialogTask: Task | null;
-  columnSizeState: {
-    backlogTasksCount: number;
-    activeTasksCount: number;
-    completeTasksCount: number;
-  };
-  columnSizeDispatch: React.Dispatch<{
-    key: string;
-    payload:
-      | number
-      | {
-          backlogTasksCount: number;
-          activeTasksCount: number;
-          completeTasksCount: number;
-        };
-  }>;
 }
 
 export interface TaskDialogState {
@@ -164,7 +147,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
     projectId: 0,
-    rowIndex: props.columnSizeState.backlogTasksCount,
+    rowIndex: 0,
   };
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
@@ -236,11 +219,11 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       trimState(state);
 
       // Troubleshooting - Start
-      const columnSize = props.columnSizeState;
-      console.log('columnSize:', columnSize);
-      const rowIndex = getRowSize(state.status, columnSize);
+      // const columnSize = props.columnSizeState;
+      // console.log('columnSize:', columnSize);
+      // const rowIndex = getRowSize(state.status, columnSize);
 
-      console.log('rowIndex:', rowIndex);
+      // console.log('rowIndex:', rowIndex);
 
       const taskToSubmit = {
         name: state.name,

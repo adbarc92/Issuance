@@ -13,14 +13,12 @@ import ErrorBox from 'elements/ErrorBox';
 import { isNotFilledOut, isTooLong } from 'utils/index';
 
 import { useForm } from 'hooks/form';
-import { createUser, createPerson } from 'store/actions';
+import { createUser } from 'store/actions';
 
 import { UserRole } from 'types/user';
 
 import { setSessionToken } from 'store/auth';
 import { login } from 'store/actions';
-
-import { Person } from 'types/person';
 
 // DRY-candidate
 const MarginTopWrapper = styled('div')(() => {
@@ -78,46 +76,37 @@ const CreateUserPage = (): JSX.Element => {
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async () => {
-      console.log('State:', state);
       if (errors) {
         showNotification(
-          "Task doesn't meet requirements.",
+          "User doesn't meet requirements.",
           NotificationSeverity.ERROR
         );
         return;
       }
 
-      const person = await createPerson({ username: state.email });
+      // const person = await createPerson({ username: state.email });
 
-      const { id } = person as Person;
+      // const { id } = person as Person;
 
-      if (person) {
-        const userToSubmit = {
-          loginEmail: state.email,
-          password: state.password,
-          role: state.role,
-          id,
-        };
-        const user = await createUser(userToSubmit);
-        console.log('User:', user);
-        if (user) {
-          const sessionToken = await login(state.email, state.password);
-          if (sessionToken) {
-            setSessionToken(sessionToken);
-            window.location.href = '/';
-          } else {
-            console.error('failed to login');
-          }
+      const userToSubmit = {
+        loginEmail: state.email,
+        password: state.password,
+        role: state.role,
+        id: '0',
+      };
+      const user = await createUser(userToSubmit);
+
+      if (user) {
+        const sessionToken = await login(state.email, state.password);
+        if (sessionToken) {
+          setSessionToken(sessionToken);
+          window.location.href = '/';
         } else {
-          console.log('Failed to create user');
+          console.error('failed to login');
         }
       } else {
-        console.log('Person could not be created');
+        console.log('Failed to create user');
       }
-
-      // S/N: remove variable assignment when testing is complete
-
-      console.log('person:', person);
 
       // Could use DRY
     },
