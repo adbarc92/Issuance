@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
 
-  const { loading, data: personnel, error } = useGetPersonnel();
+  const { loading, error } = useGetPersonnel();
 
   if (error) {
     return <div>{error}</div>;

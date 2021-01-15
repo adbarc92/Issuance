@@ -1,9 +1,11 @@
 import React from 'react';
 
-import Select, { SelectItem } from 'elements/Select';
+import Select from 'elements/Select';
 import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
 
 import { createTask, updateTask } from 'store/actions';
+
+import { reRenderApp } from 'App';
 
 import {
   useNotificationSnackbar,
@@ -25,7 +27,6 @@ import {
   styled,
 } from '@material-ui/core';
 
-// import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateTimePicker from 'elements/DateTimePicker';
 
 import { useForm } from 'hooks/form';
@@ -62,17 +63,15 @@ export interface TaskDialogProps {
 
 export interface TaskDialogState {
   name: string;
-  summary: string;
   description: string;
-  taskType: TaskType;
-  taskStatus: TaskStatus;
-  taskPriority: TaskPriority;
+  type: TaskType;
+  status: TaskStatus;
+  priority: TaskPriority;
   deadline?: Date | string | null;
 }
 
 export enum TaskDialogAction {
   SET_NAME = 'setName',
-  SET_SUMMARY = 'setSummary',
   SET_DESCRIPTION = 'setDescription',
   SET_TASKTYPE = 'setTaskType',
   SET_TASKSTATUS = 'setTaskStatus',
@@ -86,32 +85,51 @@ export interface ITaskDialogActions {
   payload?: any;
 }
 
-const mapEnumToSelectItems = (
-  set: typeof TaskPriority | typeof TaskType | typeof TaskStatus
-): SelectItem<string>[] => {
-  return Object.keys(set).map(key => {
-    return { label: set[key], value: set[key] };
-  });
+const TaskPriorityMap = {
+  [TaskPriority.HIGHEST]: {
+    label: 'Highest',
+  },
+  [TaskPriority.HIGH]: {
+    label: 'High',
+  },
+  [TaskPriority.MEDIUM]: {
+    label: 'Medium',
+  },
+  [TaskPriority.LOW]: {
+    label: 'Low',
+  },
+  [TaskPriority.LOWEST]: {
+    label: 'Lowest',
+  },
+};
+
+const TaskStatusMap = {
+  [TaskStatus.BACKLOG]: {
+    label: 'Backlog',
+  },
+  [TaskStatus.ACTIVE]: {
+    label: 'Active',
+  },
+  [TaskStatus.COMPLETE]: {
+    label: 'Complete',
+  },
+};
+
+const TaskTypeMap = {
+  [TaskType.FEATURE]: { label: 'Feature' },
+  [TaskType.BUG]: { label: 'Bug' },
+  [TaskType.EPIC]: { label: 'Epic' },
 };
 
 const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {
-    const {
-      name,
-      summary,
-      description,
-      type: taskType,
-      status: taskStatus,
-      priority: taskPriority,
-      deadline,
-    } = task;
+    const { name, description, type, status, priority, deadline } = task;
     return {
       name,
-      summary,
       description,
-      taskType,
-      taskStatus,
-      taskPriority,
+      type,
+      status,
+      priority,
       deadline,
     };
   }
@@ -121,14 +139,15 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
 const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
-    summary: '',
     description: '',
-    taskType: TaskType.FEATURE,
-    taskStatus: TaskStatus.BACKLOG,
-    taskPriority: TaskPriority.MEDIUM,
+    type: TaskType.FEATURE,
+    status: TaskStatus.BACKLOG,
+    priority: TaskPriority.MEDIUM,
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
+    projectId: 0,
+    rowIndex: 0,
   };
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
@@ -139,27 +158,22 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       state: TaskDialogState,
       action: ITaskDialogActions
     ): TaskDialogState => {
-      // const { type }: TaskDialogAction = action;
       let newState = { ...state };
-      // console.log('newState:', newState);
       switch (action.type) {
         case TaskDialogAction.SET_NAME:
           newState.name = action.payload;
-          break;
-        case TaskDialogAction.SET_SUMMARY:
-          newState.summary = action.payload;
           break;
         case TaskDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
           break;
         case TaskDialogAction.SET_TASKTYPE:
-          newState.taskType = action.payload;
+          newState.type = action.payload;
           break;
         case TaskDialogAction.SET_TASKSTATUS:
-          newState.taskStatus = action.payload;
+          newState.status = action.payload;
           break;
         case TaskDialogAction.SET_TASKPRIORITY:
-          newState.taskPriority = action.payload;
+          newState.priority = action.payload;
           break;
         case TaskDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
@@ -204,33 +218,38 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const task = addingTask
-        ? await createTask({
-            name: state.name,
-            summary: state.summary,
-            description: state.description,
-            type: state.taskType,
-            priority: state.taskPriority,
-            status: state.taskStatus,
-            deadline: state.deadline as string,
-          })
-        : updateTask((props.dialogTask as Task).id, {
-            ...(props.dialogTask as Task),
-            name: state.name,
-            summary: state.summary,
-            description: state.description,
-            type: state.taskType,
-            priority: state.taskPriority,
-            status: state.taskStatus,
-            deadline: state.deadline as string,
-          });
+      // Troubleshooting - Start
+      // const columnSize = props.columnSizeState;
+      // console.log('columnSize:', columnSize);
+      // const rowIndex = getRowSize(state.status, columnSize);
+
+      // console.log('rowIndex:', rowIndex);
+
+      const taskToSubmit = {
+        name: state.name,
+        description: state.description,
+        type: state.type,
+        priority: state.priority,
+        status: state.status,
+        deadline: state.deadline as string,
+        projectId: 0,
+        rowIndex: 0,
+      };
+
+      const task = await (addingTask
+        ? createTask(taskToSubmit)
+        : updateTask((props.dialogTask as Task).id, taskToSubmit));
       if (task) {
         showNotification(
           `Task ${addingTask ? 'created' : 'edited'} successfully!`,
           NotificationSeverity.SUCCESS
         );
         handleClose();
-        clearTasksCache(); // Suboptimal; task should be added to cache instead of being refetched
+        if (addingTask) {
+          clearTasksCache();
+        } else {
+          reRenderApp();
+        }
       } else {
         showNotification('User creation failed!', NotificationSeverity.ERROR);
       }
@@ -247,8 +266,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     reset();
     onClose();
   };
-
-  // console.log('state:', state);
 
   return (
     <>
@@ -281,20 +298,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               });
             }}
           />
-          <TextField
-            margin="dense"
-            id="summary"
-            label="Task Summary"
-            type="text"
-            fullWidth
-            value={state.summary}
-            onChange={e => {
-              dispatch({
-                type: TaskDialogAction.SET_SUMMARY,
-                payload: e.target.value,
-              });
-            }}
-          />
           <TextFieldWrapper>
             <TextField
               margin="dense"
@@ -319,42 +322,57 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               <Select
                 fullWidth
                 title={'Task Priority'}
-                items={mapEnumToSelectItems(TaskPriority)}
+                items={Object.keys(TaskPriorityMap).map(key => {
+                  return {
+                    label: TaskPriorityMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKPRIORITY,
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskPriority}
+                value={state.priority}
               />
             </SelectWrapper>
             <SelectWrapper>
               <Select
                 fullWidth
                 title={'Task Type'}
-                items={mapEnumToSelectItems(TaskType)}
+                items={Object.keys(TaskTypeMap).map(key => {
+                  return {
+                    label: TaskTypeMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKTYPE,
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskType}
+                value={state.type}
               />
             </SelectWrapper>
             <SelectWrapper>
               <Select
                 fullWidth
                 title={'Task Status'}
-                items={mapEnumToSelectItems(TaskStatus)}
+                items={Object.keys(TaskStatusMap).map(key => {
+                  return {
+                    label: TaskStatusMap[key].label,
+                    value: key,
+                  };
+                })}
                 onChange={e => {
                   dispatch({
                     type: TaskDialogAction.SET_TASKSTATUS,
                     payload: e.target.value,
                   });
                 }}
-                value={state.taskStatus}
+                value={state.status}
               />
             </SelectWrapper>
           </SelectContainer>
@@ -384,7 +402,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
             Cancel
           </Button>
           <Button variant="contained" onClick={submit} color="primary">
-            Submit
+            {addingTask ? 'Submit' : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>

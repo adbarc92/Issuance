@@ -1,7 +1,12 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
-import { requestCache, CacheKey } from 'hooks/getData';
-import { Task, TaskPriority, TaskType, TaskStatus } from 'types/task';
+import { Person as IPerson } from 'types/person';
+import { User, UserInput } from 'types/user';
+import { CacheKey, requestCache } from 'hooks/getData';
+
+// Actions change things
+
+export type TaskInput = Partial<ITask> & Record<string, unknown>;
 
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
@@ -11,7 +16,11 @@ const updateCache = (obj: any, subCache?: any) => {
     if (Array.isArray(value)) {
       updateCache(obj, value);
     } else if (typeof value === 'object') {
-      if (value.typeName === obj.typeName && value.id === obj.id) {
+      if (
+        value.typeName &&
+        value.typeName === obj.typeName &&
+        value.id === obj.id
+      ) {
         cache[i] = obj;
       } else {
         updateCache(obj, value);
@@ -20,25 +29,35 @@ const updateCache = (obj: any, subCache?: any) => {
   }
 };
 
-const addTaskToCache = (task: Task) => {
-  requestCache[CacheKey.TASKS + task.id] = task;
-  // console.log(
-  //   'Task:',
-  //   task,
-  //   'has been added to request cache at index',
-  //   task.id
-  // );
-  // console.log('Resulting cache:', requestCache);
+// Should be generic,
+export const updateCacheOrdering = (
+  orderingArray: { id: string }[],
+  cacheKey: CacheKey
+): void => {
+  const cache = requestCache[cacheKey];
+  const hashedCache = cache.reduce((prev, current) => {
+    prev[current.id] = current;
+    return prev;
+  }, {});
+  const newArray = orderingArray.map((elem: { id: string }) => {
+    return hashedCache[elem.id];
+  });
+  // requestCache[cacheKey] = newArray;
+  for (let i = 0; i < newArray.length; i++) {
+    requestCache[cacheKey][i] = newArray[i];
+  }
 };
 
 export const updateTask = async (
-  id: number,
-  task: ITask
+  id: string,
+  task: TaskInput
 ): Promise<ITask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
-    console.log('Response:', response.data);
-    updateCache(response.data);
+    console.log('Update Task Response:', response.data);
+    updateCache(response.data.task);
+    updateCacheOrdering(response.data.ordering, CacheKey.TASKS);
+    console.log('Cache:', requestCache[CacheKey.TASKS]);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -47,20 +66,10 @@ export const updateTask = async (
   }
 };
 
-export const createTask = async (task: {
-  name: string;
-  summary: string;
-  description: string;
-  type: TaskType;
-  priority: TaskPriority;
-  status: TaskStatus;
-  deadline: string;
-}): Promise<Task | null> => {
+export const createTask = async (task: TaskInput): Promise<ITask | null> => {
   try {
-    // const tomorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     const response = await api.post('/tasks', {
       name: task.name,
-      summary: task.summary,
       description: task.description,
       type: task.type,
       priority: task.priority,
@@ -70,7 +79,6 @@ export const createTask = async (task: {
       projectId: 0,
       reportedBy: 0,
     });
-    addTaskToCache(response.data);
     return response.data;
   } catch (e) {
     console.error(e);
@@ -78,8 +86,14 @@ export const createTask = async (task: {
   }
 };
 
-// Returns token or null; token will expire after a day; token should be attached to all requests--all requests except a login request require a token
-//
+export const deleteTask = async (taskId: string): Promise<undefined | null> => {
+  try {
+    await api.delete(`/tasks/${taskId}`);
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
 
 export const login = async (
   email: string,
@@ -100,6 +114,35 @@ export const login = async (
 export const checkLogin = async (): Promise<boolean | null> => {
   try {
     const response = await api.put('/login', {});
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createUser = async (user: UserInput): Promise<User | null> => {
+  try {
+    const response = await api.post('/users', {
+      loginEmail: user.loginEmail,
+      userPassword: user.password,
+      userRole: user.role,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createPerson = async (
+  person: Partial<IPerson> & { username: string }
+): Promise<IPerson | null> => {
+  try {
+    const response = await api.post('/personnel', {
+      username: person.username,
+    });
+    console.log('response:', response);
     return response.data;
   } catch (e) {
     console.error(e);

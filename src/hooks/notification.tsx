@@ -13,22 +13,33 @@ export enum NotificationSeverity {
   ERROR,
 }
 
-export const useNotificationSnackbar = (): [
-  JSX.Element,
-  (message: string, severity: NotificationSeverity) => void
-] => {
+export const useNotificationSnackbar = (
+  position?: 'top' | 'bottom'
+): [JSX.Element, (message: string, severity: NotificationSeverity) => void] => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [severity, setSeverity] = React.useState<NotificationSeverity>(
     NotificationSeverity.SUCCESS
   );
 
+  let vertical: 'top' | 'bottom' = 'bottom';
+  const horizontal = 'center';
+
+  if (position === 'top') {
+    vertical = 'top';
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
 
   const snackbar = (
-    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+    <Snackbar
+      anchorOrigin={{ vertical, horizontal }}
+      open={open}
+      autoHideDuration={3000}
+      onClose={handleClose}
+    >
       <Alert
         onClose={handleClose}
         severity={

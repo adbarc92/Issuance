@@ -1,45 +1,41 @@
 import React from 'react';
+import { TextField, Button, styled } from '@material-ui/core';
+import CenteredForm from 'elements/CenteredForm';
+import FormButtonContainer from 'elements/FormButtonContainer';
 
-import { styled, TextField, Button } from '@material-ui/core';
-
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
-
-import { useForm } from 'hooks/form';
 import {
   useNotificationSnackbar,
   NotificationSeverity,
 } from 'hooks/notification';
 
 import ErrorBox from 'elements/ErrorBox';
-import CenteredForm from 'elements/CenteredForm';
-import LinkLessText from 'elements/LinkLessText';
 
-import { login } from 'store/actions';
+import { isNotFilledOut, isTooLong } from 'utils/index';
+
+import { useForm } from 'hooks/form';
+import { createUser } from 'store/actions';
+
+import { UserRole } from 'types/user';
+
 import { setSessionToken } from 'store/auth';
+import { login } from 'store/actions';
 
-import FormButtonContainer from 'elements/FormButtonContainer';
-
-// const WideDiv = styled('div')(() => {
-//   return {
-//     width: '25rem',
-//   };
-// });
-
-const ErrorBoxWrapper = styled('div')(() => {
+// DRY-candidate
+const MarginTopWrapper = styled('div')(() => {
   return {
     marginTop: '1rem',
   };
 });
 
-const LoginPage = (): JSX.Element => {
+const CreateUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
     password: '',
+    confirmPassword: '',
+    role: UserRole.MIDDLER,
   };
 
-  const [snackbar, showNotification] = useNotificationSnackbar('top');
-
-  const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
+  const { state, submit, errors, triedSubmit, dispatch } = useForm({
     initialState,
     reducer: (state, action) => {
       const { payload, type } = action;
@@ -49,6 +45,10 @@ const LoginPage = (): JSX.Element => {
         newState.email = payload;
       } else if (type === 'setPassword') {
         newState.password = payload;
+      } else if (type === 'setConfirmPassword') {
+        newState.confirmPassword = payload;
+      } else if (type === 'setRole') {
+        newState.role = payload;
       }
       return newState;
     },
@@ -56,7 +56,7 @@ const LoginPage = (): JSX.Element => {
       const errors: Record<string, string> = {};
       const vState = { ...state };
 
-      trimState(vState);
+      // trimState(vState);
 
       if (isNotFilledOut(vState.email)) {
         errors.email = 'An email must be provided.';
@@ -70,20 +70,44 @@ const LoginPage = (): JSX.Element => {
       if (isTooLong(vState.password, 120)) {
         errors.password = 'A password must be less than 120 characters.';
       }
+      if (vState.confirmPassword !== vState.password) {
+        errors.confirmPassword = 'The passwords must match.';
+      }
       return Object.keys(errors).length ? errors : undefined;
     },
-    onSubmit: async state => {
-      const sessionToken = await login(state.email, state.password);
-      if (sessionToken) {
-        setSessionToken(sessionToken);
-        window.location.href = '/';
-      } else {
-        console.error('Failed to login.');
-        showNotification('Login Failed', NotificationSeverity.ERROR);
-        const email = state.email;
-        reset();
-        dispatch({ payload: email, type: 'setEmail' });
+    onSubmit: async () => {
+      if (errors) {
+        showNotification(
+          "User doesn't meet requirements.",
+          NotificationSeverity.ERROR
+        );
+        return;
       }
+
+      // const person = await createPerson({ username: state.email });
+
+      // const { id } = person as Person;
+
+      const userToSubmit = {
+        loginEmail: state.email,
+        password: state.password,
+        role: state.role,
+      };
+      const user = await createUser(userToSubmit);
+
+      if (user) {
+        const sessionToken = await login(state.email, state.password);
+        if (sessionToken) {
+          setSessionToken(sessionToken);
+          window.location.href = '/';
+        } else {
+          console.error('failed to login');
+        }
+      } else {
+        console.log('Failed to create user');
+      }
+
+      // Could use DRY
     },
   });
 
@@ -93,10 +117,12 @@ const LoginPage = (): JSX.Element => {
     }
   };
 
+  const [snackbar, showNotification] = useNotificationSnackbar();
+
   return (
     <CenteredForm>
+      {snackbar}
       <div>
-        {snackbar}
         <TextField
           variant="outlined"
           margin="dense"
@@ -121,6 +147,18 @@ const LoginPage = (): JSX.Element => {
           }}
           onKeyDown={handleKeyDown}
         />
+        <TextField
+          variant="outlined"
+          margin="dense"
+          label="Confirm Password"
+          type="password"
+          fullWidth
+          value={state.confirmPassword}
+          onChange={e => {
+            dispatch({ type: 'setConfirmPassword', payload: e.target.value });
+          }}
+          onKeyDown={handleKeyDown}
+        />
         <FormButtonContainer>
           <Button
             fullWidth
@@ -128,22 +166,17 @@ const LoginPage = (): JSX.Element => {
             onClick={() => submit()}
             color="primary"
           >
-            Log In
-          </Button>
-        </FormButtonContainer>
-        <FormButtonContainer>
-          <Button fullWidth variant="contained" color="secondary">
-            <LinkLessText to="/register">Create User</LinkLessText>
+            Register
           </Button>
         </FormButtonContainer>
         {errors && triedSubmit ? (
-          <ErrorBoxWrapper>
+          <MarginTopWrapper>
             <ErrorBox errors={errors} />
-          </ErrorBoxWrapper>
+          </MarginTopWrapper>
         ) : null}
       </div>
     </CenteredForm>
   );
 };
 
-export default LoginPage;
+export default CreateUserPage;

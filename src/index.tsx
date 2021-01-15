@@ -9,7 +9,7 @@ const main = async () => {
     ReactDOM.render(<App />, document.getElementById('root'));
   } else {
     if (await isLoggedIn()) {
-      console.log('Logged in');
+      // console.log('Logged in');
       ReactDOM.render(<App />, document.getElementById('root'));
     } else {
       window.location.href = '/login';

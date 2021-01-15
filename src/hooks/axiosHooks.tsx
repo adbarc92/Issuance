@@ -1,4 +1,4 @@
-import { Person, PersonRole } from 'types/person';
+import { Person, PersonJob } from 'types/person';
 import { Task } from 'types/task';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
@@ -6,20 +6,33 @@ import { api } from 'store/api';
 // Temp
 
 // Helper function for the hook below, not technically a hook
-export const getPerson = async (id: number): Promise<Person> => {
+export const getPersonById = async (id: number): Promise<Person> => {
   const response = await api.get(`/personnel/${id}`);
   return response.data;
 };
 
+export const getPersonByUsername = async (
+  username: string
+): Promise<Person> => {
+  const response = await api.get(`/personnel/${username}`);
+  return response.data;
+};
+
 // This is a hook because it returns a function that contains a hook
-export const useGetPerson = (id: number): IDataLoader<Person> => {
+export const useGetPersonById = (id: number): IDataLoader<Person> => {
   return useGetData(
     () => {
-      return getPerson(id);
+      return getPersonById(id);
     },
     CacheKey.PERSONNEL,
     String(id)
   );
+};
+
+export const useGetPersonByUsername = (
+  username: string
+): IDataLoader<Person> => {
+  return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
 };
 
 export const getPersonnel = async (): Promise<Person[] | null> => {
@@ -37,12 +50,18 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
 };
 
 export const createPerson = async (
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
-  role: PersonRole
+  role: PersonJob
 ): Promise<Person | null> => {
   try {
-    const response = await api.post('/personnel', { name, email, role });
+    const response = await api.post('/personnel', {
+      firstName,
+      lastName,
+      email,
+      role,
+    });
     // console.log(response);
     return response.data;
   } catch (e) {
@@ -64,4 +83,25 @@ export const getTasks = async (): Promise<Task[] | null> => {
 
 export const useGetTasks = (): IDataLoader<Task[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
+};
+
+export const getTask = async (taskId: number): Promise<Task | null> => {
+  try {
+    const res = await api.get(`/tasks/${taskId}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    // throw e;
+    return null;
+  }
+};
+
+export const useGetTask = (id: number): IDataLoader<Task | null> => {
+  return useGetData(
+    () => {
+      return getTask(id);
+    },
+    CacheKey.TASKS,
+    String(id)
+  );
 };

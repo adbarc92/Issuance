@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',
@@ -21,18 +21,19 @@ export enum TaskStatus {
 }
 
 @Entity()
+// @Unique(['row_index'])
 export class Task {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   name!: string;
 
-  @Column()
-  projectId!: number;
+  @Column({ default: (): number => 0 })
+  row_index!: number;
 
   @Column()
-  summary!: string;
+  project_id!: number;
 
   @Column()
   description!: string;
@@ -45,7 +46,6 @@ export class Task {
   priority!: TaskPriority;
 
   @Column('timestamp', {
-    // name: 'deadline',
     default: (): string => 'LOCALTIMESTAMP',
   })
   deadline!: Date;
@@ -58,16 +58,15 @@ export class Task {
   type!: TaskType;
 
   @Column()
-  reportedBy!: number;
+  reported_by!: number;
 
   @Column()
-  assignedTo!: number;
+  assigned_to!: number;
 
   @Column('timestamp', {
-    name: 'createdOn',
     default: (): string => 'LOCALTIMESTAMP',
   })
-  createdOn!: Date;
+  created_on!: Date;
 
   @Column({
     type: 'enum',

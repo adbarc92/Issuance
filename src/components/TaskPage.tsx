@@ -1,12 +1,12 @@
 import React from 'react';
-import TaskDialog from 'components/TaskDialog';
-import { Add } from '@material-ui/icons';
-import { styled, Button } from '@material-ui/core';
-
+import { styled } from '@material-ui/core';
 import { Task } from 'types/task';
-import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
-import { useGetTasks } from 'hooks/axiosHooks';
+
+import { useGetTask } from 'hooks/axiosHooks';
+import PageTitle from 'elements/PageTitle';
+
+import theme, { colors } from 'theme';
 
 const RootWrapper = styled('div')(() => {
   return {
@@ -14,44 +14,64 @@ const RootWrapper = styled('div')(() => {
   };
 });
 
-const HeaderWrapper = styled('div')(() => {
+export interface TaskPageProps {
+  taskId: number;
+}
+
+interface InfoBoxProps {
+  title: string;
+  children?: any;
+  gridArea?: string;
+}
+
+const InfoBoxHeader = styled('div')(() => {
   return {
-    fontSize: '3rem',
-    margin: '0',
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    padding: '0.25rem 0',
+    margin: '0.25rem 0',
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
   };
 });
 
-const SubHeaderWrapper = styled('div')(() => {
+interface InfoBoxWrapperProps {
+  gridArea?: string;
+}
+
+const InfoBoxWrapper = styled('div')((props: InfoBoxWrapperProps) => {
   return {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: '1%',
-    marginBottom: '0.5rem',
+    gridArea: props.gridArea,
+    border: `2px solid ${colors.grey}`,
+    borderRadius: '4px',
+    padding: '0.5rem',
   };
 });
 
-const TaskPage = (): JSX.Element => {
-  const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+const InfoBox = (props: InfoBoxProps): JSX.Element => {
+  return (
+    <InfoBoxWrapper gridArea={props.gridArea}>
+      <InfoBoxHeader>{props.title}</InfoBoxHeader>
+      {props.children}
+    </InfoBoxWrapper>
+  );
+};
 
-  const {
-    loading,
-    data: taskData,
-    error,
-    clearCache: clearTasksCache,
-  } = useGetTasks();
-
-  const handleAddingTask = () => {
-    setDialogTask(null);
-    setAddingTask(true);
+const GridWrapper = styled('div')(() => {
+  return {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto auto',
+    gridTemplateRows: 'auto auto',
+    gridTemplateAreas: "'details description comments' 'people dates comments'",
   };
+});
 
-  const handleCloseDialog = () => {
-    setAddingTask(false);
-  };
+const TaskPage = (props: TaskPageProps): JSX.Element => {
+  const { loading, data, error } = useGetTask(props.taskId);
+
+  const task = data as Task;
 
   if (error) {
-    return <div>There was an error: {error}</div>;
+    return <div>{error}</div>;
   }
 
   return (
@@ -60,30 +80,28 @@ const TaskPage = (): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <HeaderWrapper>Tasks</HeaderWrapper>
-          <SubHeaderWrapper>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddingTask}
-            >
-              Create Task
-              <Add />
-            </Button>
-          </SubHeaderWrapper>
-          <TaskTable
-            taskData={taskData as Task[]}
-            setDialogTask={setDialogTask}
-            setAddingTask={setAddingTask}
-          />
-          {addingTask ? (
-            <TaskDialog
-              open={addingTask}
-              onClose={handleCloseDialog}
-              clearTasksCache={clearTasksCache}
-              dialogTask={dialogTask}
-            />
-          ) : null}
+          <PageTitle title={task.name} projectId={task.projectId} />
+          <GridWrapper>
+            <InfoBox title="Details" gridArea="details">
+              <div>Type: {task.type}</div>
+              <div>Priority: {task.priority}</div>
+              <div>Status: {task.status}</div>
+            </InfoBox>
+
+            <InfoBox title="Description" gridArea="description">
+              <div>{task.description}</div>
+            </InfoBox>
+
+            <InfoBox title="Dates" gridArea="dates">
+              <div>Created On: {task.createdOn}</div>
+              <div>Deadline: {task.deadline}</div>
+            </InfoBox>
+
+            <InfoBox title="People" gridArea="people">
+              <div>Assignee ID: {task.assignedTo}</div>
+              <div>Reporter ID: {task.reportedBy}</div>
+            </InfoBox>
+          </GridWrapper>
         </>
       )}
     </RootWrapper>

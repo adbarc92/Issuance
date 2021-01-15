@@ -1,12 +1,16 @@
-export enum PersonRole {
-  BOSS,
-  MIDDLER,
-  GRUNT,
+export enum PersonJob {
+  UI = 'UI',
+  QA = 'QA',
+  CODER = 'CODER',
+  MANAGER = 'MANAGER',
 }
 
 export interface Person {
-  id: number;
-  name: string;
-  email: string;
-  role: PersonRole;
+  id: string;
+  username: string;
+  profilePicture: string;
+  firstName: string;
+  lastName: string;
+  contactEmail: string;
+  role: PersonJob;
 }

@@ -9,37 +9,66 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
+  styled,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Person } from 'types/person';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    addContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    add: {
-      fontSize: '200',
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.secondary.main,
-    },
-    textAlignCenter: {
-      textAlign: 'center',
-    },
-  })
-);
+import SimpleMenu from 'elements/SimpleMenu';
 
 export interface PersonnelTableProps {
   personnelData: Person[];
 }
 
+const VertIconWrapper = styled(Button)(() => {
+  return {};
+});
+
 const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
   const { personnelData } = props;
-  const classes = useStyles();
 
-  const columnHeaders = ['ID', 'Name', 'Email', 'Role'];
+  const columnHeaders = [
+    '',
+    'Username',
+    'First Name',
+    'Last Name',
+    'Email',
+    'Role',
+    'Actions',
+  ];
+
+  const menuItems = [
+    {
+      key: 'View Page',
+      onClick: () => {
+        console.log('View Page');
+      },
+    },
+    {
+      key: 'Edit',
+      onClick: () => {
+        console.log('Edit');
+      },
+    },
+    {
+      key: 'Hide',
+      onClick: () => {
+        console.log('Edit');
+      },
+    },
+  ];
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElement(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElement(null);
+  };
+
+  const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
+    null
+  );
 
   return (
     <TableContainer component={Paper}>
@@ -54,15 +83,23 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
         <TableBody>
           {personnelData
             ? personnelData.map((person, index) => {
-                const { id, name, email, role } = person;
                 return (
                   <TableRow key={index}>
-                    <TableCell>{id}</TableCell>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{email}</TableCell>
-                    <TableCell>{role}</TableCell>
-                    <TableCell className={classes.textAlignCenter}>
-                      <MoreVert />
+                    <TableCell>{person.profilePicture}</TableCell>
+                    <TableCell>{person.username}</TableCell>
+                    <TableCell>{person.firstName}</TableCell>
+                    <TableCell>{person.lastName}</TableCell>
+                    <TableCell>{person.contactEmail}</TableCell>
+                    <TableCell>{person.role}</TableCell>
+                    <TableCell>
+                      <VertIconWrapper onClick={handleClick}>
+                        <MoreVert />
+                      </VertIconWrapper>
+                      <SimpleMenu
+                        menuItems={menuItems}
+                        anchorElement={anchorElement}
+                        handleClose={handleClose}
+                      />
                     </TableCell>
                   </TableRow>
                 );

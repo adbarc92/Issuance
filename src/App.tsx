@@ -1,9 +1,13 @@
 import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
-import PersonnelPage from 'components/PersonnelPage';
-import TaskPage from 'components/TaskPage';
+import PersonnelTablePage from 'components/PersonnelTablePage';
+import TaskTablePage from 'components/TaskTablePage';
+import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
+import TaskPage from 'components/TaskPage';
+
+import { useForceUpdate } from 'hooks/render';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
@@ -49,7 +53,7 @@ const ChildrenWrapper = styled('div')(() => {
 });
 
 const PageWrapper = (props: any): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   return (
     <div>
       <div className={classes.toolbar} />
@@ -61,10 +65,20 @@ const PageWrapper = (props: any): JSX.Element => {
   );
 };
 
-const App = (): JSX.Element => {
-  const classes = useStyles();
+let render: any = null;
 
-  console.log('Rendering');
+export const reRenderApp = (): void => {
+  render();
+};
+
+const App = (): JSX.Element => {
+  const classes = useStyles({} as any);
+
+  const rerender = useForceUpdate();
+
+  render = rerender;
+
+  // console.log('Rendering');
 
   return (
     <Router>
@@ -75,7 +89,7 @@ const App = (): JSX.Element => {
           </Route>
           <Route path="/personnel">
             <PageWrapper>
-              <PersonnelPage />
+              <PersonnelTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/">
@@ -83,10 +97,23 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PageWrapper>
           </Route>
+          <Route
+            path="/tasks/:taskId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <TaskPage taskId={match.params.taskId} />
+                </PageWrapper>
+              );
+            }}
+          ></Route>
           <Route path="/tasks">
             <PageWrapper>
-              <TaskPage />
+              <TaskTablePage />
             </PageWrapper>
+          </Route>
+          <Route path="/register">
+            <RegisterUserPage />
           </Route>
         </Switch>
       </div>
