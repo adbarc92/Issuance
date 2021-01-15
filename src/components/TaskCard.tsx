@@ -179,7 +179,9 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
                   </Typography>
                 </Link>
                 <Typography variant="body1" component="p">
-                  {description}
+                  {description.length <= 140
+                    ? description
+                    : description.slice(0, 140) + '...'}
                 </Typography>
                 <Typography variant="subtitle1" component="p">
                   {type}

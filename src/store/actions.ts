@@ -15,7 +15,8 @@ const updateCache = (obj: any, subCache?: any) => {
     // check if object
     if (Array.isArray(value)) {
       updateCache(obj, value);
-    } else if (typeof value === 'object') {
+      // Bug fix: typeof null === object
+    } else if (value && typeof value === 'object') {
       if (
         value.typeName &&
         value.typeName === obj.typeName &&
