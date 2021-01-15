@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
 import { Token } from 'entity/Token';
+import { Person } from 'entity/Person';
 // import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 // import * as winston from 'winston';
@@ -14,6 +15,7 @@ import ormconfig from '../ormconfig.json';
 
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
+import { PersonService } from 'services/personnel.services.ts';
 
 const port = 4000;
 
@@ -98,15 +100,19 @@ const start = async () => {
     router.post('/users', async function (req: Request, res: Response) {
       // Check for existing user
       try {
-        const {
-          loginEmail: email,
-          userPassword,
-          userRole: role,
-          personId: person_id,
-        } = req.body;
+        // Server should create a person for new user
+        const { loginEmail: email, userPassword, userRole: role } = req.body;
+
+        const personService = new PersonService();
+
+        const person = await personService.createPerson({ username: email });
+
+        const person_id = person.id;
+
         const { salt, passwordHash: hashed_password } = saltHashPassword(
           userPassword
         );
+
         const user = {
           email,
           hashed_password,
@@ -114,7 +120,6 @@ const start = async () => {
           role,
           person_id,
         };
-        console.log('user:', user);
         const repoUser = userRepository.create(user);
 
         const results = await userRepository.save(repoUser);

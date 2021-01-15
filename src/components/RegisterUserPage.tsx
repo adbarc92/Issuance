@@ -92,7 +92,6 @@ const CreateUserPage = (): JSX.Element => {
         loginEmail: state.email,
         password: state.password,
         role: state.role,
-        id: '0',
       };
       const user = await createUser(userToSubmit);
 

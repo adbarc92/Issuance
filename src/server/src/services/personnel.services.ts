@@ -9,6 +9,7 @@ export class PersonService {
   constructor() {
     this.personRepository = getConnection().getRepository(Person);
   }
+
   async getPersonById(id: string): Promise<Person> {
     return await this.personRepository.findOne(id);
   }
@@ -24,13 +25,13 @@ export class PersonService {
   // Needs to be fixed
   async createPerson(
     person: Partial<Person> & { username: string }
-  ): Promise<any> {
+  ): Promise<Person> {
     const curPerson = this.personRepository.create({
       ...snakeCasify(person),
       username: person.username,
       job: person.job ? person.job : PersonJob.CODER,
-    });
-    return await this.personRepository.save(curPerson);
+    } as Person); // BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
+    return this.personRepository.save(curPerson);
   }
 
   async modifyPerson(

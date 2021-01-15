@@ -127,7 +127,6 @@ export const createUser = async (user: UserInput): Promise<User | null> => {
       loginEmail: user.loginEmail,
       userPassword: user.password,
       userRole: user.role,
-      personId: user.id,
     });
     return response.data;
   } catch (e) {

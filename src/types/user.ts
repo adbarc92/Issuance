@@ -15,7 +15,6 @@ export interface UserInput {
   loginEmail: string;
   password: string;
   role: UserRole;
-  id: string;
 }
 
 export const UserRoleLabelsMap = {
