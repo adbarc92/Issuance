@@ -22,6 +22,7 @@ const port = 4000;
 const init = async () => {
   const connection = await createConnection({
     ...ormconfig,
+    synchronize: false,
   } as any);
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
   await connection.close();
