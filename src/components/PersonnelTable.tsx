@@ -29,10 +29,9 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
 
   const columnHeaders = [
     '',
-    'Username',
+    'User Email',
     'First Name',
     'Last Name',
-    'Email',
     'Role',
     'Actions',
   ];
@@ -82,15 +81,14 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
         </TableHead>
         <TableBody>
           {personnelData
-            ? personnelData.map((person, index) => {
+            ? personnelData.map((person: Person, index) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{person.profilePicture}</TableCell>
-                    <TableCell>{person.username}</TableCell>
+                    <TableCell>{person.userEmail}</TableCell>
                     <TableCell>{person.firstName}</TableCell>
                     <TableCell>{person.lastName}</TableCell>
-                    <TableCell>{person.contactEmail}</TableCell>
-                    <TableCell>{person.role}</TableCell>
+                    <TableCell>{person.job}</TableCell>
                     <TableCell>
                       <VertIconWrapper onClick={handleClick}>
                         <MoreVert />

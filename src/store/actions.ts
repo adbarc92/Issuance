@@ -122,28 +122,32 @@ export const checkLogin = async (): Promise<boolean | null> => {
   }
 };
 
-export const createUser = async (user: UserInput): Promise<User | null> => {
+export const createUser = async (
+  user: UserInput
+): Promise<{ user: User | null; statusCode: number }> => {
   try {
     const response = await api.post('/users', {
       loginEmail: user.loginEmail,
       userPassword: user.password,
       userRole: user.role,
     });
-    return response.data;
+    return { user: response.data, statusCode: 200 };
   } catch (e) {
     console.error(e);
-    return null;
+    return { user: null, statusCode: e.response.status };
   }
 };
 
 export const createPerson = async (
-  person: Partial<IPerson> & { username: string }
+  person: Partial<IPerson> & { userEmail: string }
 ): Promise<IPerson | null> => {
   try {
-    const response = await api.post('/personnel', {
-      username: person.username,
-    });
-    console.log('response:', response);
+    const newPerson = {
+      ...person,
+      userEmail: person.userEmail,
+    };
+    console.log('newPerson:', newPerson);
+    const response = await api.post('/personnel', newPerson);
     return response.data;
   } catch (e) {
     console.error(e);

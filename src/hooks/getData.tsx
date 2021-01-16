@@ -22,6 +22,7 @@ export const requestCache: Record<
 export enum CacheKey {
   PERSONNEL,
   TASKS,
+  USERS,
 }
 
 type LoaderFunction = () => Promise<any>;

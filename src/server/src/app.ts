@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { User } from 'entity/User';
 import { Token } from 'entity/Token';
-import { Person } from 'entity/Person';
 // import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 // import * as winston from 'winston';
@@ -104,9 +103,20 @@ const start = async () => {
         // Server should create a person for new user
         const { loginEmail: email, userPassword, userRole: role } = req.body;
 
+        // Check if User Exists
+        const users = await userRepository.find();
+
+        const userEmails = users.map(user => user.email);
+
+        if (userEmails.includes(email)) {
+          console.error('User already exists.');
+          res.status(409);
+          return res.send(createErrorResponse(['User already exists.']));
+        }
+
         const personService = new PersonService();
 
-        const person = await personService.createPerson({ username: email });
+        const person = await personService.createPerson({ userEmail: email });
 
         const person_id = person.id;
 
@@ -129,6 +139,15 @@ const start = async () => {
         console.error('Error occurred:', e);
         res.status(403);
         return res.send(createErrorResponse(['Not authorized.']));
+      }
+    });
+
+    router.get('/users', async function (req: Request, res: Response) {
+      try {
+        const users = await userRepository.find();
+        res.json(users);
+      } catch (e) {
+        console.error('Error occurred:', e);
       }
     });
 

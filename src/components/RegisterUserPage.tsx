@@ -27,7 +27,7 @@ const MarginTopWrapper = styled('div')(() => {
   };
 });
 
-const CreateUserPage = (): JSX.Element => {
+const RegisterUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
     password: '',
@@ -84,16 +84,14 @@ const CreateUserPage = (): JSX.Element => {
         return;
       }
 
-      // const person = await createPerson({ username: state.email });
-
-      // const { id } = person as Person;
-
       const userToSubmit = {
         loginEmail: state.email,
         password: state.password,
         role: state.role,
       };
-      const user = await createUser(userToSubmit);
+
+      const { user, statusCode } = await createUser(userToSubmit);
+      console.log('user:', user);
 
       if (user) {
         const sessionToken = await login(state.email, state.password);
@@ -103,11 +101,11 @@ const CreateUserPage = (): JSX.Element => {
         } else {
           console.error('failed to login');
         }
+      } else if (statusCode === 409) {
+        showNotification('User already exists.', NotificationSeverity.ERROR);
       } else {
         console.log('Failed to create user');
       }
-
-      // Could use DRY
     },
   });
 
@@ -155,7 +153,10 @@ const CreateUserPage = (): JSX.Element => {
           fullWidth
           value={state.confirmPassword}
           onChange={e => {
-            dispatch({ type: 'setConfirmPassword', payload: e.target.value });
+            dispatch({
+              type: 'setConfirmPassword',
+              payload: e.target.value,
+            });
           }}
           onKeyDown={handleKeyDown}
         />
@@ -179,4 +180,4 @@ const CreateUserPage = (): JSX.Element => {
   );
 };
 
-export default CreateUserPage;
+export default RegisterUserPage;

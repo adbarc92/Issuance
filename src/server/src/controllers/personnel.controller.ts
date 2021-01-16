@@ -1,40 +1,48 @@
 import { Router } from 'express';
 import { PersonService } from 'services/personnel.services';
 import { Request, Response } from 'express';
+import { createErrorResponse } from 'utils';
+import { castPerson } from 'cast';
 
 // This function sets all the routes
 const personnelController = (router: Router): void => {
   const personService = new PersonService();
 
   router.get('/personnel', async function (req: Request, res: Response) {
-    const person = await personService.getPersonnel();
-    res.json(person);
+    const people = await personService.getPersonnel();
+    res.json(people.map(person => castPerson(person)));
   });
 
   router.get('/personnel/:id', async function (req: Request, res: Response) {
-    const results = await personService.getPersonById(req.params.id);
-    return res.send(results);
+    const person = await personService.getPersonById(req.params.id);
+    return res.send(castPerson(person));
   });
 
-  router.get('/personnel/:username', async function (
+  router.get('/personnel/:userEmail', async function (
     req: Request,
     res: Response
   ) {
-    const results = await personService.getPersonByUsername(
-      req.params.username
+    const person = await personService.getPersonByUserEmail(
+      req.params.userEmail
     );
-    return res.send(results);
+    return res.send(person);
   });
 
   router.post('/personnel', async function (req: Request, res: Response) {
-    console.log('req.body:', req.body);
-    const results = await personService.createPerson(req.body);
-    return res.send(results);
+    try {
+      console.log('req.body:', req.body);
+      const person = await personService.createPerson(req.body);
+      return res.send(castPerson(person));
+    } catch (e) {
+      console.error(e);
+      res.status(500);
+      return res.send(createErrorResponse(['Personnel could not be updated.']));
+    }
   });
 
   router.put('/personnel/:id', async function (req: Request, res: Response) {
-    const results = await personService.modifyPerson(req.body);
-    return res.send(results);
+    const person = await personService.modifyPerson(req.body);
+    return res.send(castPerson(person));
   });
 
   router.delete('/personnel/:id', async function (req: Request, res: Response) {

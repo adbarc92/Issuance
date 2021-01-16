@@ -7,13 +7,10 @@ export class Person {
   id!: string; // one-to-one
 
   @Column()
-  username: string;
+  user_email: string;
 
   @Column({ nullable: true })
   profile_picture: string;
-
-  @Column({ nullable: true })
-  contact_email: string;
 
   @Column({ nullable: true })
   first_name: string;

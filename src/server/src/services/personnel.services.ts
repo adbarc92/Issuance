@@ -14,8 +14,8 @@ export class PersonService {
     return await this.personRepository.findOne(id);
   }
 
-  async getPersonByUsername(username: string): Promise<Person> {
-    return await this.personRepository.findOne({ username });
+  async getPersonByUserEmail(user_email: string): Promise<Person> {
+    return await this.personRepository.findOne({ user_email });
   }
 
   async getPersonnel(): Promise<Person[]> {
@@ -24,11 +24,12 @@ export class PersonService {
 
   // Needs to be fixed
   async createPerson(
-    person: Partial<Person> & { username: string }
+    person: Partial<Person> & { userEmail: string }
   ): Promise<Person> {
+    const snakeCasePerson = snakeCasify(person);
     const curPerson = this.personRepository.create({
-      ...snakeCasify(person),
-      username: person.username,
+      ...snakeCasePerson,
+      userEmail: person.userEmail,
       job: person.job ? person.job : PersonJob.CODER,
     } as Person); // BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
     return this.personRepository.save(curPerson);

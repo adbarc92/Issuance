@@ -1,7 +1,7 @@
 import { getConnection, Repository } from 'typeorm';
 import { Task } from 'entity/Task';
 import { Task as ITask } from '../../../types/task';
-import { snakeCasify, toCamelCase, toSnakeCase } from 'utils';
+import { snakeCasify, toCamelCase } from 'utils';
 
 export class TaskService {
   taskRepository: Repository<Task>;
@@ -31,14 +31,6 @@ export class TaskService {
       .orderBy('task.row_index')
       .execute();
   }
-
-  // async countTaskStatus(status: string): Promise<number> {
-  //   return await this.taskRepository
-  //     .createQueryBuilder()
-  //     .select('*')
-  //     .where('task.status === ' + status)
-  //     .getCount();
-  // }
 
   async createTask(task: ITask): Promise<Task[]> {
     const curTask = this.taskRepository.create(snakeCasify(task));

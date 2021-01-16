@@ -16,13 +16,6 @@ const RootWrapper = styled('div')(() => {
   };
 });
 
-// const HeaderWrapper = styled('div')(() => {
-//   return {
-//     fontSize: '3rem',
-//     margin: '0',
-//   };
-// });
-
 const SubHeaderWrapper = styled('div')(() => {
   return {
     display: 'flex',
@@ -49,6 +42,8 @@ const PersonnelTablePage = (): JSX.Element => {
   const closeDialog = () => {
     setAddingUser(false);
   };
+
+  // console.log('personnelData:', personnelData);
 
   if (error) {
     return <div>There was an error: {error}</div>;
