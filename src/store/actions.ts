@@ -3,6 +3,8 @@ import { Task as ITask } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
+import { UpdateTaskResponse } from 'types/task';
+import { LoginResponse } from 'types/auth';
 
 // Actions change things
 
@@ -55,16 +57,18 @@ export const updateTask = async (
 ): Promise<ITask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
-    console.log('Update Task Response:', response.data);
-    updateCache(response.data.task);
-    updateCacheOrdering(response.data.ordering, CacheKey.TASKS);
-    console.log('Cache:', requestCache[CacheKey.TASKS]);
+    handleUpdateTask(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
     // throw e;
     return null;
   }
+};
+
+export const handleUpdateTask = (data: UpdateTaskResponse): void => {
+  updateCache(data.task);
+  updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
 export const createTask = async (task: TaskInput): Promise<ITask | null> => {
@@ -112,7 +116,7 @@ export const login = async (
   }
 };
 
-export const checkLogin = async (): Promise<boolean | null> => {
+export const checkLogin = async (): Promise<LoginResponse | null> => {
   try {
     const response = await api.put('/login', {});
     return response.data;
@@ -146,7 +150,6 @@ export const createPerson = async (
       ...person,
       userEmail: person.userEmail,
     };
-    console.log('newPerson:', newPerson);
     const response = await api.post('/personnel', newPerson);
     return response.data;
   } catch (e) {

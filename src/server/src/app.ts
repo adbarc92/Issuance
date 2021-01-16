@@ -14,7 +14,11 @@ import ormconfig from '../ormconfig.json';
 
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
+// import userController from 'controllers/users.controller';
 import { PersonService } from 'services/personnel.services.ts';
+
+import socketIo from 'socket.io';
+import http from 'http';
 
 const port = 4000;
 
@@ -41,11 +45,23 @@ const start = async () => {
 
     const userRepository = connection.getRepository(User);
 
+    const socketMiddleware = async function (req, res, next) {
+      req.io = io;
+      next();
+    };
+
     const authMiddleware = async function (req, res, next) {
       // const { rawHeaders, httpVersion, method, socket, url } = req;
       console.log('URL:', req.url);
 
-      if (req.url === '/api/login' && req.method.toUpperCase() === 'POST') {
+      if (!/^(\/api\/)*/.test(req.url)) {
+        // If the request lacks /api, send the file without authorization
+        console.log('serve', __dirname + '/' + req.url);
+        res.sendFile(__dirname + '/' + req.url);
+      } else if (
+        req.url === '/api/login' &&
+        req.method.toUpperCase() === 'POST'
+      ) {
         console.log('Bypassing login');
         next();
       } else if (
@@ -65,6 +81,7 @@ const start = async () => {
         });
         console.log('session:', session);
         if (session) {
+          req.userId = session.user_id;
           next();
         } else {
           res.status(403);
@@ -77,6 +94,7 @@ const start = async () => {
     const app = express();
     app.use(express.json());
     app.use(authMiddleware);
+    app.use(socketMiddleware);
 
     // app.use(
     //   expressWinston.logger({
@@ -93,9 +111,14 @@ const start = async () => {
 
     const router = express.Router();
 
+    /* Socket IO - Start */
+    app.use('/api', router);
+    /* Socket IO - End */
+
     // register routes
     personnelController(router);
     taskController(router);
+    // userController(router);
 
     router.post('/users', async function (req: Request, res: Response) {
       // Check for existing user
@@ -151,8 +174,12 @@ const start = async () => {
       }
     });
 
-    router.put('/login', async function (req: Request, res: Response) {
-      return res.send(true);
+    // Should take a token, check validity, return loggedIn status
+    router.put('/login', async function (
+      req: Request & { userId: string },
+      res: Response
+    ) {
+      return res.send({ loggedIn: true, userId: req.userId });
     });
 
     // Take password, hash it, check against stored password (also hashed)
@@ -199,10 +226,22 @@ const start = async () => {
     });
 
     app.use('/api', router);
-    // start express server
-    app.listen(port);
 
-    console.log(`Mock-server running on port ${port}`);
+    // app.listen(port); // start express server
+
+    const server = http.createServer(app);
+    server.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+
+    // When someone connects, emit a connection
+    const io = new socketIo.Server(server);
+    io.on('connection', socket => {
+      console.log('a user connected');
+      io.emit('connection', 'connection'); // the event, the event payload
+    });
+
+    // console.log(`Mock-server running on port ${port}`);
   } catch (e) {
     console.error(`Error ${e} has occurred`);
   }

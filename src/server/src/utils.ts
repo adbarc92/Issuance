@@ -80,3 +80,5 @@ export const snakeCasify = (obj: any): any => {
   }
   return retObj;
 };
+
+export type IoRequest = Request & { io: any };

@@ -5,6 +5,8 @@ import { castTask } from 'cast';
 import { createErrorResponse } from 'utils';
 import { Task as ITask } from '../../../types/task';
 
+import { IoRequest } from 'utils';
+
 const taskController = (router: Router): void => {
   const taskService = new TaskService();
 
@@ -36,13 +38,21 @@ const taskController = (router: Router): void => {
     }
   });
 
-  router.put('/tasks/:id', async function (req: Request, res: Response) {
+  router.put('/tasks/:id', async function (
+    req: Request & { io: any; userId: string },
+    res: Response
+  ) {
     try {
       const updatedTask: ITask = req.body;
       const task = await taskService.modifyTask(updatedTask, req.params.id);
       const taskOrder = await taskService.getTaskOrdering();
-      console.log('taskOrder:', taskOrder);
-      return res.send({ task: castTask(task), ordering: taskOrder });
+      const response = {
+        task: castTask(task),
+        ordering: taskOrder,
+        userId: req.userId,
+      };
+      req.io.emit('tasks', response);
+      return res.send(response);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

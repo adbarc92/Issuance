@@ -4,12 +4,7 @@ const BUILD_PATH = path.resolve(__dirname, './build');
 process.env.SKIP_PREFLIGHT_CHECK = 'true';
 
 const removeCssHashPlugin = {
-  overrideWebpackConfig: ({
-    webpackConfig,
-    cracoConfig,
-    pluginOptions,
-    context: { env, paths },
-  }) => {
+  overrideWebpackConfig: ({ webpackConfig }) => {
     const plugins = webpackConfig.plugins;
     plugins.forEach(plugin => {
       const options = plugin.options;
@@ -32,6 +27,14 @@ module.exports = {
   devServer: {
     proxy: {
       '/api/*': 'http://localhost:4000',
+      '/socket.io': {
+        target: 'http://localhost:4000',
+        ws: true,
+      },
+      '/socket.io/socket.io.js': {
+        target: 'http://localhost:4000',
+        ws: true,
+      },
     },
   },
   webpack: {
