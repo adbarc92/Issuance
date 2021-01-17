@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UserService } from 'services/user.services';
 import { createErrorResponse } from 'utils';
+import { User } from '../../../types/user';
 
 // The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
 
@@ -27,6 +28,13 @@ const userController = (router: Router): void => {
         password,
         role,
       });
+
+      if (!user) {
+        console.error('User already exists.');
+        res.status(409);
+        return res.send(createErrorResponse(['User already exists.']));
+      }
+
       return res.send(user);
     } catch (e) {
       console.error('Error occurred:', e);

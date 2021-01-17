@@ -13,15 +13,22 @@ export class UserService {
     this.userRepository = getConnection().getRepository(User);
   }
 
-  // getUserById;
-  // getUserByUsername;
-
   async getUsers(): Promise<User[]> {
     return await this.userRepository.find();
   }
 
   async createUser(user: UserInput): Promise<User> {
     const { loginEmail: email, password, role } = user;
+
+    // Check if User Exists
+    const users: User[] = await this.userRepository.find();
+
+    const userEmails = users.map(user => user.email);
+
+    if (userEmails.includes(email)) {
+      console.error('User already exists.');
+      return null;
+    }
 
     const personService = new PersonService();
 
@@ -38,7 +45,9 @@ export class UserService {
       role,
       person_id,
     };
-    const repoUser = this.userRepository.create(snakeCasify(newUser) as User);
+    const snakeUser = snakeCasify(newUser);
+    console.log(snakeUser);
+    const repoUser = this.userRepository.create(newUser);
     return this.userRepository.save(repoUser);
   }
 }

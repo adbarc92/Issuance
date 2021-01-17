@@ -8,14 +8,14 @@ import { Token } from 'entity/Token';
 // import * as winston from 'winston';
 
 import { v4 as uuid } from 'uuid';
-import { createErrorResponse, sha256, saltHashPassword } from 'utils';
+import { createErrorResponse, sha256 } from 'utils';
 
 import ormconfig from '../ormconfig.json';
 
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
-// import userController from 'controllers/users.controller';
-import { PersonService } from 'services/personnel.services.ts';
+import userController from 'controllers/users.controller';
+// import { PersonService } from 'services/personnel.services.ts';
 
 import socketIo from 'socket.io';
 import http from 'http';
@@ -118,61 +118,7 @@ const start = async () => {
     // register routes
     personnelController(router);
     taskController(router);
-    // userController(router);
-
-    router.post('/users', async function (req: Request, res: Response) {
-      // Check for existing user
-      try {
-        // Server should create a person for new user
-        const { loginEmail: email, userPassword, userRole: role } = req.body;
-
-        // Check if User Exists
-        const users = await userRepository.find();
-
-        const userEmails = users.map(user => user.email);
-
-        if (userEmails.includes(email)) {
-          console.error('User already exists.');
-          res.status(409);
-          return res.send(createErrorResponse(['User already exists.']));
-        }
-
-        const personService = new PersonService();
-
-        const person = await personService.createPerson({ userEmail: email });
-
-        const person_id = person.id;
-
-        const { salt, passwordHash: hashed_password } = saltHashPassword(
-          userPassword
-        );
-
-        const user = {
-          email,
-          hashed_password,
-          salt,
-          role,
-          person_id,
-        };
-        const repoUser = userRepository.create(user);
-
-        const results = await userRepository.save(repoUser);
-        return res.send(results);
-      } catch (e) {
-        console.error('Error occurred:', e);
-        res.status(403);
-        return res.send(createErrorResponse(['Not authorized.']));
-      }
-    });
-
-    router.get('/users', async function (req: Request, res: Response) {
-      try {
-        const users = await userRepository.find();
-        res.json(users);
-      } catch (e) {
-        console.error('Error occurred:', e);
-      }
-    });
+    userController(router);
 
     // Should take a token, check validity, return loggedIn status
     router.put('/login', async function (

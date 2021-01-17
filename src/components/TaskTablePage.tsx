@@ -41,26 +41,6 @@ const SubHeaderWrapper = styled('div')(() => {
   };
 });
 
-export const getRowSize = (
-  taskStatus: TaskStatus,
-  columnSizeState: {
-    backlogTasksCount: number;
-    activeTasksCount: number;
-    completeTasksCount: number;
-  }
-): number => {
-  switch (taskStatus) {
-    case 'Backlog':
-      return columnSizeState.backlogTasksCount;
-    case 'Active':
-      return columnSizeState.activeTasksCount;
-    case 'Complete':
-      return columnSizeState.completeTasksCount;
-    default:
-      return 0;
-  }
-};
-
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
   const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
