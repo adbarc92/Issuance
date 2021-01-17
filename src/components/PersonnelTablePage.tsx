@@ -43,8 +43,6 @@ const PersonnelTablePage = (): JSX.Element => {
     setAddingUser(false);
   };
 
-  // console.log('personnelData:', personnelData);
-
   if (error) {
     return <div>There was an error: {error}</div>;
   }

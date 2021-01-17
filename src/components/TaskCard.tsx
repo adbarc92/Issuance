@@ -179,7 +179,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           key={task.id}
           onDragEnter={() => {
             if (hoveredTask?.id !== task.id) {
-              console.log('OnDragEnter Placeholder');
               setHoveredTask(task);
             }
           }}
@@ -194,7 +193,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           setHoveredTask(null);
         }}
         onDragEnter={() => {
-          console.log('OnDragEnter HighlightCard');
           setHoveredTask(task);
         }}
         highlighted={

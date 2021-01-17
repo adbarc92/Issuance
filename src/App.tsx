@@ -80,7 +80,7 @@ const App = (): JSX.Element => {
 
   render = rerender;
 
-  // console.log('Rendering');
+  console.log('Rendering');
 
   return (
     <Router>

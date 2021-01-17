@@ -89,7 +89,6 @@ export const useGetTasks = (): IDataLoader<Task[] | null> => {
 export const getUsers = async (): Promise<User[] | null> => {
   try {
     const res = await api.get('/users');
-    console.log('response data:', res.data);
     return res.data;
   } catch (e) {
     console.error('Error occurred:', e);

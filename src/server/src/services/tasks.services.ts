@@ -51,12 +51,10 @@ export class TaskService {
     let newIndex = updatedTask.rowIndex;
     const oldIndex = task.row_index;
 
-    // console.log('task:', this.countTaskStatus(task.status));
     if (newIndex !== oldIndex) {
       if (newIndex > oldIndex) {
         newIndex -= 1;
         updatedTask.rowIndex -= 1;
-        // 5 => 2
         // Close original gap: substract 1 from everything >= oldIndex
         await this.taskRepository
           .createQueryBuilder()
@@ -92,19 +90,8 @@ export class TaskService {
       const camelProp = toCamelCase(prop);
 
       task[prop] = updatedTask[camelProp] ?? task[prop];
-      console.log(
-        'camelProp:',
-        camelProp,
-        'prop:',
-        prop,
-        'task[prop]:',
-        task[prop],
-        'updatedTask[camelProp]:',
-        updatedTask[camelProp]
-      );
     }
 
-    console.log('SavedTask:', task);
     return await this.taskRepository.save(task);
   }
 

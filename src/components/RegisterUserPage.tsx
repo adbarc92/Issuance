@@ -91,7 +91,6 @@ const RegisterUserPage = (): JSX.Element => {
       };
 
       const { user, statusCode } = await createUser(userToSubmit);
-      console.log('user:', user);
 
       if (user) {
         const sessionToken = await login(state.email, state.password);
@@ -99,12 +98,12 @@ const RegisterUserPage = (): JSX.Element => {
           setSessionToken(sessionToken);
           window.location.href = '/';
         } else {
-          console.error('failed to login');
+          console.error('Failed to login');
         }
       } else if (statusCode === 409) {
         showNotification('User already exists.', NotificationSeverity.ERROR);
       } else {
-        console.log('Failed to create user');
+        console.error('Failed to create user');
       }
     },
   });

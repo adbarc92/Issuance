@@ -99,7 +99,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
           rowIndex++;
         }
       }
-      console.log('rowIndex:', rowIndex, 'hoveredTask:', hoveredTask);
       await updateTask(task.id, {
         ...task,
         status: dragColumn as TaskStatus,
