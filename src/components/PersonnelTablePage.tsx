@@ -9,12 +9,7 @@ import { Person } from 'types/person';
 
 import PersonnelTable from 'components/PersonnelTable';
 import PageTitle from 'elements/PageTitle';
-
-const RootWrapper = styled('div')(() => {
-  return {
-    width: '100%',
-  };
-});
+import RootWrapper from 'elements/RootWrapper';
 
 const SubHeaderWrapper = styled('div')(() => {
   return {

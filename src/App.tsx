@@ -6,6 +6,7 @@ import TaskTablePage from 'components/TaskTablePage';
 import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
 import TaskPage from 'components/TaskPage';
+import ProjectsPage from 'components/ProjectsPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -92,6 +93,11 @@ const App = (): JSX.Element => {
           <Route path="/personnel">
             <PageWrapper>
               <PersonnelTablePage />
+            </PageWrapper>
+          </Route>
+          <Route path="/projects">
+            <PageWrapper>
+              <ProjectsPage />
             </PageWrapper>
           </Route>
           <Route exact path="/">

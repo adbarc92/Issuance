@@ -1,6 +1,7 @@
 import { Person } from 'types/person';
 import { Task } from 'types/task';
 import { User } from 'types/user';
+import { Project } from 'types/project';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
@@ -98,4 +99,18 @@ export const getUsers = async (): Promise<User[] | null> => {
 
 export const useGetUsers = (): IDataLoader<User[] | null> => {
   return useGetData(getUsers, CacheKey.USERS);
+};
+
+export const getProjects = async (): Promise<Project[] | null> => {
+  try {
+    const res = await api.get('/projects');
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetProjects = (): IDataLoader<Project[] | null> => {
+  return useGetData(getProjects, CacheKey.PROJECTS);
 };

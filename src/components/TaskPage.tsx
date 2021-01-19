@@ -7,12 +7,7 @@ import { useGetTask } from 'hooks/axiosHooks';
 import PageTitle from 'elements/PageTitle';
 
 import theme, { colors } from 'theme';
-
-const RootWrapper = styled('div')(() => {
-  return {
-    width: '100%',
-  };
-});
+import RootWrapper from 'elements/RootWrapper';
 
 export interface TaskPageProps {
   taskId: number;

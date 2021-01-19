@@ -18,12 +18,7 @@ import { getUserToken } from 'store/auth';
 import { clearCacheWithoutRender, CacheKey } from 'hooks/getData';
 import { reRenderApp } from 'App';
 import { SocketMessages } from 'types/socket';
-
-const RootWrapper = styled('div')(() => {
-  return {
-    width: '100%',
-  };
-});
+import RootWrapper from 'elements/RootWrapper';
 
 const HeaderWrapper = styled('div')(() => {
   return {

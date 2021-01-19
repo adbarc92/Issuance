@@ -19,7 +19,7 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Apps as ProjectsIcon,
-  Timeline as TimelineIcon,
+  // Timeline as TimelineIcon,
   FormatListNumbered as TasksIcon,
   People as PersonnelIcon,
   Settings as SettingsIcon,
@@ -192,10 +192,14 @@ const Navigation = (): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Projects'}>
-            <ListItemIcon>
-              <ProjectsIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Projects'} />
+            <Link to="/projects">
+              <ListItemIcon>
+                <ProjectsIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/projects">
+              <ListItemText primary={'Projects'} />
+            </Link>
           </ListItem>
           <ListItem button key={'Tasks'}>
             <Link to="/tasks">
@@ -205,17 +209,6 @@ const Navigation = (): JSX.Element => {
             </Link>
             <Link to="/tasks">
               <ListItemText primary={'Tasks'} />
-            </Link>
-          </ListItem>
-          <ListItem button key={'Timeline'}>
-            <Link to="/">
-              <ListItemIcon>
-                <TimelineIcon />
-              </ListItemIcon>
-            </Link>
-            <Link to="/">
-              {/*='/timeline'*/}
-              <ListItemText primary={'Timeline'} />
             </Link>
           </ListItem>
           <ListItem button key={'Personnel'}>
