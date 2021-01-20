@@ -7,6 +7,10 @@ import LoadingSpinner from 'elements/LoadingSpinner';
 const ProjectsPage = (): JSX.Element => {
   const { loading, data: projectData, error } = useGetProjects();
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <RootWrapper>
       {loading ? (
@@ -14,7 +18,6 @@ const ProjectsPage = (): JSX.Element => {
       ) : (
         <>
           <PageTitle title={'Projects'} />
-          {error ? <div>Error: {error}</div> : null}
           {projectData ? (
             <div>ProjectData: {projectData}</div>
           ) : (

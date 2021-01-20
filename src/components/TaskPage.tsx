@@ -75,7 +75,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <PageTitle title={task.name} projectId={task.projectId} />
+          <PageTitle title={task.name} subtitle={String(task.projectId)} />
           <GridWrapper>
             <InfoBox title="Details" gridArea="details">
               <div>Type: {task.type}</div>

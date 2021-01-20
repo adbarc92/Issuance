@@ -1,11 +1,11 @@
 import React from 'react';
-
-import { Add } from '@material-ui/icons';
-import { styled, Button } from '@material-ui/core';
+import { styled } from '@material-ui/core';
 import { useGetPersonnel } from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PersonnelDialog from 'components/PersonnelDialog';
 import { Person } from 'types/person';
+
+import AddButton from 'elements/AddButton';
 
 import PersonnelTable from 'components/PersonnelTable';
 import PageTitle from 'elements/PageTitle';
@@ -48,13 +48,12 @@ const PersonnelTablePage = (): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <PageTitle title={'Personnel'} />
-          <SubHeaderWrapper>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-              Add Personnel
-              <Add />
-            </Button>
-          </SubHeaderWrapper>
+          <PageTitle
+            title={'Personnel'}
+            headerElem={
+              <AddButton title={'Add Personnel'} handleClick={handleOpen} />
+            }
+          />
           <PersonnelTable personnelData={personnelData as Person[]} />
           <PersonnelDialog
             selectedValue={'none'}

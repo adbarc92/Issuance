@@ -222,12 +222,12 @@ const Navigation = (): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Notifications Feed'}>
-            <Link to="/notifications">
+            <Link to="/">
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/notifications">
+            <Link to="/">
               <ListItemText primary={'Notifications Feed'} />
             </Link>
           </ListItem>

@@ -3,6 +3,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { useGetPersonnel } from 'hooks/axiosHooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LoadingSpinner from 'elements/LoadingSpinner';
+import PageTitle from 'elements/PageTitle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,13 +36,16 @@ const Dashboard = (): JSX.Element => {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <Grid container spacing={6}>
-          {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
-            <Grid key={index} item xs={6}>
-              <Paper className={classes.paper}>{text} Preview</Paper>
-            </Grid>
-          ))}
-        </Grid>
+        <>
+          <PageTitle title={'Dashboard'} />
+          <Grid container spacing={6}>
+            {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
+              <Grid key={index} item xs={6}>
+                <Paper className={classes.paper}>{text} Preview</Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
     </div>
   );
