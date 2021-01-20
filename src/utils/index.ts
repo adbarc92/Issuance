@@ -3,6 +3,12 @@ import { PersonJob } from 'types/person';
 import { UserRole } from 'types/user';
 import { SelectItem } from 'elements/Select';
 
+export const isEmailValid = (email: string): boolean => {
+  const EMAIL_REGEX = /^(([^<>()[\]\\,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const result = email.match(EMAIL_REGEX);
+  return result ? true : false;
+};
+
 export const isNotFilledOut = (field: any): boolean => {
   return ['', undefined].includes(field);
 };

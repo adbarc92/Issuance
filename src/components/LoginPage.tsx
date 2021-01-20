@@ -2,7 +2,12 @@ import React from 'react';
 
 import { styled, TextField, Button } from '@material-ui/core';
 
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+import {
+  isNotFilledOut,
+  isTooLong,
+  trimState,
+  isEmailValid,
+} from 'utils/index';
 
 import { useForm } from 'hooks/form';
 import {
@@ -58,6 +63,9 @@ const LoginPage = (): JSX.Element => {
 
       trimState(vState);
 
+      if (!isEmailValid(vState.email)) {
+        errors.email = 'A valid email must be provided.';
+      }
       if (isNotFilledOut(vState.email)) {
         errors.email = 'An email must be provided.';
       }
