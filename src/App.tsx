@@ -14,18 +14,13 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 
+import PageContent from 'elements/PageContent';
+import PageContainer from 'elements/PageContainer';
+
 import './io';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
     toolbar: {
       display: 'flex',
       alignItems: 'center',
@@ -33,15 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      justifyContent: 'center',
-      display: 'flex',
-    },
-    pageContainer: {
-      padding: '0rem 4rem',
     },
   })
 );
@@ -61,9 +47,9 @@ const PageWrapper = (props: any): JSX.Element => {
     <div>
       <div className={classes.toolbar} />
       <Navigation />
-      <main className={classes.content}>
+      <PageContent>
         <ChildrenWrapper>{props.children}</ChildrenWrapper>
-      </main>
+      </PageContent>
     </div>
   );
 };
@@ -75,7 +61,7 @@ export const reRenderApp = (): void => {
 };
 
 const App = (): JSX.Element => {
-  const classes = useStyles({} as any);
+  // const classes = useStyles({} as any);
 
   const rerender = useForceUpdate();
 
@@ -85,7 +71,7 @@ const App = (): JSX.Element => {
 
   return (
     <Router>
-      <div className={classes.pageContainer}>
+      <PageContainer>
         <Switch>
           <Route path="/login">
             <LoginPage />
@@ -124,7 +110,7 @@ const App = (): JSX.Element => {
             <RegisterUserPage />
           </Route>
         </Switch>
-      </div>
+      </PageContainer>
     </Router>
   );
 };

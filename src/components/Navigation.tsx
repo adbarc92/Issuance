@@ -33,14 +33,12 @@ import {
 } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
+import Root from 'elements/Root';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
       transition: theme.transitions.create(['width', 'margin'], {
@@ -121,7 +119,7 @@ const Navigation = (): JSX.Element => {
   };
 
   return (
-    <div className={classes.root}>
+    <Root>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -252,7 +250,7 @@ const Navigation = (): JSX.Element => {
           </ListItem>
         </List>
       </Drawer>
-    </div>
+    </Root>
   );
 };
 

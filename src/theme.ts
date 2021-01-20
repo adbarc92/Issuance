@@ -11,6 +11,11 @@ const ColorWarning = '#ff9800';
 const ColorNeutral = '#f4f6f9';
 const ColorInfo = '#4393f0';
 
+const TextPrimary = 'rgba(0,0,0,0.87)';
+const TextSecondary = 'rgba(0,0,0,0.54)';
+const TextDisabled = 'rgba(0,0,0,0.38)';
+const TextHint = 'rgba(0,0,0,0.12)';
+
 export const colors = {
   white: '#fff',
   red: '#ef5350',
@@ -41,5 +46,25 @@ export default {
       highlighted: ColorHighlight,
       normal: colors.white,
     },
+    text: {
+      primary: TextPrimary,
+      secondary: TextSecondary,
+      disabled: TextDisabled,
+      hint: TextHint,
+    },
+  },
+  mixins: {
+    toolbar: {
+      minHeight: '56',
+      // @media'(minWidth: '0px') and (orientation: landscape)': {
+      // 	minHeight: '48',
+      // },
+      // '@media(min-width: 600px)': {
+      // 	minHeight: '64',
+      // },
+    },
+  },
+  spacing: function (multiplier: number): string {
+    return String(multiplier * 8) + 'px';
   },
 };

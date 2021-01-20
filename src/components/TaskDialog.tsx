@@ -1,21 +1,5 @@
 import React from 'react';
 
-import Select from 'elements/Select';
-import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
-
-import { createTask, updateTask } from 'store/actions';
-
-import { reRenderApp } from 'App';
-
-import {
-  useNotificationSnackbar,
-  NotificationSeverity,
-} from 'hooks/notification';
-
-import { Alert } from '@material-ui/lab';
-
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
-
 import {
   DialogTitle,
   Dialog,
@@ -27,7 +11,23 @@ import {
   styled,
 } from '@material-ui/core';
 
+import { Alert } from '@material-ui/lab';
+
+import Select from 'elements/Select';
 import DateTimePicker from 'elements/DateTimePicker';
+
+import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
+
+import { createTask, updateTask } from 'store/actions';
+
+import { reRenderApp } from 'App';
+
+import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+
+import {
+  useNotificationSnackbar,
+  NotificationSeverity,
+} from 'hooks/notification';
 
 import { useForm } from 'hooks/form';
 

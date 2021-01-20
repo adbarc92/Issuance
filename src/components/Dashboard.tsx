@@ -1,30 +1,13 @@
 import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { useGetPersonnel } from 'hooks/axiosHooks';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-  })
-);
+import Root from 'elements/Root';
+import Paper from 'elements/Paper';
 
 const Dashboard = (): JSX.Element => {
-  const classes = useStyles();
-
   const { loading, error } = useGetPersonnel();
 
   if (error) {
@@ -32,7 +15,7 @@ const Dashboard = (): JSX.Element => {
   }
 
   return (
-    <div className={classes.root}>
+    <Root>
       {loading ? (
         <LoadingSpinner />
       ) : (
@@ -41,13 +24,13 @@ const Dashboard = (): JSX.Element => {
           <Grid container spacing={6}>
             {['Project', 'Ticket', 'Users', 'Activity'].map((text, index) => (
               <Grid key={index} item xs={6}>
-                <Paper className={classes.paper}>{text} Preview</Paper>
+                <Paper>{text} Preview</Paper>
               </Grid>
             ))}
           </Grid>
         </>
       )}
-    </div>
+    </Root>
   );
 };
 

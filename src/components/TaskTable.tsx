@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles, styled, Card } from '@material-ui/core';
+import { styled, Card } from '@material-ui/core';
 
 import { TaskCard } from 'components/TaskCard';
 import { Task, TaskStatus } from 'types/task';
@@ -9,21 +9,6 @@ import { updateTask } from 'store/actions';
 
 import theme from 'theme';
 import { colors } from 'theme';
-
-const useStyles = makeStyles({
-  root: {},
-  gridContainer: {},
-  gridRow: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  columnContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    border: `2px solid ${colors.grey}`,
-    width: '33%',
-  },
-});
 
 // This is a higher-order component
 const Header = styled('div')((props: any) => {
@@ -41,6 +26,26 @@ const Column = styled('div')((props: any) => {
       ? theme.palette.background.highlighted
       : 'unset',
     padding: '0.25rem',
+    display: 'flex',
+    flexDirection: 'column',
+    border: `2px solid ${colors.grey}`,
+    width: '33%',
+  };
+});
+
+const GridRow = styled('div')(() => {
+  return {
+    display: 'flex',
+    flexDirection: 'row',
+  };
+});
+
+const HeaderContainer = styled(Column)(() => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    border: `2px solid ${colors.grey}`,
+    width: '33%',
   };
 });
 
@@ -79,8 +84,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
     [TaskStatus.ACTIVE]: activeTasks.length,
     [TaskStatus.COMPLETE]: completeTasks.length,
   };
-
-  const classes = useStyles();
 
   const [draggedTask, setDraggedTask] = React.useState<Task | null>(null);
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
@@ -132,21 +135,20 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
 
   return (
     <>
-      <div className={classes.gridContainer}>
-        <div className={classes.gridRow}>
-          <div className={classes.columnContainer}>
+      <div>
+        <GridRow>
+          <HeaderContainer>
             <Header>Backlog</Header>
-          </div>
-          <div className={classes.columnContainer}>
+          </HeaderContainer>
+          <HeaderContainer>
             <Header>Active</Header>
-          </div>
-          <div className={classes.columnContainer}>
+          </HeaderContainer>
+          <HeaderContainer>
             <Header>Complete</Header>
-          </div>
-        </div>
-        <div className={classes.gridRow}>
+          </HeaderContainer>
+        </GridRow>
+        <GridRow>
           <Column
-            className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.BACKLOG ? 'true' : ''}
             onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
@@ -171,7 +173,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
             ) : null}
           </Column>
           <Column
-            className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.ACTIVE ? 'true' : ''}
             onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
@@ -196,7 +197,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
             ) : null}
           </Column>
           <Column
-            className={classes.columnContainer}
             highlighted={dragColumn === TaskStatus.COMPLETE ? 'true' : ''}
             onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
@@ -220,7 +220,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
               />
             ) : null}
           </Column>
-        </div>
+        </GridRow>
       </div>
     </>
   );

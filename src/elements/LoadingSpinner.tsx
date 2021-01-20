@@ -1,24 +1,19 @@
 import React from 'react';
-import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { CircularProgress, styled } from '@material-ui/core';
 
-const useStyles = makeStyles(() => {
+const LoadingContainer = styled('div')(() => {
   return {
-    loadingContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 });
 
 const LoadingSpinner = (): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <div className={classes.loadingContainer}>
+    <LoadingContainer>
       <CircularProgress />
-    </div>
+    </LoadingContainer>
   );
 };
 
