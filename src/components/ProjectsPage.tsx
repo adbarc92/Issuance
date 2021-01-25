@@ -4,6 +4,8 @@ import { useGetProjects } from 'hooks/axiosHooks';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
+import AddButton from 'elements/AddButton';
+
 const ProjectsPage = (): JSX.Element => {
   const { loading, data: projectData, error } = useGetProjects();
 
@@ -11,13 +13,25 @@ const ProjectsPage = (): JSX.Element => {
     return <div>{error}</div>;
   }
 
+  const handleOpen = () => {
+    console.log('Anddddd open!');
+  };
+
   return (
     <RootWrapper>
       {loading ? (
         <LoadingSpinner />
       ) : (
         <>
-          <PageTitle title={'Projects'} />
+          <PageTitle
+            title={'Projects'}
+            headerElem={
+              <AddButton
+                title={'Create New Project'}
+                handleClick={handleOpen}
+              />
+            }
+          />
           {projectData ? (
             <div>ProjectData: {projectData}</div>
           ) : (
