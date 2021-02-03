@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',

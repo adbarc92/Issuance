@@ -8,12 +8,16 @@ import ProjectDialog from 'components/ProjectDialog';
 import AddButton from 'elements/AddButton';
 
 const ProjectsPage = (): JSX.Element => {
-  const { loading, data: projectData, error } = useGetProjects();
+  const {
+    loading: projectsLoading,
+    data: projectsData,
+    error: projectsError,
+  } = useGetProjects();
 
   const [showingDialog, setShowingDialog] = React.useState(false);
 
-  if (error) {
-    return <div>{error}</div>;
+  if (projectsError) {
+    return <div>{projectsError}</div>;
   }
 
   const displayDialog = () => {
@@ -25,9 +29,11 @@ const ProjectsPage = (): JSX.Element => {
     setShowingDialog(false);
   };
 
+  console.log('Project data:', projectsData);
+
   return (
     <RootWrapper>
-      {loading ? (
+      {projectsLoading ? (
         <LoadingSpinner />
       ) : (
         <>
@@ -40,17 +46,15 @@ const ProjectsPage = (): JSX.Element => {
               />
             }
           />
-          {projectData ? (
-            <div>ProjectData: {projectData}</div>
+          {projectsData && projectsData.length ? (
+            <div>ProjectData: {projectsData}</div>
           ) : (
             <div>No data found! Get to projectin'!</div>
           )}
-          {showingDialog ? (
-            <ProjectDialog
-              showingDialog={showingDialog}
-              hideDialog={hideDialog}
-            />
-          ) : null}
+          <ProjectDialog
+            showingDialog={showingDialog}
+            hideDialog={hideDialog}
+          />
         </>
       )}
     </RootWrapper>

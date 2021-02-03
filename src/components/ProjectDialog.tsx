@@ -8,9 +8,10 @@ import {
   TextField,
   DialogActions,
   Button,
+  styled,
 } from '@material-ui/core';
 
-import { Alert } from '@material-ui/lab';
+// import { Alert } from '@material-ui/lab';
 
 // import Select from 'elements/Select';
 import DateTimePicker from 'elements/DateTimePicker';
@@ -30,14 +31,34 @@ import {
 
 import { useForm } from 'hooks/form';
 
-import { Project } from 'types/project';
+import { NewProject } from 'types/project';
+
+import { useGetPersonnel } from 'hooks/axiosHooks';
+
+import TransferList from 'components/PersonnelTransferList';
+import LoadingSpinner from 'elements/LoadingSpinner';
+
+import { FormAction } from 'hooks/form';
+
+const TrimmedDialogTitle = styled(DialogTitle)(() => {
+  return {
+    paddingBottom: '0rem',
+  };
+});
+
+const TrimmedDialogContent = styled(DialogContent)(() => {
+  return {
+    paddingBottom: '0rem',
+    paddingTop: '0rem',
+  };
+});
 
 interface ProjectDialogState {
   title: string;
   description: string;
   availablePersonnel: Person[];
   assignedPersonnel: Person[];
-  deadline?: Date | string | null;
+  deadline: Date | string | null;
 }
 
 interface ProjectDialogProps {
@@ -46,10 +67,10 @@ interface ProjectDialogProps {
   hideDialog: () => void;
 }
 
-interface IProjectDialogAction {
-  type: string;
-  payload?: any;
-}
+// interface IProjectDialogAction {
+//   type: string;
+//   payload?: any;
+// }
 
 export enum ProjectDialogAction {
   SET_TITLE = 'setTitle',
@@ -71,21 +92,30 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow,
   };
 
-  // const [
-  //   selectedAvailablePersonnel,
-  //   setSelectedAvailablePersonnel,
-  // ] = React.useState<Person[]>([]);
+  const assignedPersonnel: Person[] = [];
 
-  // const [
-  //   selectedAssignedPersonnel,
-  //   setSelectedAssignedPersonnel,
-  // ] = React.useState<Person[]>([]);
+  const getAssignedPersonnel = () => {
+    return assignedPersonnel;
+  };
+
+  const setAssignedPersonnel = (newArr: Person[]): void => {
+    const assignedPersonnel = getAssignedPersonnel();
+    assignedPersonnel.splice(0, assignedPersonnel.length).concat(newArr);
+  };
+
+  const {
+    loading: personnelLoading,
+    data: personnelData,
+    error: personnelError,
+  } = useGetPersonnel();
+
+  console.log('PersonnelData:', personnelData);
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
     reducer: (
       state: ProjectDialogState,
-      action: IProjectDialogAction
+      action: FormAction
     ): ProjectDialogState => {
       const newState = { ...state };
       switch (action.type) {
@@ -102,7 +132,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
           newState.assignedPersonnel = action.payload;
           break;
         case ProjectDialogAction.SET_DEADLINE:
-          newState.title = action.payload;
+          newState.deadline = action.payload;
           break;
       }
       return newState;
@@ -121,6 +151,16 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       if (isTooLong(vState.title, 180)) {
         errors.title = 'A title cannot be longer than 180 characters';
       }
+      if (isNotFilledOut(vState.description)) {
+        errors.description = 'A description must be provided';
+      }
+      if (isTooLong(vState.description, 180)) {
+        errors.description =
+          'A description cannot be longer than 180 characters';
+      }
+      if (assignedPersonnel.length === 0) {
+        errors.personnel = 'Personnel must be assigned';
+      }
       // ...
       return Object.keys(errors).length ? errors : undefined;
     },
@@ -135,10 +175,10 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const projectToSubmit = {
+      const projectToSubmit: NewProject = {
         title: state.title,
         description: state.description,
-        assignedPersonnel: state.assignedPersonnel,
+        personnel: getAssignedPersonnel(),
         deadline: state.deadline,
       };
 
@@ -168,12 +208,12 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         onClose={handleClose}
       >
         <div>
-          <DialogTitle>Create New Project</DialogTitle>
-          <DialogContent>
+          <TrimmedDialogTitle>Create New Project</TrimmedDialogTitle>
+          <TrimmedDialogContent>
             <DialogContentText>Start a new endeavor</DialogContentText>
-          </DialogContent>
+          </TrimmedDialogContent>
         </div>
-        <DialogContent>
+        <TrimmedDialogContent>
           <TextField
             autoFocus
             margin="dense"
@@ -196,14 +236,24 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
             variant="outlined"
             fullWidth
             multiline={true}
-            rows={6}
+            rows={5}
             onChange={e => {
               dispatch({
-                type: ProjectDialogAction.SET_TITLE,
+                type: ProjectDialogAction.SET_DESCRIPTION,
                 payload: e.target.value,
               });
             }}
           />
+          {personnelLoading ? (
+            <LoadingSpinner />
+          ) : personnelData?.length ? (
+            <TransferList
+              inputList={personnelData}
+              setPersonnel={setAssignedPersonnel}
+            />
+          ) : (
+            <div>There are no personnel</div>
+          )}
           <DateTimePicker
             value={state.deadline as string}
             onChange={value =>
@@ -213,8 +263,8 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               })
             }
           />
-        </DialogContent>
-        {triedSubmit && errors ? (
+        </TrimmedDialogContent>
+        {/* {triedSubmit && errors ? (
           <DialogContent>
             {Object.values(errors).map((errorMessage, index) => {
               return (
@@ -224,7 +274,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               );
             })}
           </DialogContent>
-        ) : null}
+        ) : null} */}
         <DialogActions>
           <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel
