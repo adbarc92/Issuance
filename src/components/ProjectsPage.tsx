@@ -3,18 +3,26 @@ import PageTitle from 'elements/PageTitle';
 import { useGetProjects } from 'hooks/axiosHooks';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
+import ProjectDialog from 'components/ProjectDialog';
 
 import AddButton from 'elements/AddButton';
 
 const ProjectsPage = (): JSX.Element => {
   const { loading, data: projectData, error } = useGetProjects();
 
+  const [showingDialog, setShowingDialog] = React.useState(false);
+
   if (error) {
     return <div>{error}</div>;
   }
 
-  const handleOpen = () => {
-    console.log('Anddddd open!');
+  const displayDialog = () => {
+    // console.log('Anddddd open!');
+    setShowingDialog(true);
+  };
+
+  const hideDialog = () => {
+    setShowingDialog(false);
   };
 
   return (
@@ -28,7 +36,7 @@ const ProjectsPage = (): JSX.Element => {
             headerElem={
               <AddButton
                 title={'Create New Project'}
-                handleClick={handleOpen}
+                handleClick={displayDialog}
               />
             }
           />
@@ -37,6 +45,12 @@ const ProjectsPage = (): JSX.Element => {
           ) : (
             <div>No data found! Get to projectin'!</div>
           )}
+          {showingDialog ? (
+            <ProjectDialog
+              showingDialog={showingDialog}
+              hideDialog={hideDialog}
+            />
+          ) : null}
         </>
       )}
     </RootWrapper>

@@ -1,6 +1,7 @@
 import { api } from 'store/api';
 import { Task as ITask } from 'types/task';
 import { Person as IPerson } from 'types/person';
+import { Project as IProject } from 'types/project';
 import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
@@ -151,6 +152,18 @@ export const createPerson = async (
       userEmail: person.userEmail,
     };
     const response = await api.post('/personnel', newPerson);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createProject = async (
+  project: Partial<IProject>
+): Promise<IProject | null> => {
+  try {
+    const response = await api.post('/projects/', project);
     return response.data;
   } catch (e) {
     console.error(e);

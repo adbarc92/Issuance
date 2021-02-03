@@ -232,6 +232,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       const task = await (addingTask
         ? createTask(taskToSubmit)
         : updateTask((props.dialogTask as Task).id, taskToSubmit));
+
       if (task) {
         showNotification(
           `Task ${addingTask ? 'created' : 'edited'} successfully!`,
