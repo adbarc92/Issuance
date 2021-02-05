@@ -11,8 +11,13 @@ const taskController = (router: Router): void => {
   const taskService = new TaskService();
 
   router.get('/tasks/:id', async function (req: Request, res: Response) {
-    const task = await taskService.getTaskById(req.params.id);
-    return res.send(castTask(task));
+    try {
+      const task = await taskService.getTaskById(req.params.id);
+      return res.send(castTask(task));
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
   });
 
   router.get('/tasks', async function (req: Request, res: Response) {

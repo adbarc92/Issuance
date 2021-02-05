@@ -21,7 +21,7 @@ const projectController = (router: Router): void => {
     } catch (e) {
       console.error(e);
       res.status(500);
-      return res.send(createErrorResponse(['Personnel could not be updated.']));
+      return res.send(createErrorResponse(['Project could not be created.']));
     }
   });
 };

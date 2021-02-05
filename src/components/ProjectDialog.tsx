@@ -92,16 +92,22 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow,
   };
 
-  const assignedPersonnel: Person[] = [];
+  const [personnel, setPersonnel] = React.useState<Person[]>([]);
 
-  const getAssignedPersonnel = () => {
-    return assignedPersonnel;
-  };
+  // const assignedPersonnel: Person[] = [];
 
-  const setAssignedPersonnel = (newArr: Person[]): void => {
-    const assignedPersonnel = getAssignedPersonnel();
-    assignedPersonnel.splice(0, assignedPersonnel.length).concat(newArr);
-  };
+  // const getAssignedPersonnel = () => {
+  //   return assignedPersonnel;
+  // };
+
+  // const setAssignedPersonnel = (newArr: Person[]): void => {
+  //   const assignedPersonnel = getAssignedPersonnel();
+  //   console.log('Setting personnel...');
+  //   console.log('Old Personnel:', assignedPersonnel);
+  //   assignedPersonnel.splice(0, assignedPersonnel.length);
+  //   assignedPersonnel.concat(newArr);
+  //   console.log('New Personnel:', getAssignedPersonnel());
+  // };
 
   const {
     loading: personnelLoading,
@@ -125,12 +131,12 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         case ProjectDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
           break;
-        case ProjectDialogAction.SET_AVAILABLE_PERSONNEL:
-          newState.availablePersonnel = action.payload;
-          break;
-        case ProjectDialogAction.SET_ASSIGNED_PERSONNEL:
-          newState.assignedPersonnel = action.payload;
-          break;
+        // case ProjectDialogAction.SET_AVAILABLE_PERSONNEL:
+        //   newState.availablePersonnel = action.payload;
+        //   break;
+        // case ProjectDialogAction.SET_ASSIGNED_PERSONNEL:
+        //   newState.assignedPersonnel = action.payload;
+        //   break;
         case ProjectDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
           break;
@@ -158,14 +164,15 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         errors.description =
           'A description cannot be longer than 180 characters';
       }
-      if (assignedPersonnel.length === 0) {
-        errors.personnel = 'Personnel must be assigned';
-      }
+      // if (assignedPersonnel.length === 0) {
+      //   errors.personnel = 'Personnel must be assigned';
+      // }
       // ...
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async () => {
       if (errors) {
+        console.log('Errors:', errors);
         showNotification(
           'Project does not meet requirements',
           NotificationSeverity.ERROR
@@ -178,11 +185,13 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       const projectToSubmit: NewProject = {
         title: state.title,
         description: state.description,
-        personnel: getAssignedPersonnel(),
+        personnel,
         deadline: state.deadline,
       };
 
       const project = await createProject(projectToSubmit);
+
+      console.log('Project:', project);
 
       if (project) {
         showNotification('Project created', NotificationSeverity.SUCCESS);
@@ -249,7 +258,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
           ) : personnelData?.length ? (
             <TransferList
               inputList={personnelData}
-              setPersonnel={setAssignedPersonnel}
+              setPersonnel={setPersonnel}
             />
           ) : (
             <div>There are no personnel</div>

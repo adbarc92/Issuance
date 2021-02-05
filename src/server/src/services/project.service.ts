@@ -22,8 +22,10 @@ export class ProjectService {
   }
 
   async createProject(project: Project): Promise<Project> {
+    // Format Project Property Names
     const snakeProject = snakeCasify(project);
-
+    console.log('Project to create:', snakeProject);
+    // Create entries in other table for each person assigned to project
     const repoProject = this.projectRepository.create(snakeProject as Project);
 
     return this.projectRepository.save(repoProject);

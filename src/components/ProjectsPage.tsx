@@ -21,7 +21,6 @@ const ProjectsPage = (): JSX.Element => {
   }
 
   const displayDialog = () => {
-    // console.log('Anddddd open!');
     setShowingDialog(true);
   };
 

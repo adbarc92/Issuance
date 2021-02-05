@@ -14,9 +14,9 @@ import theme from 'theme';
 
 import { Person } from 'types/person';
 
-import { FormAction } from 'hooks/form';
+// import { FormAction } from 'hooks/form';
 
-import { ProjectDialogAction } from 'components/ProjectDialog';
+// import { ProjectDialogAction } from 'components/ProjectDialog';
 
 const SpacedButton = styled(Button)(() => {
   return {
@@ -65,7 +65,7 @@ const getDisjoint = (a: Person[], b: Person[]) => {
 const TransferList = (props: TransferListProps): JSX.Element => {
   const { setPersonnel } = props;
 
-  console.log('transferProps:', props);
+  console.log('transferListProps:', props);
 
   const [checked, setChecked] = React.useState<Person[]>([]);
 
