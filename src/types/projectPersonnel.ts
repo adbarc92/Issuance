@@ -1,10 +1,14 @@
-export interface ProjectPersonnelInput {
+export interface ProjectPersonInput {
   projectId: string;
-  personnelId: string;
+  personId: string;
+}
+
+export interface ProjectPerson {
+  id: string;
+  projectId: string;
+  personId: string;
 }
 
 export interface ProjectPersonnel {
-  id: string;
-  projectId: string;
-  personnelId: string;
+  [id: string]: string[];
 }

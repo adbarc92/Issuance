@@ -6,11 +6,13 @@ export class Project {
   id!: string;
 
   @Column()
-  name!: string;
-
-  @Column()
-  personnel!: number;
+  title!: string;
 
   @Column()
   description!: string;
+
+  @Column('timestamp', {
+    default: (): string => 'LOCALTIMESTAMP',
+  })
+  deadline!: Date;
 }

@@ -65,6 +65,7 @@ interface ProjectDialogProps {
   // project: Project | null;
   showingDialog: boolean;
   hideDialog: () => void;
+  reRender: () => void;
 }
 
 // interface IProjectDialogAction {
@@ -114,8 +115,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     data: personnelData,
     error: personnelError,
   } = useGetPersonnel();
-
-  console.log('PersonnelData:', personnelData);
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -189,6 +188,8 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         deadline: state.deadline,
       };
 
+      console.log('projectToSubmit:', projectToSubmit);
+
       const project = await createProject(projectToSubmit);
 
       console.log('Project:', project);
@@ -196,6 +197,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       if (project) {
         showNotification('Project created', NotificationSeverity.SUCCESS);
         handleClose();
+        // props.reRender();
       }
     },
   });

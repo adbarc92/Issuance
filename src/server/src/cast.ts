@@ -5,7 +5,7 @@ import { Person as IPerson } from '../../types/person';
 import { Project as EProject } from 'entity/Project';
 import { Project as IProject } from '../../types/project';
 import { ProjectPersonnel as EProjectPersonnel } from 'entity/ProjectPersonnel';
-import { ProjectPersonnel as IProjectPersonnel } from '../../types/projectPersonnel';
+import { ProjectPerson as IProjectPersonnel } from '../../types/projectPersonnel';
 import { camelCasify } from 'utils';
 
 export const castTask = (task: ETask): ITask => {

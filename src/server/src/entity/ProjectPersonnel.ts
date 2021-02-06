@@ -6,8 +6,8 @@ export class ProjectPersonnel {
   id!: string;
 
   @Column()
-  personnel_id!: number;
+  project_id!: string;
 
   @Column()
-  project_id!: number;
+  person_id!: string;
 }

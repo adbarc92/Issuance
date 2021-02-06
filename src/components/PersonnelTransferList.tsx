@@ -65,8 +65,6 @@ const getDisjoint = (a: Person[], b: Person[]) => {
 const TransferList = (props: TransferListProps): JSX.Element => {
   const { setPersonnel } = props;
 
-  console.log('transferListProps:', props);
-
   const [checked, setChecked] = React.useState<Person[]>([]);
 
   const [left, setLeft] = React.useState<Person[]>(props.inputList);

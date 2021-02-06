@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { ProjectPersonnelService } from 'services/projectPersonnel.services';
+import { ProjectPersonnelService } from 'services/projectPersonnel.service';
 import { createErrorResponse } from 'utils';
 import { castProjectPerson } from 'cast';
 
@@ -25,27 +25,29 @@ const projectPersonnelController = (router: Router): void => {
       const projectPersonnel = await projectPersonnelService.getProjectPersonnelByProjectId(
         req.params.projectId
       );
-      return res.send(castProjectPerson(projectPersonnel));
+      return res.send(
+        projectPersonnel.map(projectPerson => castProjectPerson(projectPerson))
+      );
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
     }
   });
 
-  router.post('/projectPersonnel/', async function (
+  router.post('/projectPersonnel', async function (
     req: Request,
     res: Response
   ) {
     try {
-      const projectPersonnel = await projectPersonnelService.createProjectPerson(
+      const projectPerson = await projectPersonnelService.createProjectPerson(
         req.body
       );
-      return res.send(
-        projectPersonnel.map(person => castProjectPerson(person))
-      );
+      return res.send(castProjectPerson(projectPerson));
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
     }
   });
 };
+
+export default projectPersonnelController;
