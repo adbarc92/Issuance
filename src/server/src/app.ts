@@ -20,6 +20,7 @@ import projectController from 'controllers/project.controller';
 
 import socketIo from 'socket.io';
 import http from 'http';
+import projectPersonnelController from 'controllers/projectPersonnel.controller.js';
 
 const port = 4000;
 
@@ -121,6 +122,7 @@ const start = async () => {
     taskController(router);
     userController(router);
     projectController(router);
+    projectPersonnelController(router);
 
     // Should take a token, check validity, return loggedIn status
     router.put('/login', async function (

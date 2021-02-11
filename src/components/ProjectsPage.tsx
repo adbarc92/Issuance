@@ -5,6 +5,7 @@ import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import ProjectDialog from 'components/ProjectDialog';
 import { Project } from 'types/project';
+import ProjectCard from 'components/ProjectCard';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -35,17 +36,17 @@ const ProjectsPage = (): JSX.Element => {
 
   console.log('Project data:', projectsData);
 
-  const printProject = (project: Project, key: number): JSX.Element => {
-    const { id, title, description, deadline } = project;
-    return (
-      <div key={key}>
-        <div>{id}</div>
-        <div>{title}</div>
-        <div>{description}</div>
-        <div>{deadline}</div>
-      </div>
-    );
-  };
+  // const printProject = (project: Project, key: number): JSX.Element => {
+  //   const { id, title, description, deadline } = project;
+  //   return (
+  //     <div key={key}>
+  //       <div>{id}</div>
+  //       <div>{title}</div>
+  //       <div>{description}</div>
+  //       <div>{deadline}</div>
+  //     </div>
+  //   );
+  // };
 
   return (
     <RootWrapper>
@@ -64,9 +65,9 @@ const ProjectsPage = (): JSX.Element => {
           />
           {projectsData && projectsData.length ? (
             <div>
-              {projectsData.map((project, index) =>
-                printProject(project, index)
-              )}
+              {projectsData.map((project, index) => (
+                <ProjectCard project={project} key={index} />
+              ))}
             </div>
           ) : (
             <div>No data found! Get to projectin'!</div>

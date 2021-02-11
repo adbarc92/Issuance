@@ -6,6 +6,7 @@ export interface Project {
   description: string;
   personnel: Person[] | null;
   deadline: Date | string | null;
+  // S/N: Tickets?!
 }
 
 export interface NewProject {
