@@ -23,7 +23,7 @@ import {
 
 import { useForm } from 'hooks/form';
 
-import { isNotFilledOut, trimState } from 'utils/index';
+import { isEmailValid, isNotFilledOut, trimState } from 'utils/index';
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -109,6 +109,9 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
       if (isNotFilledOut(vState.firstName)) {
         errors.firstName = 'A first name must be provided.';
+      }
+      if (isEmailValid(vState.contactEmail)) {
+        errors.contactEmail = 'A valid email address must be provided';
       }
       return Object.keys(errors).length ? errors : undefined;
     },

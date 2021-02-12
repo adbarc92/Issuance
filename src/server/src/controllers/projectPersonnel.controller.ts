@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { ProjectPersonnelService } from 'services/projectPersonnel.service';
+import { ProjectPersonnelService } from 'services/projectPersonnel.services';
 import { createErrorResponse } from 'utils';
 import { castProjectPerson } from 'cast';
 

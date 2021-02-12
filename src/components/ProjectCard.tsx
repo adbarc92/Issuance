@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Card,
   CardHeader,
-  CardMedia,
+  // CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -13,6 +13,8 @@ import {
   IconButton,
   styled,
 } from '@material-ui/core';
+
+import { Person } from 'types/person';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 
@@ -55,16 +57,24 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           <ExpandMoreIcon />
         </IconButton>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expanded} timeout="auto">
         <CardContent>
-          <Typography paragraph>Assigned Personnel:</Typography>
-          <Typography>This is where top 3 tickets will go</Typography>
-          <Typography paragraph>Assigned Personnel:</Typography>
+          <Typography>Task Preview:</Typography>
           <List>
-            {project.personnel?.map((person, index) => {
+            {project.tasks?.map((task, index) => {
               return (
                 <ListItem key={index}>
-                  <ListItemText>{person}</ListItemText>
+                  <ListItemText>{task.name}</ListItemText>
+                </ListItem>
+              );
+            })}
+          </List>
+          <Typography>Assigned Personnel:</Typography>
+          <List>
+            {project.personnel?.map((person: Person, index: number) => {
+              return (
+                <ListItem key={index}>
+                  <ListItemText>{person.userEmail}</ListItemText>
                 </ListItem>
               );
             })}

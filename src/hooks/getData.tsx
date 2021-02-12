@@ -109,5 +109,3 @@ export function useGetData<Datatype>(
     },
   };
 }
-
-// export function usePostData<>

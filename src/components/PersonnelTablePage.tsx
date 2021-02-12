@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@material-ui/core';
+// import { styled } from '@material-ui/core';
 import { useGetPersonnel } from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PersonnelDialog from 'components/PersonnelDialog';
@@ -11,14 +11,14 @@ import PersonnelTable from 'components/PersonnelTable';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
 
-const SubHeaderWrapper = styled('div')(() => {
-  return {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: '1%',
-    marginBottom: '0.5rem',
-  };
-});
+// const SubHeaderWrapper = styled('div')(() => {
+//   return {
+//     display: 'flex',
+//     justifyContent: 'flex-end',
+//     marginRight: '1%',
+//     marginBottom: '0.5rem',
+//   };
+// });
 
 const PersonnelTablePage = (): JSX.Element => {
   const {

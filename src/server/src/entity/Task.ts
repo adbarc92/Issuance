@@ -33,7 +33,7 @@ export class Task {
   row_index!: number;
 
   @Column()
-  project_id!: number;
+  project_id!: string;
 
   @Column()
   description!: string;

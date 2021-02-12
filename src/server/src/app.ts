@@ -16,11 +16,10 @@ import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
 import userController from 'controllers/users.controller';
 import projectController from 'controllers/project.controller';
-// import { PersonService } from 'services/personnel.services.ts';
+import projectPersonnelController from 'controllers/projectPersonnel.controller';
 
 import socketIo from 'socket.io';
 import http from 'http';
-import projectPersonnelController from 'controllers/projectPersonnel.controller.js';
 
 const port = 4000;
 

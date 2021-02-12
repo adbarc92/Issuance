@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { ProjectService } from 'services/project.service';
-import { ProjectPersonnelService } from 'services/projectPersonnel.service';
+import { ProjectService } from 'services/project.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 import { castProject } from 'cast';
@@ -21,7 +20,7 @@ const projectController = (router: Router): void => {
     console.log('Router post project request');
     try {
       const project = await projectService.createProject(req.body);
-      return res.send(castProject(project));
+      return res.send(project);
     } catch (e) {
       console.error(e);
       res.status(500);

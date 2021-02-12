@@ -1,4 +1,5 @@
 import { Person } from 'types/person';
+import { Task } from 'types/task';
 
 export interface Project {
   id: string;
@@ -6,7 +7,7 @@ export interface Project {
   description: string;
   personnel: Person[] | null;
   deadline: Date | string | null;
-  // S/N: Tickets?!
+  tasks: Task[];
 }
 
 export interface NewProject {

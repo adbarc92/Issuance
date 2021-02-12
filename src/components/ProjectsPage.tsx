@@ -4,10 +4,10 @@ import { useGetProjects } from 'hooks/axiosHooks';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import ProjectDialog from 'components/ProjectDialog';
-import { Project } from 'types/project';
+// import { Project } from 'types/project';
 import ProjectCard from 'components/ProjectCard';
 
-import { useForceUpdate } from 'hooks/render';
+// import { useForceUpdate } from 'hooks/render';
 
 import AddButton from 'elements/AddButton';
 
@@ -16,11 +16,10 @@ const ProjectsPage = (): JSX.Element => {
     loading: projectsLoading,
     data: projectsData,
     error: projectsError,
+    clearCache: clearProjectsCache,
   } = useGetProjects();
 
   const [showingDialog, setShowingDialog] = React.useState(false);
-
-  const reRender = useForceUpdate();
 
   if (projectsError) {
     return <div>{projectsError}</div>;
@@ -75,7 +74,7 @@ const ProjectsPage = (): JSX.Element => {
           <ProjectDialog
             showingDialog={showingDialog}
             hideDialog={hideDialog}
-            reRender={reRender}
+            clearProjectsCache={clearProjectsCache}
           />
         </>
       )}

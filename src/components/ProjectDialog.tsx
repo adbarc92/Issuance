@@ -11,7 +11,7 @@ import {
   styled,
 } from '@material-ui/core';
 
-// import { Alert } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 
 // import Select from 'elements/Select';
 import DateTimePicker from 'elements/DateTimePicker';
@@ -65,7 +65,7 @@ interface ProjectDialogProps {
   // project: Project | null;
   showingDialog: boolean;
   hideDialog: () => void;
-  reRender: () => void;
+  clearProjectsCache: () => void;
 }
 
 // interface IProjectDialogAction {
@@ -83,6 +83,8 @@ export enum ProjectDialogAction {
 
 // S/N: Personnel need an additional property--selected--that will determine if their column changes on arrow click
 const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
+  const { clearProjectsCache } = props;
+
   const initialState: ProjectDialogState = {
     title: '',
     description: '',
@@ -197,7 +199,12 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       if (project) {
         showNotification('Project created', NotificationSeverity.SUCCESS);
         handleClose();
-        // props.reRender();
+        clearProjectsCache();
+      } else {
+        showNotification(
+          'Project creation failed!',
+          NotificationSeverity.ERROR
+        );
       }
     },
   });
@@ -207,6 +214,18 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
   const handleClose = () => {
     reset();
     props.hideDialog();
+  };
+
+  const displayTransferList = () => {
+    if (personnelLoading) {
+      return <LoadingSpinner />;
+    } else if (personnelError) {
+      console.error(personnelError);
+    }
+
+    const inputList = personnelData || [];
+
+    return <TransferList inputList={inputList} setPersonnel={setPersonnel} />;
   };
 
   return (
@@ -255,16 +274,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               });
             }}
           />
-          {personnelLoading ? (
-            <LoadingSpinner />
-          ) : personnelData?.length ? (
-            <TransferList
-              inputList={personnelData}
-              setPersonnel={setPersonnel}
-            />
-          ) : (
-            <div>There are no personnel</div>
-          )}
+          {displayTransferList()}
           <DateTimePicker
             value={state.deadline as string}
             onChange={value =>
@@ -275,7 +285,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
             }
           />
         </TrimmedDialogContent>
-        {/* {triedSubmit && errors ? (
+        {triedSubmit && errors ? (
           <DialogContent>
             {Object.values(errors).map((errorMessage, index) => {
               return (
@@ -285,7 +295,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               );
             })}
           </DialogContent>
-        ) : null} */}
+        ) : null}
         <DialogActions>
           <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel

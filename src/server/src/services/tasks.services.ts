@@ -32,6 +32,14 @@ export class TaskService {
       .execute();
   }
 
+  async getTasksByProjectId(projectId: string): Promise<Task[]> {
+    return await this.taskRepository
+      .createQueryBuilder('task')
+      .select('*')
+      .where('project_id = :id', { id: projectId })
+      .execute();
+  }
+
   async createTask(task: ITask): Promise<Task[]> {
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository

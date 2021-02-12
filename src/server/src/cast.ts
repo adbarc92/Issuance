@@ -5,7 +5,6 @@ import { Person as IPerson } from '../../types/person';
 import { Project as EProject } from 'entity/Project';
 import { Project as IProject } from '../../types/project';
 import { ProjectPersonnel as EProjectPersonnel } from 'entity/ProjectPersonnel';
-import { ProjectPerson as IProjectPersonnel } from '../../types/projectPersonnel';
 import { camelCasify } from 'utils';
 
 export const castTask = (task: ETask): ITask => {
@@ -16,8 +15,16 @@ export const castPerson = (person: EPerson): IPerson => {
   return camelCasify({ ...person });
 };
 
-export const castProject = (project: EProject): IProject => {
-  return camelCasify({ ...project });
+export const castProject = (
+  project: EProject,
+  tasks: ETask[],
+  personnel: EPerson[]
+): IProject => {
+  return camelCasify({
+    tasks,
+    personnel,
+    ...project,
+  });
 };
 
 export const castProjectPerson = (
