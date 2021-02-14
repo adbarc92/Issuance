@@ -84,4 +84,18 @@ export const snakeCasify = (obj: any): any => {
   return retObj;
 };
 
+// Iterate through the object, checking if the any properties are an object
+// If so, call recursively
+// If not,
+
+export const snakeCasify2 = (obj: any): any => {
+  const fixedObj = {};
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    if (typeof obj[keys[i]] === 'object' && obj[keys[i]] !== null) {
+      fixedObj[keys[i]] = snakeCasify2(obj[keys[i]]);
+    }
+  }
+};
+
 export type IoRequest = Request & { io: any };

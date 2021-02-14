@@ -33,10 +33,27 @@ const CustomCard = styled(Card)(() => {
 const ProjectCard = (props: ProjectCardProps): JSX.Element => {
   const { project } = props;
 
+  const { tasks, personnel } = project;
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const displayList = (strArr: string[]): JSX.Element => {
+    console.log('strArr:', strArr);
+    return (
+      <List>
+        {strArr.map((str, index) => {
+          return (
+            <ListItem key={index}>
+              <ListItemText>{str}</ListItemText>
+            </ListItem>
+          );
+        })}
+      </List>
+    );
   };
 
   return (
@@ -60,6 +77,11 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
       <Collapse in={expanded} timeout="auto">
         <CardContent>
           <Typography>Task Preview:</Typography>
+          {displayList(
+            tasks.map(task => {
+              return task.name;
+            })
+          )}
           <List>
             {project.tasks?.map((task, index) => {
               return (
@@ -71,13 +93,18 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           </List>
           <Typography>Assigned Personnel:</Typography>
           <List>
-            {project.personnel?.map((person: Person, index: number) => {
+            {/* {project.personnel?.map((person: Person, index: number) => {
               return (
                 <ListItem key={index}>
                   <ListItemText>{person.userEmail}</ListItemText>
                 </ListItem>
               );
-            })}
+            })} */}
+            {displayList(
+              (personnel as Person[]).map(person => {
+                return person.userEmail;
+              })
+            )}
           </List>
         </CardContent>
       </Collapse>
