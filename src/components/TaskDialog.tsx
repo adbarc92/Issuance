@@ -9,6 +9,7 @@ import {
   DialogActions,
   Button,
   styled,
+  Typography,
 } from '@material-ui/core';
 
 import { Alert } from '@material-ui/lab';
@@ -30,6 +31,12 @@ import {
 } from 'hooks/notification';
 
 import { useForm } from 'hooks/form';
+
+import { useGetProjects } from 'hooks/axiosHooks';
+
+import LoadingSpinner from 'elements/LoadingSpinner';
+
+import { Project } from 'types/project';
 
 const TextFieldWrapper = styled('div')(() => {
   return {
@@ -54,6 +61,14 @@ const SelectContainer = styled('div')((props: any) => {
   };
 });
 
+const ProjectsContainer = styled('div')(() => {
+  return {
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
+    marginLeft: '0.5rem',
+  };
+});
+
 export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
@@ -64,6 +79,7 @@ export interface TaskDialogProps {
 export interface TaskDialogState {
   name: string;
   description: string;
+  projectId: string;
   type: TaskType;
   status: TaskStatus;
   priority: TaskPriority;
@@ -73,6 +89,7 @@ export interface TaskDialogState {
 export enum TaskDialogAction {
   SET_NAME = 'setName',
   SET_DESCRIPTION = 'setDescription',
+  SET_PROJECT = 'setProject',
   SET_TASKTYPE = 'setTaskType',
   SET_TASKSTATUS = 'setTaskStatus',
   SET_TASKPRIORITY = 'setTaskPriority',
@@ -123,10 +140,19 @@ const TaskTypeMap = {
 
 const taskToDialogState = (task: Task | null): TaskDialogState | null => {
   if (task) {
-    const { name, description, type, status, priority, deadline } = task;
+    const {
+      name,
+      description,
+      projectId,
+      type,
+      status,
+      priority,
+      deadline,
+    } = task;
     return {
       name,
       description,
+      projectId,
       type,
       status,
       priority,
@@ -140,15 +166,23 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
     description: '',
+    projectId: '',
     type: TaskType.FEATURE,
     status: TaskStatus.BACKLOG,
     priority: TaskPriority.MEDIUM,
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
-    projectId: 0,
     rowIndex: 0,
   };
+
+  const {
+    loading: projectLoading,
+    data: projectData,
+    error: projectError,
+  } = useGetProjects();
+
+  console.log('projectData:', projectData);
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
 
@@ -165,6 +199,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           break;
         case TaskDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
+          break;
+        case TaskDialogAction.SET_PROJECT:
+          newState.projectId = action.payload;
           break;
         case TaskDialogAction.SET_TASKTYPE:
           newState.type = action.payload;
@@ -221,11 +258,11 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       const taskToSubmit = {
         name: state.name,
         description: state.description,
+        projectId: '',
         type: state.type,
         priority: state.priority,
         status: state.status,
         deadline: state.deadline as string,
-        projectId: 0,
         rowIndex: 0,
       };
 
@@ -368,15 +405,41 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               />
             </SelectWrapper>
           </SelectContainer>
-          <DateTimePicker
-            value={state.deadline as string}
-            onChange={value =>
-              dispatch({
-                type: TaskDialogAction.SET_DEADLINE,
-                payload: value,
-              })
-            }
-          />
+          <SelectContainer>
+            <DateTimePicker
+              value={state.deadline as string}
+              onChange={value =>
+                dispatch({
+                  type: TaskDialogAction.SET_DEADLINE,
+                  payload: value,
+                })
+              }
+            />
+            {projectLoading ? (
+              <Typography>Awaiting Projects...</Typography>
+            ) : (
+              <ProjectsContainer>
+                <SelectWrapper>
+                  <Select
+                    title={'Project'}
+                    items={(projectData as Project[]).map(project => {
+                      return {
+                        label: project.title,
+                        value: project.id,
+                      };
+                    })}
+                    onChange={e => {
+                      dispatch({
+                        type: TaskDialogAction.SET_PROJECT,
+                        payload: e.target.value,
+                      });
+                    }}
+                    value={state.projectId}
+                  />
+                </SelectWrapper>
+              </ProjectsContainer>
+            )}
+          </SelectContainer>
         </DialogContent>
         {triedSubmit && errors ? (
           <DialogContent>

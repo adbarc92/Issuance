@@ -29,7 +29,7 @@ export interface Task {
   assignedTo: number;
   rowIndex: number;
   deadline: Date | string;
-  projectId: number;
+  projectId: string;
   reportedBy: number;
   typeName: 'Task'; // this is server-side only
 }

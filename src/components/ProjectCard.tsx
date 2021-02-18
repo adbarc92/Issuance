@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 
 import { Person } from 'types/person';
+import { Task } from 'types/task';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 
@@ -77,35 +78,25 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
       <Collapse in={expanded} timeout="auto">
         <CardContent>
           <Typography>Task Preview:</Typography>
-          {displayList(
-            tasks.map(task => {
-              return task.name;
-            })
+          {tasks && tasks.length ? (
+            displayList(
+              (tasks as Task[]).map(task => {
+                return task.name;
+              })
+            )
+          ) : (
+            <Typography>This project has no tasks!</Typography>
           )}
-          <List>
-            {project.tasks?.map((task, index) => {
-              return (
-                <ListItem key={index}>
-                  <ListItemText>{task.name}</ListItemText>
-                </ListItem>
-              );
-            })}
-          </List>
           <Typography>Assigned Personnel:</Typography>
-          <List>
-            {/* {project.personnel?.map((person: Person, index: number) => {
-              return (
-                <ListItem key={index}>
-                  <ListItemText>{person.userEmail}</ListItemText>
-                </ListItem>
-              );
-            })} */}
-            {displayList(
+          {personnel && personnel.length ? (
+            displayList(
               (personnel as Person[]).map(person => {
                 return person.userEmail;
               })
-            )}
-          </List>
+            )
+          ) : (
+            <Typography>There are no assigned personnel!</Typography>
+          )}
         </CardContent>
       </Collapse>
     </CustomCard>

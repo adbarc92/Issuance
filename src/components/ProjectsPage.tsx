@@ -35,18 +35,6 @@ const ProjectsPage = (): JSX.Element => {
 
   console.log('Project data:', projectsData);
 
-  // const printProject = (project: Project, key: number): JSX.Element => {
-  //   const { id, title, description, deadline } = project;
-  //   return (
-  //     <div key={key}>
-  //       <div>{id}</div>
-  //       <div>{title}</div>
-  //       <div>{description}</div>
-  //       <div>{deadline}</div>
-  //     </div>
-  //   );
-  // };
-
   return (
     <RootWrapper>
       {projectsLoading ? (
