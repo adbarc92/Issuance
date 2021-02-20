@@ -6,10 +6,18 @@ import LoadingSpinner from 'elements/LoadingSpinner';
 import ProjectDialog from 'components/ProjectDialog';
 // import { Project } from 'types/project';
 import ProjectCard from 'components/ProjectCard';
+import { styled } from '@material-ui/core';
 
 // import { useForceUpdate } from 'hooks/render';
 
 import AddButton from 'elements/AddButton';
+
+const GridContainer = styled('div')(() => {
+  return {
+    display: 'flex',
+    flexWrap: 'wrap',
+  };
+});
 
 const ProjectsPage = (): JSX.Element => {
   const {
@@ -51,11 +59,11 @@ const ProjectsPage = (): JSX.Element => {
             }
           />
           {projectsData && projectsData.length ? (
-            <div>
+            <GridContainer>
               {projectsData.map((project, index) => (
                 <ProjectCard project={project} key={index} />
               ))}
-            </div>
+            </GridContainer>
           ) : (
             <div>No data found! Get to projectin'!</div>
           )}

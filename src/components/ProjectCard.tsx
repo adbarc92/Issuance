@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const CustomCard = styled(Card)(() => {
   return {
     maxWidth: '350px',
+    margin: '1rem',
   };
 });
 
