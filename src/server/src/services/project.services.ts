@@ -2,7 +2,7 @@ import { getConnection, Repository } from 'typeorm';
 import { Project as EProject } from 'entity/Project';
 import { NewProject, Project as IProject } from '../../../types/project';
 import { Person as IPerson } from '../../../types/person';
-import { Person as EPerson } from 'entity/person';
+import { Person as EPerson } from 'entity/Person';
 import { snakeCasify } from 'utils';
 import { ProjectPersonnelService } from './projectPersonnel.services';
 import { PersonService } from './personnel.services';

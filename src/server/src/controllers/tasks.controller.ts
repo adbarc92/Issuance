@@ -31,6 +31,16 @@ const taskController = (router: Router): void => {
     }
   });
 
+  router.get('/tasks/:id', async function (req: Request, res: Response) {
+    try {
+      const tasks = await taskService.getTasksByProjectId(req.params.id);
+      return res.send(tasks.map(task => castTask(task)));
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
+  });
+
   router.post('/tasks', async function (req: Request, res: Response) {
     try {
       const tasks = await taskService.createTask(req.body);

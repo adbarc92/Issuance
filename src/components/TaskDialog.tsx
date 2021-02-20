@@ -186,7 +186,15 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
 
-  const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
+  const {
+    state,
+    submit,
+    reset,
+    errors,
+    triedSubmit,
+    dispatch,
+    pristine,
+  } = useForm({
     initialState,
     reducer: (
       state: TaskDialogState,
@@ -242,6 +250,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         errors.description =
           'A description cannot be longer than 5000 characters.';
       }
+      if (vState.projectId === '') {
+        errors.projectId = 'A project ID is required';
+      }
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async () => {
@@ -258,7 +269,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       const taskToSubmit = {
         name: state.name,
         description: state.description,
-        projectId: '',
+        projectId: state.projectId,
         type: state.type,
         priority: state.priority,
         status: state.status,
@@ -421,6 +432,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               <ProjectsContainer>
                 <SelectWrapper>
                   <Select
+                    fullWidth
                     title={'Project'}
                     items={(projectData as Project[]).map(project => {
                       return {
@@ -456,7 +468,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel
           </Button>
-          <Button variant="contained" onClick={submit} color="primary">
+          <Button
+            variant="contained"
+            onClick={submit}
+            disabled={pristine}
+            color="primary"
+          >
             {addingTask ? 'Submit' : 'Save'}
           </Button>
         </DialogActions>

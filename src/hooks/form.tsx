@@ -24,6 +24,7 @@ export interface FormReturn<T> {
   errors: Record<string, string> | undefined;
   triedSubmit: boolean;
   dispatch: (action: FormAction) => void;
+  pristine: boolean;
 }
 
 export const useForm = function <T>(props: FormProps<T>): FormReturn<T> {
@@ -32,14 +33,17 @@ export const useForm = function <T>(props: FormProps<T>): FormReturn<T> {
   >(undefined);
 
   const [triedSubmit, setTriedSubmit] = React.useState(false);
+  const [pristine, setPristine] = React.useState(true);
 
   const [state, dispatch] = React.useReducer((state: T, action: FormAction) => {
     if (action.type === 'RESET') {
+      setPristine(true);
       return props.initialState;
     } else {
       const newState = props.reducer(state, action);
       const errors = props.validateState(newState);
       setErrors(errors);
+      setPristine(false);
       return newState;
     }
   }, props.initialState);
@@ -65,5 +69,6 @@ export const useForm = function <T>(props: FormProps<T>): FormReturn<T> {
     errors,
     triedSubmit,
     dispatch,
+    pristine,
   };
 };

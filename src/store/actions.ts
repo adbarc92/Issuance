@@ -82,7 +82,7 @@ export const createTask = async (task: TaskInput): Promise<ITask | null> => {
       status: task.status,
       assignedTo: 0,
       deadline: task.deadline,
-      projectId: 0,
+      projectId: task.projectId,
       reportedBy: 0,
     });
     return response.data;

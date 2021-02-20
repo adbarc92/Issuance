@@ -12,18 +12,39 @@ import {
   ListItemText,
   IconButton,
   styled,
+  createStyles,
+  makeStyles,
+  Theme,
 } from '@material-ui/core';
+
+import { Link } from 'react-router-dom';
+
+import clsx from 'clsx';
 
 import { Person } from 'types/person';
 import { Task } from 'types/task';
+import { Project } from 'types/project';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-
-import { Project } from 'types/project';
 
 interface ProjectCardProps {
   project: Project;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    expand: {
+      transform: 'rotate(0deg)',
+      marginLeft: 'auto',
+      transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+      }),
+    },
+    expandOpen: {
+      transform: 'rotate(180deg)',
+    },
+  })
+);
 
 const CustomCard = styled(Card)(() => {
   return {
@@ -38,12 +59,34 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
 
   const [expanded, setExpanded] = React.useState(false);
 
+  const classes = useStyles();
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  const displayTasks = (tasks: Task[]): JSX.Element => {
+    return (
+      <List>
+        {tasks.map((task, index) => {
+          return (
+            <ListItem key={index}>
+              <Link to={`/tasks/${task.id}`}>
+                <ListItemText>
+                  {task.name}:{' '}
+                  {task.description.length > 40
+                    ? task.description.slice(0, 40)
+                    : task.description}
+                </ListItemText>
+              </Link>
+            </ListItem>
+          );
+        })}
+      </List>
+    );
+  };
+
   const displayList = (strArr: string[]): JSX.Element => {
-    console.log('strArr:', strArr);
     return (
       <List>
         {strArr.map((str, index) => {
@@ -65,9 +108,9 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
       </CardContent>
       <CardActions>
         <IconButton
-          // className={clsx(classes.expand, {
-          //   [classes.expandOpen]: expanded,
-          // })}
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
@@ -79,11 +122,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
         <CardContent>
           <Typography>Task Preview:</Typography>
           {tasks && tasks.length ? (
-            displayList(
-              (tasks as Task[]).map(task => {
-                return task.name;
-              })
-            )
+            displayTasks(tasks)
           ) : (
             <Typography>This project has no tasks!</Typography>
           )}
