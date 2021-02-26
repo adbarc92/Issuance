@@ -7,6 +7,7 @@ import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
 import TaskPage from 'components/TaskPage';
 import ProjectsPage from 'components/ProjectsPage';
+import PersonPage from 'components/PersonPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -92,6 +93,16 @@ const App = (): JSX.Element => {
             </PageWrapper>
           </Route>
           <Route
+            path="/personnel/:personId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <PersonPage personId={match.params.personId} />
+                </PageWrapper>
+              );
+            }}
+          />
+          <Route
             path="/tasks/:taskId"
             render={({ match, location, history }) => {
               return (
@@ -100,7 +111,7 @@ const App = (): JSX.Element => {
                 </PageWrapper>
               );
             }}
-          ></Route>
+          />
           <Route path="/tasks">
             <PageWrapper>
               <TaskTablePage />

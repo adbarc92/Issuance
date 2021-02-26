@@ -16,6 +16,8 @@ import { Person } from 'types/person';
 
 import SimpleMenu from 'elements/SimpleMenu';
 
+import { Link } from 'react-router-dom';
+
 export interface PersonnelTableProps {
   personnelData: Person[];
 }
@@ -85,7 +87,11 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{person.profilePicture}</TableCell>
-                    <TableCell>{person.userEmail}</TableCell>
+                    <TableCell>
+                      <Link to={`/personnel/${person.id}`}>
+                        {person.userEmail}
+                      </Link>
+                    </TableCell>
                     <TableCell>{person.firstName}</TableCell>
                     <TableCell>{person.lastName}</TableCell>
                     <TableCell>{person.job}</TableCell>

@@ -8,9 +8,15 @@ import { api } from 'store/api';
 // Temp
 
 // Helper function for the hook below, not technically a hook
-export const getPersonById = async (id: number): Promise<Person> => {
-  const response = await api.get(`/personnel/${id}`);
-  return response.data;
+export const getPersonById = async (id: string): Promise<Person | null> => {
+  try {
+    const res = await api.get(`/personnel/${id}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    // throw e;
+    return null;
+  }
 };
 
 export const getPersonByUsername = async (
@@ -21,13 +27,13 @@ export const getPersonByUsername = async (
 };
 
 // This is a hook because it returns a function that contains a hook
-export const useGetPersonById = (id: number): IDataLoader<Person> => {
+export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
   return useGetData(
     () => {
       return getPersonById(id);
     },
     CacheKey.PERSONNEL,
-    String(id)
+    String(id) // Unnecessary
   );
 };
 
@@ -51,7 +57,7 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const getTask = async (taskId: number): Promise<Task | null> => {
+export const getTask = async (taskId: string): Promise<Task | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
     return res.data;
@@ -62,7 +68,7 @@ export const getTask = async (taskId: number): Promise<Task | null> => {
   }
 };
 
-export const useGetTask = (id: number): IDataLoader<Task | null> => {
+export const useGetTask = (id: string): IDataLoader<Task | null> => {
   return useGetData(
     () => {
       return getTask(id);
