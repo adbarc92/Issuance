@@ -15,22 +15,6 @@ export interface SelectProps<T> {
   fullWidth?: boolean;
 }
 
-// const fixItem = (item: string): string => {
-//   let ret = '';
-//   for (let i = 0; i < item.length; i++) {
-//     if (i === 0) {
-//       ret += item[i].toUpperCase();
-//     } else {
-//       ret += item[i].toLowerCase();
-//     }
-//     if (item[i] === ' ' && item[i + 1]) {
-//       ret += item[i + 1].toUpperCase();
-//       i++;
-//     }
-//   }
-//   return ret;
-// };
-
 const Select = function <T>(props: SelectProps<T>): JSX.Element {
   return (
     <div>
