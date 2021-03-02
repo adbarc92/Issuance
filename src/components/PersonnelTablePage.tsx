@@ -11,15 +11,6 @@ import PersonnelTable from 'components/PersonnelTable';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
 
-// const SubHeaderWrapper = styled('div')(() => {
-//   return {
-//     display: 'flex',
-//     justifyContent: 'flex-end',
-//     marginRight: '1%',
-//     marginBottom: '0.5rem',
-//   };
-// });
-
 const PersonnelTablePage = (): JSX.Element => {
   const {
     loading,
@@ -27,6 +18,8 @@ const PersonnelTablePage = (): JSX.Element => {
     error,
     clearCache: clearPersonnelCache,
   } = useGetPersonnel();
+
+  console.log('personnelData:', personnelData);
 
   const [addingUser, setAddingUser] = React.useState(false);
 
@@ -56,6 +49,7 @@ const PersonnelTablePage = (): JSX.Element => {
           />
           <PersonnelTable personnelData={personnelData as Person[]} />
           <PersonnelDialog
+            person={null}
             selectedValue={'none'}
             open={addingUser}
             onClose={closeDialog}

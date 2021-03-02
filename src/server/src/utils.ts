@@ -94,6 +94,9 @@ export const snakeCasify2 = (obj: any): any => {
   for (let i = 0; i < keys.length; i++) {
     if (typeof obj[keys[i]] === 'object' && obj[keys[i]] !== null) {
       fixedObj[keys[i]] = snakeCasify2(obj[keys[i]]);
+    } else {
+      const newKey = toSnakeCase(keys[i]);
+      fixedObj[newKey] = obj[keys[i]];
     }
   }
 };

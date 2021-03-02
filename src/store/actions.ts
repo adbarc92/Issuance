@@ -143,6 +143,23 @@ export const createUser = async (
   }
 };
 
+export const updatePerson = async (
+  person: Partial<IPerson> & { id: string }
+): Promise<IPerson | null> => {
+  try {
+    const res = await api.put(`/personnel/${person.id}`, person);
+    handleUpdatePerson(res.data);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const handleUpdatePerson = (data: IPerson): void => {
+  updateCache(data);
+};
+
 export const createPerson = async (
   person: Partial<IPerson> & { userEmail: string }
 ): Promise<IPerson | null> => {

@@ -8,9 +8,11 @@ import { api } from 'store/api';
 // Temp
 
 // Helper function for the hook below, not technically a hook
-export const getPersonById = async (id: string): Promise<Person | null> => {
+export const getPersonById = async (
+  personId: string
+): Promise<Person | null> => {
   try {
-    const res = await api.get(`/personnel/${id}`);
+    const res = await api.get(`/personnel/${personId}`);
     return res.data;
   } catch (e) {
     console.error(e);
@@ -33,7 +35,7 @@ export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
       return getPersonById(id);
     },
     CacheKey.PERSONNEL,
-    String(id) // Unnecessary
+    id
   );
 };
 

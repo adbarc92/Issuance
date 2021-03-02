@@ -8,8 +8,10 @@ import {
 
 import { styled } from '@material-ui/core';
 
-import { createPerson } from 'store/actions';
-import { PersonJob } from 'types/person';
+import { Alert } from '@material-ui/lab';
+
+import { createPerson, updatePerson } from 'store/actions';
+import { Person, PersonJob } from 'types/person';
 
 import {
   DialogTitle,
@@ -23,13 +25,19 @@ import {
 
 import { useForm } from 'hooks/form';
 
-import { isEmailValid, isNotFilledOut, trimState } from 'utils/index';
+import {
+  isEmailValid,
+  isNotFilledOut,
+  trimState,
+  isTooLong,
+} from 'utils/index';
 
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
   clearPersonnelCache: () => void;
+  person: Person | null;
 }
 
 const SelectWrapper = styled('div')(() => {
@@ -60,10 +68,11 @@ export interface IPersonnelDialogActions {
 }
 
 export interface PersonnelDialogState {
+  id?: string;
   firstName: string;
   lastName: string;
-  contactEmail: string;
-  job: PersonJob.CODER;
+  userEmail: string;
+  job: PersonJob;
 }
 
 export enum PersonnelDialogAction {
@@ -74,15 +83,34 @@ export enum PersonnelDialogAction {
 }
 
 function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
-  const { onClose, open, clearPersonnelCache } = props;
-  const initialState: PersonnelDialogState = {
-    firstName: '',
-    lastName: '',
-    contactEmail: '',
-    job: PersonJob.CODER,
-  };
+  const { person, onClose, open, clearPersonnelCache } = props;
 
-  const { state, submit, dispatch } = useForm({
+  const addingPerson = person ? false : true; // If a person is passed in, it is being edited
+
+  const initialState: PersonnelDialogState = person
+    ? {
+        id: person.id,
+        firstName: person.firstName ?? '',
+        lastName: person.lastName ?? '',
+        userEmail: person.userEmail,
+        job: person.job,
+      }
+    : {
+        firstName: '',
+        lastName: '',
+        userEmail: '',
+        job: PersonJob.CODER,
+      };
+
+  const {
+    state,
+    submit,
+    reset,
+    errors,
+    triedSubmit,
+    dispatch,
+    pristine,
+  } = useForm({
     initialState,
     reducer: (
       state: PersonnelDialogState,
@@ -95,34 +123,56 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
       } else if (type === 'setLastName') {
         newState.lastName = payload;
       } else if (type === 'setContactEmail') {
-        newState.contactEmail = payload;
+        newState.userEmail = payload;
       } else if (type === 'setJob') {
         newState.job = payload;
       }
       return newState;
     },
-    validateState: state => {
+    validateState: (
+      state: PersonnelDialogState
+    ): undefined | Record<string, string> => {
       const errors: Record<string, string> = {};
       const vState = { ...state };
 
       trimState(vState);
 
-      if (isNotFilledOut(vState.firstName)) {
-        errors.firstName = 'A first name must be provided.';
+      if (!vState.userEmail.length) {
+        errors.userEmail = 'An email address must be provided';
       }
-      if (isEmailValid(vState.contactEmail)) {
-        errors.contactEmail = 'A valid email address must be provided';
+      if (!isEmailValid(vState.userEmail)) {
+        errors.userEmail = 'A valid email address must be provided';
+      }
+      if (isTooLong(vState.firstName, 40)) {
+        errors.firstName = 'A first name cannot be longer than 40 characters';
+      }
+      if (isTooLong(vState.lastName, 40)) {
+        errors.firstName = 'A last name cannot be longer than 40 characters';
       }
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async state => {
-      const person = await createPerson({
-        userEmail: state.contactEmail,
-        firstName: state.firstName,
-        lastName: state.lastName,
-        job: state.job,
-      });
-      if (person) {
+      if (errors) {
+      }
+
+      const { userEmail, firstName, lastName, job } = state;
+
+      const newPerson = await (addingPerson
+        ? createPerson({
+            userEmail,
+            firstName,
+            lastName,
+            job,
+          })
+        : updatePerson({
+            id: state.id as string,
+            userEmail,
+            firstName,
+            lastName,
+            job,
+          }));
+
+      if (newPerson) {
         showNotification(
           'User created successfully!',
           NotificationSeverity.SUCCESS
@@ -138,6 +188,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
   const [snackbar, showNotification] = useNotificationSnackbar();
 
   const handleClose = () => {
+    reset();
     onClose();
   };
 
@@ -151,7 +202,9 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
       >
         <DialogTitle id="form-dialog-title">Add User</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add user to application.</DialogContentText>
+          <DialogContentText>
+            {addingPerson ? 'Add user to application' : 'Edit application user'}{' '}
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -159,7 +212,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             label="User Email"
             type="email"
             fullWidth
-            value={state.contactEmail}
+            value={state.userEmail}
             onChange={e => {
               dispatch({
                 type: PersonnelDialogAction.SET_CONTACT_EMAIL,
@@ -169,7 +222,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
           />
           <TextField
             margin="dense"
-            id="name"
+            id="first-name"
             label="First Name"
             type="text"
             fullWidth
@@ -183,7 +236,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
           />
           <TextField
             margin="dense"
-            id="name"
+            id="last-name"
             label="Last Name"
             type="text"
             fullWidth
@@ -215,11 +268,22 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             />
           </SelectWrapper>
         </DialogContent>
+        {triedSubmit && errors ? (
+          <DialogContent>
+            {Object.values(errors).map((errorMessage, index) => {
+              return (
+                <Alert severity="error" key={index}>
+                  {errorMessage}
+                </Alert>
+              );
+            })}
+          </DialogContent>
+        ) : null}
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => submit()} color="primary">
+          <Button disabled={pristine} onClick={() => submit()} color="primary">
             Submit
           </Button>
         </DialogActions>

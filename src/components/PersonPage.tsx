@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PersonnelDialog from 'components/PersonnelDialog';
+
 import { useGetPersonById } from 'hooks/axiosHooks';
 
 import RootWrapper from 'elements/RootWrapper';
@@ -7,6 +9,7 @@ import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
 import InfoBox from 'elements/InfoBox';
 import GridWrapper from 'elements/GridWrapper';
+import AddButton from 'elements/AddButton';
 
 import { Person } from 'types/person';
 
@@ -15,9 +18,24 @@ interface PersonPageProps {
 }
 
 const PersonPage = (props: PersonPageProps): JSX.Element => {
-  const { loading, data: personData, error, clearCache } = useGetPersonById(
-    props.personId
-  );
+  const {
+    loading,
+    data: personData,
+    error,
+    clearCache: clearPersonnelCache, // Might be broken
+  } = useGetPersonById(props.personId);
+
+  console.log('personData:', personData);
+
+  const [addingUser, setAddingUser] = React.useState(false);
+
+  const handleOpen = () => {
+    setAddingUser(true);
+  };
+
+  const closeDialog = () => {
+    setAddingUser(false);
+  };
 
   if (error) {
     return <div>{error}</div>;
@@ -25,13 +43,16 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
 
   return (
     <RootWrapper>
-      {loading ? (
+      {loading || !personData ? (
         <LoadingSpinner />
       ) : (
         <>
           <PageTitle
             title={`User: ${(personData as Person).userEmail}`}
             subtitle={`UserId: ${(personData as Person).id}`}
+            headerElem={
+              <AddButton title={'Edit Person'} handleClick={handleOpen} />
+            }
           />
           <GridWrapper>
             <InfoBox title="Profile Picture">
@@ -46,6 +67,13 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
               <div>Job: {(personData as Person).job}</div>
             </InfoBox>
           </GridWrapper>
+          <PersonnelDialog
+            person={personData as Person}
+            selectedValue={'none'}
+            open={addingUser}
+            onClose={closeDialog}
+            clearPersonnelCache={clearPersonnelCache}
+          />
         </>
       )}
     </RootWrapper>

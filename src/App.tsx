@@ -77,6 +77,17 @@ const App = (): JSX.Element => {
           <Route path="/login">
             <LoginPage />
           </Route>
+          <Route
+            exact
+            path="/personnel/:personId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <PersonPage personId={match.params.personId} />
+                </PageWrapper>
+              );
+            }}
+          />
           <Route path="/personnel">
             <PageWrapper>
               <PersonnelTablePage />
@@ -92,16 +103,7 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PageWrapper>
           </Route>
-          <Route
-            path="/personnel/:personId"
-            render={({ match, location, history }) => {
-              return (
-                <PageWrapper>
-                  <PersonPage personId={match.params.personId} />
-                </PageWrapper>
-              );
-            }}
-          />
+
           <Route
             path="/tasks/:taskId"
             render={({ match, location, history }) => {

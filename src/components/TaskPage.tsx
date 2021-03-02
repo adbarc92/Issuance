@@ -30,22 +30,22 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
         <>
           <PageTitle title={task.name} subtitle={String(task.projectId)} />
           <GridWrapper>
-            <InfoBox title="Details" gridArea="details">
+            <InfoBox title="Details" gridarea="details">
               <div>Type: {task.type}</div>
               <div>Priority: {task.priority}</div>
               <div>Status: {task.status}</div>
             </InfoBox>
 
-            <InfoBox title="Description" gridArea="description">
+            <InfoBox title="Description" gridarea="description">
               <div>{task.description}</div>
             </InfoBox>
 
-            <InfoBox title="Dates" gridArea="dates">
+            <InfoBox title="Dates" gridarea="dates">
               <div>Created On: {task.createdOn}</div>
               <div>Deadline: {task.deadline}</div>
             </InfoBox>
 
-            <InfoBox title="People" gridArea="people">
+            <InfoBox title="People" gridarea="people">
               <div>Assignee ID: {task.assignedTo}</div>
               <div>Reporter ID: {task.reportedBy}</div>
             </InfoBox>
