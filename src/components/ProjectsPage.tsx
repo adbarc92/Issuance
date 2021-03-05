@@ -67,11 +67,13 @@ const ProjectsPage = (): JSX.Element => {
           ) : (
             <div>No data found! Get to projectin'!</div>
           )}
-          <ProjectDialog
-            showingDialog={showingDialog}
-            hideDialog={hideDialog}
-            clearProjectsCache={clearProjectsCache}
-          />
+          {showingDialog ? (
+            <ProjectDialog
+              showingDialog={showingDialog}
+              hideDialog={hideDialog}
+              clearProjectsCache={clearProjectsCache}
+            />
+          ) : null}
         </>
       )}
     </RootWrapper>

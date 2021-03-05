@@ -13,14 +13,13 @@ import {
 
 import { Alert } from '@material-ui/lab';
 
-// import Select from 'elements/Select';
 import DateTimePicker from 'elements/DateTimePicker';
+import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { Person } from 'types/person';
+import { NewProject } from 'types/project';
 
 import { createProject } from 'store/actions';
-
-// import { reRenderApp } from 'App';
 
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
@@ -30,13 +29,9 @@ import {
 } from 'hooks/notification';
 
 import { useForm } from 'hooks/form';
-
-import { NewProject } from 'types/project';
-
 import { useGetPersonnel } from 'hooks/axiosHooks';
 
 import TransferList from 'components/PersonnelTransferList';
-import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { FormAction } from 'hooks/form';
 
@@ -193,8 +188,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       console.log('projectToSubmit:', projectToSubmit);
 
       const project = await createProject(projectToSubmit);
-
-      console.log('Project:', project);
 
       if (project) {
         showNotification('Project created', NotificationSeverity.SUCCESS);

@@ -74,31 +74,27 @@ export const toSnakeCase = (str: string): string => {
   return ret;
 };
 
+// export const snakeCasify = (obj: any): any => {
+//   const retObj = {};
+//   const keys = Object.keys(obj);
+//   for (let i = 0; i < keys.length; i++) {
+//     const newKey = toSnakeCase(keys[i]);
+//     retObj[newKey] = obj[keys[i]];
+//   }
+//   return retObj;
+// };
+
 export const snakeCasify = (obj: any): any => {
-  const retObj = {};
-  const keys = Object.keys(obj);
-  for (let i = 0; i < keys.length; i++) {
-    const newKey = toSnakeCase(keys[i]);
-    retObj[newKey] = obj[keys[i]];
-  }
-  return retObj;
-};
-
-// Iterate through the object, checking if the any properties are an object
-// If so, call recursively
-// If not,
-
-export const snakeCasify2 = (obj: any): any => {
   const fixedObj = {};
   const keys = Object.keys(obj);
   for (let i = 0; i < keys.length; i++) {
+    const newKey = toSnakeCase(keys[i]);
+    fixedObj[newKey] = obj[keys[i]];
     if (typeof obj[keys[i]] === 'object' && obj[keys[i]] !== null) {
-      fixedObj[keys[i]] = snakeCasify2(obj[keys[i]]);
-    } else {
-      const newKey = toSnakeCase(keys[i]);
-      fixedObj[newKey] = obj[keys[i]];
+      fixedObj[newKey] = snakeCasify(obj[keys[i]]);
     }
   }
+  return fixedObj;
 };
 
 export type IoRequest = Request & { io: any };

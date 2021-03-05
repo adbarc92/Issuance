@@ -19,9 +19,8 @@ const PersonnelTablePage = (): JSX.Element => {
     clearCache: clearPersonnelCache,
   } = useGetPersonnel();
 
-  console.log('personnelData:', personnelData);
-
   const [addingUser, setAddingUser] = React.useState(false);
+  const [dialogPerson, setDialogPerson] = React.useState<Person | null>(null);
 
   const handleOpen = () => {
     setAddingUser(true);
@@ -29,6 +28,7 @@ const PersonnelTablePage = (): JSX.Element => {
 
   const closeDialog = () => {
     setAddingUser(false);
+    setDialogPerson(null);
   };
 
   if (error) {
@@ -47,9 +47,13 @@ const PersonnelTablePage = (): JSX.Element => {
               <AddButton title={'Add Personnel'} handleClick={handleOpen} />
             }
           />
-          <PersonnelTable personnelData={personnelData as Person[]} />
+          <PersonnelTable
+            personnelData={personnelData as Person[]}
+            setDialogPerson={setDialogPerson}
+            openDialog={handleOpen}
+          />
           <PersonnelDialog
-            person={null}
+            person={dialogPerson}
             selectedValue={'none'}
             open={addingUser}
             onClose={closeDialog}

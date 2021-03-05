@@ -69,6 +69,6 @@ export class ProjectService {
       });
     });
 
-    return;
+    return repoProject;
   }
 }

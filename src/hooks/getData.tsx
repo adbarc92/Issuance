@@ -100,12 +100,13 @@ export function useGetData<Datatype>(
   }, [data, loader, cacheKey]);
 
   return {
-    loading,
+    loading: loading || (data === undefined && !error ? true : false),
     data,
     error,
     clearCache: () => {
       delete requestCache[cacheKey];
       setData(undefined);
+      setLoading(true);
     },
   };
 }

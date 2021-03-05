@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { ProjectService } from 'services/project.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-import { castProject } from 'cast';
 
 const projectController = (router: Router): void => {
   const projectService = new ProjectService();
@@ -14,6 +13,16 @@ const projectController = (router: Router): void => {
     // For each project, get the associated personnel, and then assign them to a casted
 
     res.json(projects);
+  });
+
+  router.get('/projects/:id', async function (req: Request, res: Response) {
+    try {
+      const project = await projectService.getProjectById(req.params.id);
+      return res.send(project);
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
   });
 
   router.post('/projects', async function (req: Request, res: Response) {

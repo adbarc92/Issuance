@@ -122,3 +122,27 @@ export const getProjects = async (): Promise<Project[] | null> => {
 export const useGetProjects = (): IDataLoader<Project[] | null> => {
   return useGetData(getProjects, CacheKey.PROJECTS);
 };
+
+export const getProjectById = async (
+  projectId: string
+): Promise<Project | null> => {
+  try {
+    const res = await api.get(`/projects/${projectId}`);
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetProjectById = (
+  projectId: string
+): IDataLoader<Project | null> => {
+  return useGetData(
+    () => {
+      return getProjectById(projectId);
+    },
+    CacheKey.PROJECTS,
+    projectId
+  );
+};

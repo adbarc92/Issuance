@@ -74,7 +74,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
             <ListItem key={index}>
               <Link to={`/tasks/${task.id}`}>
                 <ListItemText>
-                  {task.name}:{' '}
+                  {task.name}:
                   {task.description.length > 40
                     ? task.description.slice(0, 40)
                     : task.description}
@@ -103,7 +103,16 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
 
   return (
     <CustomCard>
-      <CardHeader title={project.title} subheader={project.deadline} />
+      <Link to={`/projects/${project.id}`}>
+        <CardHeader
+          title={
+            project.title.length > 15
+              ? project.title.slice(0, 15)
+              : project.title
+          }
+          subheader={project.deadline}
+        />
+      </Link>
       <CardContent>
         <Typography>{project.description}</Typography>
       </CardContent>
@@ -131,7 +140,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           {personnel && personnel.length ? (
             displayList(
               (personnel as Person[]).map(person => {
-                return person.userEmail;
+                return person?.userEmail;
               })
             )
           ) : (

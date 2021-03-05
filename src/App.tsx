@@ -8,6 +8,7 @@ import LoginPage from 'components/LoginPage';
 import TaskPage from 'components/TaskPage';
 import ProjectsPage from 'components/ProjectsPage';
 import PersonPage from 'components/PersonPage';
+import ProjectPage from 'components/ProjectPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -74,36 +75,32 @@ const App = (): JSX.Element => {
     <Router>
       <PageContainer>
         <Switch>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <Route
-            exact
-            path="/personnel/:personId"
-            render={({ match, location, history }) => {
-              return (
-                <PageWrapper>
-                  <PersonPage personId={match.params.personId} />
-                </PageWrapper>
-              );
-            }}
-          />
-          <Route path="/personnel">
-            <PageWrapper>
-              <PersonnelTablePage />
-            </PageWrapper>
-          </Route>
-          <Route path="/projects">
-            <PageWrapper>
-              <ProjectsPage />
-            </PageWrapper>
-          </Route>
           <Route exact path="/">
             <PageWrapper>
               <Dashboard />
             </PageWrapper>
           </Route>
-
+          <Route exact path="/login">
+            <LoginPage />
+          </Route>
+          <Route exact path="/personnel">
+            <PageWrapper>
+              <PersonnelTablePage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/projects">
+            <PageWrapper>
+              <ProjectsPage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/tasks">
+            <PageWrapper>
+              <TaskTablePage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/register">
+            <RegisterUserPage />
+          </Route>
           <Route
             path="/tasks/:taskId"
             render={({ match, location, history }) => {
@@ -114,14 +111,26 @@ const App = (): JSX.Element => {
               );
             }}
           />
-          <Route path="/tasks">
-            <PageWrapper>
-              <TaskTablePage />
-            </PageWrapper>
-          </Route>
-          <Route path="/register">
-            <RegisterUserPage />
-          </Route>
+          <Route
+            path="/personnel/:personId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <PersonPage personId={match.params.personId} />
+                </PageWrapper>
+              );
+            }}
+          />
+          <Route
+            path="/projects/:projectId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <ProjectPage projectId={match.params.projectId} />
+                </PageWrapper>
+              );
+            }}
+          />
         </Switch>
       </PageContainer>
     </Router>

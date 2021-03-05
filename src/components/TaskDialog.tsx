@@ -427,7 +427,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
               }
             />
             {projectLoading ? (
-              <Typography>Awaiting Projects...</Typography>
+              <>
+                <LoadingSpinner />
+                <Typography>Awaiting Projects...</Typography>
+              </>
             ) : (
               <ProjectsContainer>
                 <SelectWrapper>
@@ -453,6 +456,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
             )}
           </SelectContainer>
         </DialogContent>
+        {projectError ? (
+          <Alert severity="error">Project Error occurred: {projectError}</Alert>
+        ) : null}
         {triedSubmit && errors ? (
           <DialogContent>
             {Object.values(errors).map((errorMessage, index) => {

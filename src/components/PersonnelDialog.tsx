@@ -87,6 +87,8 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
   const addingPerson = person ? false : true; // If a person is passed in, it is being edited
 
+  console.log('Dialog Person:', person);
+
   const initialState: PersonnelDialogState = person
     ? {
         id: person.id,
@@ -137,7 +139,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
       trimState(vState);
 
-      if (!vState.userEmail.length) {
+      if (isNotFilledOut(vState.userEmail)) {
         errors.userEmail = 'An email address must be provided';
       }
       if (!isEmailValid(vState.userEmail)) {
@@ -200,10 +202,14 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
         aria-labelledby="simple-dialog-title"
         open={open}
       >
-        <DialogTitle id="form-dialog-title">Add User</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {addingPerson ? 'Add Person' : 'Edit Person'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {addingPerson ? 'Add user to application' : 'Edit application user'}{' '}
+            {addingPerson
+              ? 'Add personnel to application'
+              : 'Edit application personnel'}
           </DialogContentText>
           <TextField
             autoFocus
