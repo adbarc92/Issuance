@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Select from 'elements/Select';
 import {
@@ -84,6 +84,8 @@ export enum PersonnelDialogAction {
 
 function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
   const { person, onClose, open, clearPersonnelCache } = props;
+
+  const [curPerson, setCurPerson] = React.useState(person);
 
   const addingPerson = person ? false : true; // If a person is passed in, it is being edited
 
@@ -186,6 +188,13 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
       }
     },
   });
+
+  useEffect(() => {
+    if (person !== curPerson) {
+      setCurPerson(person);
+      reset();
+    }
+  }, [person, curPerson, reset]);
 
   const [snackbar, showNotification] = useNotificationSnackbar();
 
