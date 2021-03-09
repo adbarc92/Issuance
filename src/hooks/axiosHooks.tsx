@@ -1,5 +1,6 @@
-import { Person, PersonJob } from 'types/person';
+import { Person } from 'types/person';
 import { Task } from 'types/task';
+import { User } from 'types/user';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
@@ -49,42 +50,6 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const createPerson = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  role: PersonJob
-): Promise<Person | null> => {
-  try {
-    const response = await api.post('/personnel', {
-      firstName,
-      lastName,
-      email,
-      role,
-    });
-    // console.log(response);
-    return response.data;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-};
-
-export const getTasks = async (): Promise<Task[] | null> => {
-  try {
-    const res = await api.get('/tasks');
-    return res.data;
-  } catch (e) {
-    console.error(e);
-    // throw e;
-    return null;
-  }
-};
-
-export const useGetTasks = (): IDataLoader<Task[] | null> => {
-  return useGetData(getTasks, CacheKey.TASKS);
-};
-
 export const getTask = async (taskId: number): Promise<Task | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
@@ -104,4 +69,33 @@ export const useGetTask = (id: number): IDataLoader<Task | null> => {
     CacheKey.TASKS,
     String(id)
   );
+};
+
+export const getTasks = async (): Promise<Task[] | null> => {
+  try {
+    const res = await api.get('/tasks');
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    // throw e;
+    return null;
+  }
+};
+
+export const useGetTasks = (): IDataLoader<Task[] | null> => {
+  return useGetData(getTasks, CacheKey.TASKS);
+};
+
+export const getUsers = async (): Promise<User[] | null> => {
+  try {
+    const res = await api.get('/users');
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetUsers = (): IDataLoader<User[] | null> => {
+  return useGetData(getUsers, CacheKey.USERS);
 };

@@ -62,7 +62,10 @@ export const camelCasify = (obj: any): any => {
 export const toSnakeCase = (str: string): string => {
   let ret = '';
   for (let i = 0; i < str.length; i++) {
-    if (str[i] === str[i].toUpperCase()) {
+    if (
+      !['_', '.', ',', '"', '\\', '/'].includes(str[i]) &&
+      str[i] === str[i].toUpperCase()
+    ) {
       ret += '_' + str[i].toLowerCase();
     } else {
       ret += str[i];
@@ -80,3 +83,5 @@ export const snakeCasify = (obj: any): any => {
   }
   return retObj;
 };
+
+export type IoRequest = Request & { io: any };

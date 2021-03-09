@@ -3,6 +3,8 @@ import { Task as ITask } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
+import { UpdateTaskResponse } from 'types/task';
+import { LoginResponse } from 'types/auth';
 
 // Actions change things
 
@@ -15,7 +17,8 @@ const updateCache = (obj: any, subCache?: any) => {
     // check if object
     if (Array.isArray(value)) {
       updateCache(obj, value);
-    } else if (typeof value === 'object') {
+      // Bug fix: typeof null === object
+    } else if (value && typeof value === 'object') {
       if (
         value.typeName &&
         value.typeName === obj.typeName &&
@@ -54,16 +57,18 @@ export const updateTask = async (
 ): Promise<ITask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
-    console.log('Update Task Response:', response.data);
-    updateCache(response.data.task);
-    updateCacheOrdering(response.data.ordering, CacheKey.TASKS);
-    console.log('Cache:', requestCache[CacheKey.TASKS]);
+    handleUpdateTask(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
     // throw e;
     return null;
   }
+};
+
+export const handleUpdateTask = (data: UpdateTaskResponse): void => {
+  updateCache(data.task);
+  updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
 export const createTask = async (task: TaskInput): Promise<ITask | null> => {
@@ -111,7 +116,7 @@ export const login = async (
   }
 };
 
-export const checkLogin = async (): Promise<boolean | null> => {
+export const checkLogin = async (): Promise<LoginResponse | null> => {
   try {
     const response = await api.put('/login', {});
     return response.data;
@@ -121,28 +126,31 @@ export const checkLogin = async (): Promise<boolean | null> => {
   }
 };
 
-export const createUser = async (user: UserInput): Promise<User | null> => {
+export const createUser = async (
+  user: UserInput
+): Promise<{ user: User | null; statusCode: number }> => {
   try {
     const response = await api.post('/users', {
       loginEmail: user.loginEmail,
       userPassword: user.password,
       userRole: user.role,
     });
-    return response.data;
+    return { user: response.data, statusCode: 200 };
   } catch (e) {
     console.error(e);
-    return null;
+    return { user: null, statusCode: e.response.status };
   }
 };
 
 export const createPerson = async (
-  person: Partial<IPerson> & { username: string }
+  person: Partial<IPerson> & { userEmail: string }
 ): Promise<IPerson | null> => {
   try {
-    const response = await api.post('/personnel', {
-      username: person.username,
-    });
-    console.log('response:', response);
+    const newPerson = {
+      ...person,
+      userEmail: person.userEmail,
+    };
+    const response = await api.post('/personnel', newPerson);
     return response.data;
   } catch (e) {
     console.error(e);

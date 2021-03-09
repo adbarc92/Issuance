@@ -17,6 +17,9 @@ import SimpleMenu from 'elements/SimpleMenu';
 import { MoreVert } from '@material-ui/icons';
 import theme, { colors } from 'theme';
 
+const CARD_DESCRIPTION_LENGTH = 140;
+const CARD_NAME_LENGTH = 50;
+
 export interface TaskCardProps {
   task: Task;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
@@ -42,6 +45,26 @@ const AvatarShell = styled(Avatar)(() => {
     // position: 'absolute',
     // top: '0.8rem',
     // right: '0.8rem',
+  };
+});
+
+const CardTitle = styled(Typography)(() => {
+  return {
+    marginTop: '0.3rem',
+  };
+});
+
+const CardDescription = styled(Typography)(() => {
+  return {
+    marginTop: '0.5rem',
+    borderBottom: '1px solid rgba(0,0,0,0.2)',
+    paddingBottom: '0.5rem',
+  };
+});
+
+const CardType = styled(Typography)(() => {
+  return {
+    marginTop: '0.5rem',
   };
 });
 
@@ -92,6 +115,17 @@ const TaskPlaceholder = styled('div')((props: any) => {
     backgroundColor: props.black ? colors.black : colors.white,
   };
 });
+
+const fixStringSize = (text: string, maxSize: number): string => {
+  // description.length <= CARD_DESCRIPTION_LENGTH
+  //                   ? description
+  //                   : description.slice(0, CARD_DESCRIPTION_LENGTH) + '...'
+  if (text.length <= maxSize) {
+    return text;
+  } else {
+    return text.slice(0, maxSize) + '...';
+  }
+};
 
 export const TaskCard = (props: TaskCardProps): JSX.Element => {
   const {
@@ -145,7 +179,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           key={task.id}
           onDragEnter={() => {
             if (hoveredTask?.id !== task.id) {
-              console.log('OnDragEnter Placeholder');
               setHoveredTask(task);
             }
           }}
@@ -160,7 +193,6 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
           setHoveredTask(null);
         }}
         onDragEnter={() => {
-          console.log('OnDragEnter HighlightCard');
           setHoveredTask(task);
         }}
         highlighted={
@@ -174,19 +206,15 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
             <CardContainer>
               <CardInfo>
                 <Link to={`/tasks/${id}`}>
-                  <Typography variant="h5" component="h5">
-                    {name}
-                  </Typography>
+                  <CardTitle variant="h5">
+                    {fixStringSize(name, CARD_NAME_LENGTH)}
+                  </CardTitle>
                 </Link>
-                <Typography variant="body1" component="p">
-                  {description}
-                </Typography>
-                <Typography variant="subtitle1" component="p">
-                  {type}
-                </Typography>
-                <Typography variant="caption" component="p">
-                  {priority}
-                </Typography>
+                <CardDescription variant="body1">
+                  {fixStringSize(description, CARD_DESCRIPTION_LENGTH)}
+                </CardDescription>
+                <CardType variant="subtitle1">{type}</CardType>
+                <Typography variant="caption">{priority}</Typography>
               </CardInfo>
               <CardMenu>
                 <AvatarShell />

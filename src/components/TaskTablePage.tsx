@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TaskDialog from 'components/TaskDialog';
 import { Add } from '@material-ui/icons';
 import { styled, Button } from '@material-ui/core';
@@ -9,6 +9,15 @@ import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
 
 import { useForceUpdate } from 'hooks/render';
+
+import { socket } from 'io';
+import { handleUpdateTask } from 'store/actions';
+import { UpdateTaskResponse } from 'types/task';
+import { getUserToken } from 'store/auth';
+
+import { clearCacheWithoutRender, CacheKey } from 'hooks/getData';
+import { reRenderApp } from 'App';
+import { SocketMessages } from 'types/socket';
 
 const RootWrapper = styled('div')(() => {
   return {
@@ -32,29 +41,11 @@ const SubHeaderWrapper = styled('div')(() => {
   };
 });
 
-export const getRowSize = (
-  taskStatus: TaskStatus,
-  columnSizeState: {
-    backlogTasksCount: number;
-    activeTasksCount: number;
-    completeTasksCount: number;
-  }
-): number => {
-  switch (taskStatus) {
-    case 'Backlog':
-      return columnSizeState.backlogTasksCount;
-    case 'Active':
-      return columnSizeState.activeTasksCount;
-    case 'Complete':
-      return columnSizeState.completeTasksCount;
-    default:
-      return 0;
-  }
-};
-
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
   const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+
+  const reRender = useForceUpdate();
 
   const {
     loading,
@@ -63,9 +54,19 @@ const TaskTablePage = (): JSX.Element => {
     clearCache: clearTasksCache,
   } = useGetTasks();
 
-  const reRender = useForceUpdate();
-
-  console.log('taskData:', taskData);
+  useEffect(() => {
+    // On page load, register task register;
+    socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
+      if (taskPayload.userId !== getUserToken()) {
+        handleUpdateTask(taskPayload);
+        reRenderApp();
+      }
+    });
+    return () => {
+      clearCacheWithoutRender(CacheKey.TASKS);
+      socket.off('tasks');
+    };
+  }, []);
 
   const handleAddingTask = () => {
     setDialogTask(null);

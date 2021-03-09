@@ -27,7 +27,7 @@ const MarginTopWrapper = styled('div')(() => {
   };
 });
 
-const CreateUserPage = (): JSX.Element => {
+const RegisterUserPage = (): JSX.Element => {
   const initialState = {
     email: '',
     password: '',
@@ -84,16 +84,13 @@ const CreateUserPage = (): JSX.Element => {
         return;
       }
 
-      // const person = await createPerson({ username: state.email });
-
-      // const { id } = person as Person;
-
       const userToSubmit = {
         loginEmail: state.email,
         password: state.password,
         role: state.role,
       };
-      const user = await createUser(userToSubmit);
+
+      const { user, statusCode } = await createUser(userToSubmit);
 
       if (user) {
         const sessionToken = await login(state.email, state.password);
@@ -101,13 +98,13 @@ const CreateUserPage = (): JSX.Element => {
           setSessionToken(sessionToken);
           window.location.href = '/';
         } else {
-          console.error('failed to login');
+          console.error('Failed to login');
         }
+      } else if (statusCode === 409) {
+        showNotification('User already exists.', NotificationSeverity.ERROR);
       } else {
-        console.log('Failed to create user');
+        console.error('Failed to create user');
       }
-
-      // Could use DRY
     },
   });
 
@@ -155,7 +152,10 @@ const CreateUserPage = (): JSX.Element => {
           fullWidth
           value={state.confirmPassword}
           onChange={e => {
-            dispatch({ type: 'setConfirmPassword', payload: e.target.value });
+            dispatch({
+              type: 'setConfirmPassword',
+              payload: e.target.value,
+            });
           }}
           onKeyDown={handleKeyDown}
         />
@@ -179,4 +179,4 @@ const CreateUserPage = (): JSX.Element => {
   );
 };
 
-export default CreateUserPage;
+export default RegisterUserPage;

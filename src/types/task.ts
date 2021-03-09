@@ -33,3 +33,9 @@ export interface Task {
   reportedBy: number;
   typeName: 'Task'; // this is server-side only
 }
+
+export interface UpdateTaskResponse {
+  task: Task;
+  ordering: { id: string }[];
+  userId: string;
+}

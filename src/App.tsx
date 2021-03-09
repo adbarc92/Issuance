@@ -13,6 +13,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 
+import './io';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -78,7 +80,7 @@ const App = (): JSX.Element => {
 
   render = rerender;
 
-  // console.log('Rendering');
+  console.log('Rendering');
 
   return (
     <Router>

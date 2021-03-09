@@ -51,7 +51,6 @@ export const useForm = function <T>(props: FormProps<T>): FormReturn<T> {
   };
 
   const submit = () => {
-    console.log('Submitted!');
     setTriedSubmit(true);
     if (props.validateState(state)) {
       return;

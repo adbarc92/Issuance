@@ -8,7 +8,7 @@ import {
 
 import { styled } from '@material-ui/core';
 
-import { createPerson } from 'hooks/axiosHooks';
+import { createPerson } from 'store/actions';
 import { PersonJob } from 'types/person';
 
 import {
@@ -113,12 +113,12 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async state => {
-      const person = await createPerson(
-        state.firstName,
-        state.lastName,
-        state.contactEmail,
-        state.job
-      );
+      const person = await createPerson({
+        userEmail: state.contactEmail,
+        firstName: state.firstName,
+        lastName: state.lastName,
+        job: state.job,
+      });
       if (person) {
         showNotification(
           'User created successfully!',
@@ -152,6 +152,20 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
           <TextField
             autoFocus
             margin="dense"
+            id="email"
+            label="User Email"
+            type="email"
+            fullWidth
+            value={state.contactEmail}
+            onChange={e => {
+              dispatch({
+                type: PersonnelDialogAction.SET_CONTACT_EMAIL,
+                payload: e.target.value,
+              });
+            }}
+          />
+          <TextField
+            margin="dense"
             id="name"
             label="First Name"
             type="text"
@@ -174,20 +188,6 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
             onChange={e => {
               dispatch({
                 type: PersonnelDialogAction.SET_LAST_NAME,
-                payload: e.target.value,
-              });
-            }}
-          />
-          <TextField
-            margin="dense"
-            id="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            value={state.contactEmail}
-            onChange={e => {
-              dispatch({
-                type: PersonnelDialogAction.SET_CONTACT_EMAIL,
                 payload: e.target.value,
               });
             }}

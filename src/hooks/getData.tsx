@@ -20,8 +20,9 @@ export const requestCache: Record<
 > = ((window as any).requestCache = {});
 
 export enum CacheKey {
-  PERSONNEL,
-  TASKS,
+  PERSONNEL = 'PERSONNEL',
+  TASKS = 'TASKS',
+  USERS = 'USERS',
 }
 
 type LoaderFunction = () => Promise<any>;

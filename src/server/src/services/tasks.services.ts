@@ -1,7 +1,7 @@
 import { getConnection, Repository } from 'typeorm';
 import { Task } from 'entity/Task';
 import { Task as ITask } from '../../../types/task';
-import { snakeCasify, toCamelCase, toSnakeCase } from 'utils';
+import { snakeCasify, toCamelCase } from 'utils';
 
 export class TaskService {
   taskRepository: Repository<Task>;
@@ -32,14 +32,6 @@ export class TaskService {
       .execute();
   }
 
-  // async countTaskStatus(status: string): Promise<number> {
-  //   return await this.taskRepository
-  //     .createQueryBuilder()
-  //     .select('*')
-  //     .where('task.status === ' + status)
-  //     .getCount();
-  // }
-
   async createTask(task: ITask): Promise<Task[]> {
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository
@@ -59,12 +51,10 @@ export class TaskService {
     let newIndex = updatedTask.rowIndex;
     const oldIndex = task.row_index;
 
-    // console.log('task:', this.countTaskStatus(task.status));
     if (newIndex !== oldIndex) {
       if (newIndex > oldIndex) {
         newIndex -= 1;
         updatedTask.rowIndex -= 1;
-        // 5 => 2
         // Close original gap: substract 1 from everything >= oldIndex
         await this.taskRepository
           .createQueryBuilder()
@@ -100,19 +90,8 @@ export class TaskService {
       const camelProp = toCamelCase(prop);
 
       task[prop] = updatedTask[camelProp] ?? task[prop];
-      console.log(
-        'camelProp:',
-        camelProp,
-        'prop:',
-        prop,
-        'task[prop]:',
-        task[prop],
-        'updatedTask[camelProp]:',
-        updatedTask[camelProp]
-      );
     }
 
-    console.log('SavedTask:', task);
     return await this.taskRepository.save(task);
   }
 

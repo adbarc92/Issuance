@@ -16,13 +16,6 @@ const RootWrapper = styled('div')(() => {
   };
 });
 
-// const HeaderWrapper = styled('div')(() => {
-//   return {
-//     fontSize: '3rem',
-//     margin: '0',
-//   };
-// });
-
 const SubHeaderWrapper = styled('div')(() => {
   return {
     display: 'flex',

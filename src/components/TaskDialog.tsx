@@ -218,13 +218,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       trimState(state);
 
-      // Troubleshooting - Start
-      // const columnSize = props.columnSizeState;
-      // console.log('columnSize:', columnSize);
-      // const rowIndex = getRowSize(state.status, columnSize);
-
-      // console.log('rowIndex:', rowIndex);
-
       const taskToSubmit = {
         name: state.name,
         description: state.description,
@@ -259,8 +252,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const { open, onClose, clearTasksCache } = props;
 
   const [snackbar, showNotification] = useNotificationSnackbar();
-
-  // Redo: Action is function that is passed dispatch and a payload
 
   const handleClose = () => {
     reset();
