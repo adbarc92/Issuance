@@ -1,5 +1,5 @@
 import { api } from 'store/api';
-import { Task as ITask } from 'types/task';
+import { Task as ITask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { NewProject as IProject } from 'types/project';
 import { User, UserInput } from 'types/user';
@@ -8,8 +8,6 @@ import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
 
 // Actions change things
-
-export type TaskInput = Partial<ITask> & Record<string, unknown>;
 
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
@@ -83,6 +81,7 @@ export const createTask = async (task: TaskInput): Promise<ITask | null> => {
       assignedTo: 0,
       deadline: task.deadline,
       projectId: task.projectId,
+      storyPoints: task.storyPoints,
       reportedBy: 0,
     });
     return response.data;

@@ -1,7 +1,7 @@
 import { getConnection, Repository } from 'typeorm';
 import { Task } from 'entity/Task';
 import { Task as ITask } from '../../../types/task';
-import { snakeCasify, toCamelCase } from 'utils';
+import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 
 export class TaskService {
   taskRepository: Repository<Task>;
@@ -41,6 +41,7 @@ export class TaskService {
   }
 
   async createTask(task: ITask): Promise<Task[]> {
+    fixInputTask(task);
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository
       .createQueryBuilder()

@@ -1,3 +1,5 @@
+// Todo: re-integrate Personnel
+
 import React from 'react';
 import {
   Card,
@@ -56,7 +58,7 @@ const CustomCard = styled(Card)(() => {
 const ProjectCard = (props: ProjectCardProps): JSX.Element => {
   const { project } = props;
 
-  const { tasks, personnel } = project;
+  const { tasks } = project; // Todo: destructure here
 
   const [expanded, setExpanded] = React.useState(false);
 
@@ -136,7 +138,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           ) : (
             <Typography>This project has no tasks!</Typography>
           )}
-          <Typography>Assigned Personnel:</Typography>
+          {/* <Typography>Assigned Personnel:</Typography>
           {personnel && personnel.length ? (
             displayList(
               (personnel as Person[]).map(person => {
@@ -145,7 +147,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
             )
           ) : (
             <Typography>There are no assigned personnel!</Typography>
-          )}
+          )} */}
         </CardContent>
       </Collapse>
     </CustomCard>

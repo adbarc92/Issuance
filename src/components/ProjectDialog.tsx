@@ -14,7 +14,7 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import DateTimePicker from 'elements/DateTimePicker';
-import LoadingSpinner from 'elements/LoadingSpinner';
+// import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { Person } from 'types/person';
 import { NewProject } from 'types/project';
@@ -29,9 +29,9 @@ import {
 } from 'hooks/notification';
 
 import { useForm } from 'hooks/form';
-import { useGetPersonnel } from 'hooks/axiosHooks';
+// import { useGetPersonnel } from 'hooks/axiosHooks';
 
-import TransferList from 'components/PersonnelTransferList';
+// import TransferList from 'components/PersonnelTransferList';
 
 import { FormAction } from 'hooks/form';
 
@@ -90,28 +90,13 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     ).toISOString(), // defaults to tomorrow,
   };
 
-  const [personnel, setPersonnel] = React.useState<Person[]>([]);
+  // const [personnel, setPersonnel] = React.useState<Person[]>([]);
 
-  // const assignedPersonnel: Person[] = [];
-
-  // const getAssignedPersonnel = () => {
-  //   return assignedPersonnel;
-  // };
-
-  // const setAssignedPersonnel = (newArr: Person[]): void => {
-  //   const assignedPersonnel = getAssignedPersonnel();
-  //   console.log('Setting personnel...');
-  //   console.log('Old Personnel:', assignedPersonnel);
-  //   assignedPersonnel.splice(0, assignedPersonnel.length);
-  //   assignedPersonnel.concat(newArr);
-  //   console.log('New Personnel:', getAssignedPersonnel());
-  // };
-
-  const {
-    loading: personnelLoading,
-    data: personnelData,
-    error: personnelError,
-  } = useGetPersonnel();
+  // const {
+  //   loading: personnelLoading,
+  //   data: personnelData,
+  //   error: personnelError,
+  // } = useGetPersonnel();
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -127,12 +112,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         case ProjectDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
           break;
-        // case ProjectDialogAction.SET_AVAILABLE_PERSONNEL:
-        //   newState.availablePersonnel = action.payload;
-        //   break;
-        // case ProjectDialogAction.SET_ASSIGNED_PERSONNEL:
-        //   newState.assignedPersonnel = action.payload;
-        //   break;
         case ProjectDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
           break;
@@ -181,7 +160,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       const projectToSubmit: NewProject = {
         title: state.title,
         description: state.description,
-        personnel,
         deadline: state.deadline,
       };
 
@@ -209,17 +187,17 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     props.hideDialog();
   };
 
-  const displayTransferList = () => {
-    if (personnelLoading) {
-      return <LoadingSpinner />;
-    } else if (personnelError) {
-      console.error(personnelError);
-    }
+  // const displayTransferList = () => {
+  //   if (personnelLoading) {
+  //     return <LoadingSpinner />;
+  //   } else if (personnelError) {
+  //     console.error(personnelError);
+  //   }
 
-    const inputList = personnelData || [];
+  //   const inputList = personnelData || [];
 
-    return <TransferList inputList={inputList} setPersonnel={setPersonnel} />;
-  };
+  //   return <TransferList inputList={inputList} setPersonnel={setPersonnel} />;
+  // };
 
   return (
     <>
@@ -267,7 +245,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               });
             }}
           />
-          {displayTransferList()}
+          {/* {displayTransferList()} */}
           <DateTimePicker
             value={state.deadline as string}
             onChange={value =>

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',
@@ -32,7 +38,7 @@ export class Task {
   @Column({ default: (): number => 0 })
   row_index!: number;
 
-  @Column()
+  @Column('uuid')
   project_id!: string;
 
   @Column()
@@ -57,16 +63,17 @@ export class Task {
   })
   type!: TaskType;
 
-  @Column()
-  reported_by!: number;
+  @Column('uuid', { nullable: true })
+  reported_by!: string;
 
-  @Column()
-  assigned_to!: number;
+  @Column('uuid', { nullable: true })
+  assigned_to!: string;
 
-  @Column('timestamp', {
-    default: (): string => 'LOCALTIMESTAMP',
-  })
-  created_on!: Date;
+  @CreateDateColumn()
+  created_at?: Date;
+
+  @UpdateDateColumn()
+  updated_at?: Date;
 
   @Column({
     type: 'enum',
@@ -74,4 +81,7 @@ export class Task {
     default: TaskStatus.BACKLOG,
   })
   status!: TaskStatus;
+
+  @Column()
+  story_points: number;
 }

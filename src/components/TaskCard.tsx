@@ -40,14 +40,6 @@ const MenuButton = styled(Button)(() => {
   };
 });
 
-const AvatarShell = styled(Avatar)(() => {
-  return {
-    // position: 'absolute',
-    // top: '0.8rem',
-    // right: '0.8rem',
-  };
-});
-
 const CardTitle = styled(Typography)(() => {
   return {
     marginTop: '0.3rem',
@@ -138,7 +130,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
     setHoveredTask,
     hoveredTask,
   } = props;
-  const { name, description, type, priority, id } = task;
+  const { name, description, type, priority, id, assignedTo } = task;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
     null
   );
@@ -217,7 +209,7 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
                 <Typography variant="caption">{priority}</Typography>
               </CardInfo>
               <CardMenu>
-                <AvatarShell />
+                <Avatar title={assignedTo} />
                 <MenuButton onClick={handleClick}>
                   <MoreVert />
                 </MenuButton>

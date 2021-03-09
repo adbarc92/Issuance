@@ -84,6 +84,7 @@ export interface TaskDialogState {
   status: TaskStatus;
   priority: TaskPriority;
   deadline?: Date | string | null;
+  storyPoints: number;
 }
 
 export enum TaskDialogAction {
@@ -94,6 +95,7 @@ export enum TaskDialogAction {
   SET_TASKSTATUS = 'setTaskStatus',
   SET_TASKPRIORITY = 'setTaskPriority',
   SET_DEADLINE = 'setDeadline',
+  SET_STORYPOINTS = 'setStoryPoints',
   RESET_STATE = 'setState',
 }
 
@@ -148,6 +150,7 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
       status,
       priority,
       deadline,
+      storyPoints,
     } = task;
     return {
       name,
@@ -157,6 +160,7 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
       status,
       priority,
       deadline,
+      storyPoints,
     };
   }
   return null;
@@ -173,6 +177,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
+    storyPoints: 0,
     rowIndex: 0,
   };
 
@@ -222,6 +227,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           break;
         case TaskDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
+          break;
+        case TaskDialogAction.SET_STORYPOINTS:
+          newState.storyPoints = action.payload;
           break;
         case TaskDialogAction.RESET_STATE:
           newState = initialState;
@@ -274,6 +282,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         priority: state.priority,
         status: state.status,
         deadline: state.deadline as string,
+        storyPoints: state.storyPoints,
         rowIndex: 0,
       };
 
@@ -394,6 +403,21 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   });
                 }}
                 value={state.type}
+              />
+            </SelectWrapper>
+            <SelectWrapper>
+              <TextField
+                id="storyPoints"
+                margin="dense"
+                type="number"
+                label="Story Points"
+                value={state.storyPoints}
+                onChange={e => {
+                  dispatch({
+                    type: TaskDialogAction.SET_STORYPOINTS,
+                    payload: e.target.value,
+                  });
+                }}
               />
             </SelectWrapper>
             <SelectWrapper>

@@ -1,5 +1,7 @@
 import { randomBytes, createHmac } from 'crypto';
 
+import { Task } from '../../types/task';
+
 import { v4 as uuid } from 'uuid';
 
 // Standardizes error messages for later handling, client-side
@@ -95,6 +97,15 @@ export const snakeCasify = (obj: any): any => {
     }
   }
   return fixedObj;
+};
+
+export const fixInputTask = (task: Partial<Task>): void => {
+  if (!task.reportedBy) {
+    task.reportedBy = null;
+  }
+  if (!task.assignedTo) {
+    task.assignedTo = null;
+  }
 };
 
 export type IoRequest = Request & { io: any };

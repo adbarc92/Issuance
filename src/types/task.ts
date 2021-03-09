@@ -26,11 +26,12 @@ export interface Task {
   priority: TaskPriority;
   status: TaskStatus;
   createdOn: Date;
-  assignedTo: number;
+  assignedTo: string;
   rowIndex: number;
   deadline: Date | string;
   projectId: string;
-  reportedBy: number;
+  reportedBy: string;
+  storyPoints: number;
   typeName: 'Task'; // this is server-side only
 }
 
@@ -39,3 +40,5 @@ export interface UpdateTaskResponse {
   ordering: { id: string }[];
   userId: string;
 }
+
+export type TaskInput = Partial<Task> & Record<string, unknown>;

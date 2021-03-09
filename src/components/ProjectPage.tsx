@@ -40,7 +40,7 @@ const ProjectPage = (props: ProjectPageProps): JSX.Element => {
               <div>{project?.description}</div>
               <div>{project?.deadline}</div>
             </InfoBox>
-            <InfoBox title="Personnel">
+            {/* <InfoBox title="Personnel">
               <List>
                 {project?.personnel?.map((person, index) => {
                   return (
@@ -52,7 +52,7 @@ const ProjectPage = (props: ProjectPageProps): JSX.Element => {
                   );
                 })}
               </List>
-            </InfoBox>
+            </InfoBox> */}
             <InfoBox title="Tasks">
               <List>
                 {project?.tasks.map((task, index) => {
