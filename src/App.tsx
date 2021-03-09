@@ -63,8 +63,6 @@ export const reRenderApp = (): void => {
 };
 
 const App = (): JSX.Element => {
-  // const classes = useStyles({} as any);
-
   const rerender = useForceUpdate();
 
   render = rerender;

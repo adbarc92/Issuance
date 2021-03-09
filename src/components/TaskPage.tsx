@@ -3,22 +3,51 @@ import { Task } from 'types/task';
 
 import { useGetTask } from 'hooks/axiosHooks';
 
+import TaskDialog from 'components/TaskDialog';
+
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
 import InfoBox from 'elements/InfoBox';
 import GridWrapper from 'elements/GridWrapper';
 
+import { Edit } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+
 export interface TaskPageProps {
   taskId: string;
 }
 
 const TaskPage = (props: TaskPageProps): JSX.Element => {
-  const { loading, data, error } = useGetTask(props.taskId);
+  const { loading, data, error, clearCache: clearTasksCache } = useGetTask(
+    props.taskId
+  );
+
+  const [editingTask, setEditingTask] = React.useState(false);
+
+  const handleOpenDialog = () => {
+    setEditingTask(true);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingTask(false);
+  };
 
   if (error) {
     return <div>{error}</div>;
   }
+
+  const EditButton = () => {
+    return (
+      <IconButton
+        onClick={() => {
+          handleOpenDialog();
+        }}
+      >
+        <Edit />
+      </IconButton>
+    );
+  };
 
   const task = data as Task;
 
@@ -28,7 +57,11 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <PageTitle title={task.name} subtitle={String(task.projectId)} />
+          <PageTitle
+            title={task.name}
+            subtitle={String(task.projectId)}
+            headerElem={EditButton()}
+          />
           <GridWrapper>
             <InfoBox title="Details" gridarea="details">
               <div>Type: {task.type}</div>
@@ -52,6 +85,14 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
           </GridWrapper>
         </>
       )}
+      {editingTask ? (
+        <TaskDialog
+          open={editingTask}
+          onClose={handleCloseDialog}
+          clearTasksCache={clearTasksCache}
+          dialogTask={task}
+        />
+      ) : null}
     </RootWrapper>
   );
 };

@@ -1,3 +1,4 @@
+// Todo: reportedBy should default to UserId
 import React from 'react';
 
 import {
@@ -32,11 +33,12 @@ import {
 
 import { useForm } from 'hooks/form';
 
-import { useGetProjects } from 'hooks/axiosHooks';
+import { useGetProjects, useGetPersonnel } from 'hooks/axiosHooks';
 
 import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { Project } from 'types/project';
+import { Person } from 'types/person';
 
 const TextFieldWrapper = styled('div')(() => {
   return {
@@ -79,22 +81,26 @@ export interface TaskDialogProps {
 export interface TaskDialogState {
   name: string;
   description: string;
-  projectId: string;
   type: TaskType;
-  status: TaskStatus;
   priority: TaskPriority;
+  status: TaskStatus;
+  assignedTo: string;
   deadline?: Date | string | null;
+  projectId: string;
+  reportedBy: string;
   storyPoints: number;
 }
 
 export enum TaskDialogAction {
   SET_NAME = 'setName',
   SET_DESCRIPTION = 'setDescription',
-  SET_PROJECT = 'setProject',
   SET_TASKTYPE = 'setTaskType',
-  SET_TASKSTATUS = 'setTaskStatus',
   SET_TASKPRIORITY = 'setTaskPriority',
+  SET_TASKSTATUS = 'setTaskStatus',
+  SET_ASSIGNEDTO = 'setAssignedTo',
+  SET_REPORTEDBY = 'setReportedBy',
   SET_DEADLINE = 'setDeadline',
+  SET_PROJECT = 'setProject',
   SET_STORYPOINTS = 'setStoryPoints',
   RESET_STATE = 'setState',
 }
@@ -145,21 +151,25 @@ const taskToDialogState = (task: Task | null): TaskDialogState | null => {
     const {
       name,
       description,
-      projectId,
       type,
-      status,
       priority,
+      status,
+      assignedTo,
       deadline,
+      projectId,
+      reportedBy,
       storyPoints,
     } = task;
     return {
       name,
       description,
-      projectId,
       type,
-      status,
       priority,
+      status,
+      assignedTo: assignedTo ?? '',
       deadline,
+      projectId,
+      reportedBy: reportedBy ?? '',
       storyPoints,
     };
   }
@@ -170,10 +180,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
   const initialState = taskToDialogState(props.dialogTask) || {
     name: '',
     description: '',
-    projectId: '',
     type: TaskType.FEATURE,
-    status: TaskStatus.BACKLOG,
     priority: TaskPriority.MEDIUM,
+    status: TaskStatus.BACKLOG,
+    assignedTo: '',
+    reportedBy: '',
+    projectId: '',
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow
@@ -187,7 +199,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     error: projectError,
   } = useGetProjects();
 
-  console.log('projectData:', projectData);
+  const {
+    loading: personLoading,
+    data: personData,
+    error: personError,
+  } = useGetPersonnel();
+
+  // console.log('projectData:', projectData);
 
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
 
@@ -213,20 +231,26 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         case TaskDialogAction.SET_DESCRIPTION:
           newState.description = action.payload;
           break;
-        case TaskDialogAction.SET_PROJECT:
-          newState.projectId = action.payload;
-          break;
         case TaskDialogAction.SET_TASKTYPE:
           newState.type = action.payload;
-          break;
-        case TaskDialogAction.SET_TASKSTATUS:
-          newState.status = action.payload;
           break;
         case TaskDialogAction.SET_TASKPRIORITY:
           newState.priority = action.payload;
           break;
+        case TaskDialogAction.SET_TASKSTATUS:
+          newState.status = action.payload;
+          break;
+        case TaskDialogAction.SET_ASSIGNEDTO:
+          newState.assignedTo = action.payload;
+          break;
+        case TaskDialogAction.SET_REPORTEDBY:
+          newState.reportedBy = action.payload;
+          break;
         case TaskDialogAction.SET_DEADLINE:
           newState.deadline = action.payload;
+          break;
+        case TaskDialogAction.SET_PROJECT:
+          newState.projectId = action.payload;
           break;
         case TaskDialogAction.SET_STORYPOINTS:
           newState.storyPoints = action.payload;
@@ -259,7 +283,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           'A description cannot be longer than 5000 characters.';
       }
       if (vState.projectId === '') {
-        errors.projectId = 'A project ID is required';
+        errors.projectId = 'An associated project is required.';
       }
       return Object.keys(errors).length ? errors : undefined;
     },
@@ -277,11 +301,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
       const taskToSubmit = {
         name: state.name,
         description: state.description,
-        projectId: state.projectId,
         type: state.type,
         priority: state.priority,
         status: state.status,
+        assignedTo: state.assignedTo,
         deadline: state.deadline as string,
+        projectId: state.projectId,
         storyPoints: state.storyPoints,
         rowIndex: 0,
       };
@@ -302,7 +327,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           reRenderApp();
         }
       } else {
-        showNotification('User creation failed!', NotificationSeverity.ERROR);
+        showNotification(
+          `Task ${addingTask ? 'creation' : 'editing'} failed!`,
+          NotificationSeverity.ERROR
+        );
       }
     },
   });
@@ -441,6 +469,54 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
             </SelectWrapper>
           </SelectContainer>
           <SelectContainer>
+            <SelectWrapper>
+              {personLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <Select
+                  fullWidth
+                  title={'Assigned Person'}
+                  items={(personData as Person[]).map(person => {
+                    return {
+                      label: person.firstName + person.lastName,
+                      value: person.id,
+                    };
+                  })}
+                  onChange={e => {
+                    dispatch({
+                      type: TaskDialogAction.SET_ASSIGNEDTO,
+                      payload: e.target.value,
+                    });
+                  }}
+                  value={state.assignedTo}
+                />
+              )}
+            </SelectWrapper>
+            <SelectWrapper>
+              {personLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <Select
+                  fullWidth
+                  title={'Reported By'}
+                  items={(personData as Person[]).map(person => {
+                    return {
+                      label: person.firstName + person.lastName,
+                      value: person.id,
+                    };
+                  })}
+                  onChange={e => {
+                    dispatch({
+                      type: TaskDialogAction.SET_REPORTEDBY,
+                      payload: e.target.value,
+                    });
+                  }}
+                  value={state.reportedBy}
+                />
+              )}
+            </SelectWrapper>
+          </SelectContainer>
+          <SelectContainer>
             <DateTimePicker
               value={state.deadline as string}
               onChange={value =>
@@ -482,6 +558,11 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         </DialogContent>
         {projectError ? (
           <Alert severity="error">Project Error occurred: {projectError}</Alert>
+        ) : null}
+        {personError ? (
+          <Alert severity="error">
+            Personnel Error occurred: {personError}
+          </Alert>
         ) : null}
         {triedSubmit && errors ? (
           <DialogContent>

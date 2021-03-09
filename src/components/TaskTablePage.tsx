@@ -20,22 +20,6 @@ import RootWrapper from 'elements/RootWrapper';
 import AddButton from 'elements/AddButton';
 import PageTitle from 'elements/PageTitle';
 
-// const HeaderWrapper = styled('div')(() => {
-//   return {
-//     fontSize: '3rem',
-//     margin: '0',
-//   };
-// });
-
-// const SubHeaderWrapper = styled('div')(() => {
-//   return {
-//     display: 'flex',
-//     justifyContent: 'flex-end',
-//     marginRight: '1%',
-//     marginBottom: '0.5rem',
-//   };
-// });
-
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
   const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
@@ -106,10 +90,6 @@ const TaskTablePage = (): JSX.Element => {
               <AddButton title={'Create Task'} handleClick={handleAddingTask} />
             }
           />
-          {/* <HeaderWrapper>Tasks</HeaderWrapper>
-          <SubHeaderWrapper>
-            <AddButton title={'Create Task'} handleClick={handleAddingTask} />
-          </SubHeaderWrapper> */}
           <TaskTable
             taskData={{ backlogTasks, activeTasks, completeTasks }}
             setDialogTask={setDialogTask}

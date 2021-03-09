@@ -41,8 +41,6 @@ const ProjectsPage = (): JSX.Element => {
     setShowingDialog(false);
   };
 
-  console.log('Project data:', projectsData);
-
   return (
     <RootWrapper>
       {projectsLoading ? (

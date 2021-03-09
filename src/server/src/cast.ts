@@ -14,9 +14,14 @@ export const castPerson = (person: EPerson): IPerson => {
   return camelCasify({ ...person });
 };
 
-export const castProject = (project: EProject, tasks: ETask[]): IProject => {
+export const castProject = (
+  project: EProject,
+  tasks: ETask[],
+  people: EPerson[]
+): IProject => {
   return camelCasify({
     tasks,
+    people,
     ...project,
   });
 };

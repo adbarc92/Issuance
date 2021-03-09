@@ -1,10 +1,44 @@
 
 Issuance Dev Notes
+* Core Features:
+	* What to Build: Use a Design Pattern (like MVC)
+	* Clean and Attractive UI
+	* Use a Database with CRUD Functionality
+	* Solve a Business Problem
+	* Add User Authentication (Oauth/Auth0) and Authorization
+
+=== 08Mar2021 ===
+
+* Reaches:
+	* Customizable Task Status Columns
+
+* Things to Add:
+	* Database Migrations
+
+* Completion Conditions:
+	* 
 
 === 05Mar2021 ===
 
 * Things to Add:
 	* Personnel can only be assigned tickets from projects of which they are part
+	* Filter tickets by assignee
+	* Sprint Dates
+	* Ticket Point Total, Historical Total
+	* Attach files
+	* Add Comments to Individual Task Pages
+	* Addable subtasks
+	* Image-pasting into Comments
+	* Customizable Columns
+	* Notifications
+	* Non-click reassignable tasks
+	* To ProjectPage: should display only
+	* To Dashboard: View All Highest Priority Ticket
+	* To Dashboard: Recent Tickets Edited (and commented)
+	* Dashboard should list: Project Summaries, Activity Feed, Recently Edited Tickets, 
+	* Savable Filters: Filter Task Table 
+	* Task Table should be filterable by Project, and By
+	* Add field Task Points
 	* 
 * Things to Fix:
 	* ProjectCard should display Tasks and Assigned Personnel :onHover

@@ -1,4 +1,5 @@
 import { getConnection, Repository } from 'typeorm';
+import { PersonService } from 'services/personnel.services';
 import { Project as EProject } from 'entity/Project';
 import { NewProject, Project as IProject } from '../../../types/project';
 import { snakeCasify } from 'utils';
@@ -16,8 +17,15 @@ export class ProjectService {
     const project = await this.projectRepository.findOne(projectId);
     const taskService = new TaskService();
     const tasks = await taskService.getTasksByProjectId(projectId);
+    const personService = new PersonService();
 
-    return castProject(project, tasks);
+    const people = tasks.map(async task => {
+      return await personService.getPersonById(task.assigned_to);
+    });
+
+    return Promise.all(people).then(people =>
+      castProject(project, tasks, people)
+    );
   }
 
   async getProjects(): Promise<IProject[]> {
