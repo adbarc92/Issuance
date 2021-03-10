@@ -3,13 +3,22 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { isLoggedIn } from 'store/auth';
+import { CookiesProvider } from 'react-cookie';
+
+const CookiedApp = () => {
+  return (
+    <CookiesProvider>
+      <App />
+    </CookiesProvider>
+  );
+};
 
 const main = async () => {
   if (window.location.pathname === '/login') {
-    ReactDOM.render(<App />, document.getElementById('root'));
+    ReactDOM.render(<CookiedApp />, document.getElementById('root'));
   } else {
     if (await isLoggedIn()) {
-      ReactDOM.render(<App />, document.getElementById('root'));
+      ReactDOM.render(<CookiedApp />, document.getElementById('root'));
     } else {
       window.location.href = '/login';
     }

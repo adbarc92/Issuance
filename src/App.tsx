@@ -21,6 +21,13 @@ import PageContainer from 'elements/PageContainer';
 
 import './io';
 
+import { getUserToken } from 'store/auth';
+
+// import { useCookies } from 'react-cookie';
+
+import { useGetUserPersonById } from 'hooks/axiosHooks';
+import LoadingSpinner from 'elements/LoadingSpinner';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     toolbar: {
@@ -43,12 +50,23 @@ const ChildrenWrapper = styled('div')(() => {
   };
 });
 
+const Center = styled('div')(() => {
+  return {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'fixed',
+    width: '100%',
+    height: '100%',
+  };
+});
+
 const PageWrapper = (props: any): JSX.Element => {
   const classes = useStyles(props);
   return (
     <div>
       <div className={classes.toolbar} />
-      <Navigation />
+      <Navigation person={props.person} />
       <PageContent>
         <ChildrenWrapper>{props.children}</ChildrenWrapper>
       </PageContent>
@@ -63,18 +81,39 @@ export const reRenderApp = (): void => {
 };
 
 const App = (): JSX.Element => {
+  const userId = getUserToken() ?? '';
+
+  const {
+    loading: personLoading,
+    data: personData,
+    error: personError,
+    // clearCache,
+  } = useGetUserPersonById(userId);
+
   const rerender = useForceUpdate();
 
   render = rerender;
 
   console.log('Rendering');
 
+  if (personError) {
+    return <div>{personError}</div>;
+  }
+
+  if (personLoading) {
+    return (
+      <Center>
+        <LoadingSpinner />
+      </Center>
+    );
+  }
+
   return (
     <Router>
       <PageContainer>
         <Switch>
           <Route exact path="/">
-            <PageWrapper>
+            <PageWrapper person={personData}>
               <Dashboard />
             </PageWrapper>
           </Route>
@@ -82,17 +121,17 @@ const App = (): JSX.Element => {
             <LoginPage />
           </Route>
           <Route exact path="/personnel">
-            <PageWrapper>
+            <PageWrapper person={personData}>
               <PersonnelTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/projects">
-            <PageWrapper>
+            <PageWrapper person={personData}>
               <ProjectsPage />
             </PageWrapper>
           </Route>
           <Route exact path="/tasks">
-            <PageWrapper>
+            <PageWrapper person={personData}>
               <TaskTablePage />
             </PageWrapper>
           </Route>
@@ -103,7 +142,7 @@ const App = (): JSX.Element => {
             path="/tasks/:taskId"
             render={({ match, location, history }) => {
               return (
-                <PageWrapper>
+                <PageWrapper person={personData}>
                   <TaskPage taskId={match.params.taskId} />
                 </PageWrapper>
               );
@@ -113,7 +152,7 @@ const App = (): JSX.Element => {
             path="/personnel/:personId"
             render={({ match, location, history }) => {
               return (
-                <PageWrapper>
+                <PageWrapper person={personData}>
                   <PersonPage personId={match.params.personId} />
                 </PageWrapper>
               );
@@ -123,7 +162,7 @@ const App = (): JSX.Element => {
             path="/projects/:projectId"
             render={({ match, location, history }) => {
               return (
-                <PageWrapper>
+                <PageWrapper person={personData}>
                   <ProjectPage projectId={match.params.projectId} />
                 </PageWrapper>
               );

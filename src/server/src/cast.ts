@@ -4,6 +4,8 @@ import { Person as EPerson } from 'entity/Person';
 import { Person as IPerson } from '../../types/person';
 import { Project as EProject } from 'entity/Project';
 import { Project as IProject } from '../../types/project';
+import { User as EUser } from 'entity/User';
+import { User as IUser } from '../../types/user';
 import { camelCasify } from 'utils';
 
 export const castTask = (task: ETask): ITask => {
@@ -12,6 +14,10 @@ export const castTask = (task: ETask): ITask => {
 
 export const castPerson = (person: EPerson): IPerson => {
   return camelCasify({ ...person });
+};
+
+export const castUser = (user: EUser): IUser => {
+  return camelCasify({ ...user });
 };
 
 export const castProject = (

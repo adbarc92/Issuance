@@ -23,7 +23,6 @@ import { Link } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-import { Person } from 'types/person';
 import { Task } from 'types/task';
 import { Project } from 'types/project';
 
@@ -89,19 +88,19 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
     );
   };
 
-  const displayList = (strArr: string[]): JSX.Element => {
-    return (
-      <List>
-        {strArr.map((str, index) => {
-          return (
-            <ListItem key={index}>
-              <ListItemText>{str}</ListItemText>
-            </ListItem>
-          );
-        })}
-      </List>
-    );
-  };
+  // const displayList = (strArr: string[]): JSX.Element => {
+  //   return (
+  //     <List>
+  //       {strArr.map((str, index) => {
+  //         return (
+  //           <ListItem key={index}>
+  //             <ListItemText>{str}</ListItemText>
+  //           </ListItem>
+  //         );
+  //       })}
+  //     </List>
+  //   );
+  // };
 
   return (
     <CustomCard>

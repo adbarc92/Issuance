@@ -2,6 +2,7 @@ import React from 'react';
 import Input from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
+import { colors } from 'theme';
 
 interface InputProps {
   value?: string;
@@ -14,7 +15,12 @@ const SearchInput = (props: InputProps): JSX.Element => {
   const { value, placeholder, onChange } = props;
   return (
     <Input
-      style={{ maxHeight: '32px', marginTop: '1px', maxWidth: '250px' }}
+      style={{
+        maxHeight: '32px',
+        marginTop: '1px',
+        maxWidth: '250px',
+        color: colors.white,
+      }}
       type="text"
       value={value}
       placeholder={placeholder}

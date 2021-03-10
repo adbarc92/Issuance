@@ -39,11 +39,11 @@ export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
   );
 };
 
-export const useGetPersonByUsername = (
-  username: string
-): IDataLoader<Person> => {
-  return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
-};
+// export const useGetPersonByUsername = (
+//   username: string
+// ): IDataLoader<Person> => {
+//   return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
+// };
 
 export const getPersonnel = async (): Promise<Person[] | null> => {
   try {
@@ -144,5 +144,47 @@ export const useGetProjectById = (
     },
     CacheKey.PROJECTS,
     projectId
+  );
+};
+
+export const getUserById = async (userId: string): Promise<User | null> => {
+  try {
+    const res = await api.get(`/users/${userId}`);
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetUserById = (userId: string): IDataLoader<User | null> => {
+  return useGetData(
+    () => {
+      return getUserById(userId);
+    },
+    CacheKey.USERS,
+    userId
+  );
+};
+
+export const getUserPerson = async (userId: string): Promise<Person | null> => {
+  try {
+    const res = await api.get(`/users/person/${userId}`);
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetUserPersonById = (
+  userId: string
+): IDataLoader<Person | null> => {
+  return useGetData(
+    () => {
+      return getUserPerson(userId);
+    },
+    CacheKey.USERS,
+    userId
   );
 };

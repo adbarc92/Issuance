@@ -23,15 +23,16 @@ const personnelController = (router: Router): void => {
     }
   });
 
-  router.get('/personnel/:userEmail', async function (
-    req: Request,
-    res: Response
-  ) {
-    const person = await personService.getPersonByUserEmail(
-      req.params.userEmail
-    );
-    return res.send(person);
-  });
+  // Todo: this route seems problematic
+  // router.get('/personnel/:userEmail', async function (
+  //   req: Request,
+  //   res: Response
+  // ) {
+  //   const person = await personService.getPersonByUserEmail(
+  //     req.params.userEmail
+  //   );
+  //   return res.send(person);
+  // });
 
   router.post('/personnel', async function (req: Request, res: Response) {
     try {

@@ -34,6 +34,7 @@ import {
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';
+import { Person } from 'types/person';
 
 const drawerWidth = 240;
 
@@ -104,9 +105,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Navigation = (): JSX.Element => {
+interface NavigationProps {
+  person: Person;
+}
+
+const Navigation = (props: NavigationProps): JSX.Element => {
+  const { person } = props;
+
   const classes = useStyles();
   const theme = useTheme();
+
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
 
@@ -140,7 +148,13 @@ const Navigation = (): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Hello, User!
+            {`Hello, ${
+              person
+                ? person.firstName
+                  ? person.firstName
+                  : person.userEmail
+                : 'User'
+            }!`}
           </Typography>
           <div className={classes.searchfieldContainer}>
             <SearchInput
