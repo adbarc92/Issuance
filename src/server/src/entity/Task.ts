@@ -84,4 +84,7 @@ export class Task {
 
   @Column()
   story_points: number;
+
+  @Column({ default: (): boolean => false })
+  hidden: boolean;
 }

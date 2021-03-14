@@ -7,6 +7,28 @@ Issuance Dev Notes
 	* Solve a Business Problem
 	* Add User Authentication (Oauth/Auth0) and Authorization
 
+* Remaining Vital Features:
+	** Improve Task, Project, User UI
+	* Task Comments
+	* Front-end Delete for Tasks, Projects, etc. for Authorized Users
+	* Task Table Filters
+	* Authorization/Log-in
+	* Useful Dashboard: 
+		* Recently-Altered Tickets
+		* Tasks delegated to the User
+	* Notification Feed
+	* Document Attachments (Screenshot-pasting)
+	* Profile Pictures
+	* Functional Web-hosted Demo (Amazon S3 or Google Cloud)
+* Ideal Inclusion:
+	* Timeline/Burndown
+	* CDN?
+
+
+=== 10Mar2021 ===
+
+* Things
+
 === 08Mar2021 ===
 
 * Reaches:
@@ -14,6 +36,7 @@ Issuance Dev Notes
 
 * Things to Add:
 	* Database Migrations
+	* "Hidden Status": soft-delete flag should be added to all displayed entities
 
 * Completion Conditions:
 	* 

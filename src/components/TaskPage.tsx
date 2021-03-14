@@ -14,6 +14,8 @@ import GridWrapper from 'elements/GridWrapper';
 import { Edit } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 
+import Comment from 'components/Comment';
+
 export interface TaskPageProps {
   taskId: string;
 }
@@ -74,13 +76,22 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
             </InfoBox>
 
             <InfoBox title="Dates" gridarea="dates">
-              <div>Created On: {task.createdOn}</div>
+              <div>Created On: {task.createdAt}</div>
+              <div>Last Updated: {task.updatedAt}</div>
               <div>Deadline: {task.deadline}</div>
             </InfoBox>
 
             <InfoBox title="People" gridarea="people">
               <div>Assignee ID: {task.assignedTo}</div>
               <div>Reporter ID: {task.reportedBy}</div>
+            </InfoBox>
+
+            <InfoBox title="Comments" gridarea="comments">
+              {task.comments
+                ? task.comments.map((comment, index) => {
+                    return <Comment key={index} comment={comment} />;
+                  })
+                : null}
             </InfoBox>
           </GridWrapper>
         </>

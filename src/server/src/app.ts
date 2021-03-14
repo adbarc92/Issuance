@@ -15,7 +15,8 @@ import ormconfig from '../ormconfig.json';
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
 import userController from 'controllers/users.controller';
-import projectController from 'controllers/project.controller';
+import projectsController from 'controllers/projects.controller';
+import commentsController from 'controllers/comments.controller';
 
 import socketIo from 'socket.io';
 import http from 'http';
@@ -114,7 +115,8 @@ const start = async () => {
     personnelController(router);
     taskController(router);
     userController(router);
-    projectController(router);
+    projectsController(router);
+    commentsController(router);
 
     // Should take a token, check validity, return loggedIn status
     router.put('/login', async function (
