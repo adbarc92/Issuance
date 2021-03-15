@@ -1,3 +1,5 @@
+import { Comment } from 'types/comment';
+
 export enum TaskPriority {
   HIGHEST = 'Highest',
   HIGH = 'High',
@@ -25,7 +27,8 @@ export interface Task {
   type: TaskType;
   priority: TaskPriority;
   status: TaskStatus;
-  createdOn: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   assignedTo: string;
   rowIndex: number;
   deadline: Date | string;
@@ -33,6 +36,7 @@ export interface Task {
   reportedBy: string;
   storyPoints: number;
   typeName: 'Task'; // this is server-side only
+  comments?: Comment[];
 }
 
 export interface UpdateTaskResponse {

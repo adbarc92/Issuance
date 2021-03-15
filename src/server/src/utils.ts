@@ -2,6 +2,8 @@ import { randomBytes, createHmac } from 'crypto';
 
 import { Task } from '../../types/task';
 
+import { Comment as IComment, DComment } from '../../types/comment';
+import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
 
 // Standardizes error messages for later handling, client-side
@@ -106,6 +108,54 @@ export const fixInputTask = (task: Partial<Task>): void => {
   if (!task.assignedTo) {
     task.assignedTo = null;
   }
+};
+
+export const fixInputComment = (comment: IComment): DComment => {
+  const {
+    id,
+    index,
+    taskId,
+    commenter,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  } = comment;
+  return {
+    id,
+    index,
+    taskId,
+    commenterId: commenter.id,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  };
+};
+
+export const fixOutputComment = (
+  comment: DComment,
+  commenter: Person
+): IComment => {
+  const {
+    id,
+    index,
+    taskId,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  } = comment;
+  return {
+    id,
+    index,
+    taskId,
+    commenter,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  };
 };
 
 export type IoRequest = Request & { io: any };

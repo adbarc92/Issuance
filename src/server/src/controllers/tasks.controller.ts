@@ -7,7 +7,7 @@ import { Task as ITask } from '../../../types/task';
 
 import { IoRequest } from 'utils';
 
-const taskController = (router: Router): void => {
+const tasksController = (router: Router): void => {
   const taskService = new TaskService();
 
   router.get('/tasks/:id', async function (req: Request, res: Response) {
@@ -86,4 +86,4 @@ const taskController = (router: Router): void => {
   });
 };
 
-export default taskController;
+export default tasksController;

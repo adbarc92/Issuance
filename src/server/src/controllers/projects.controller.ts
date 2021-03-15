@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { ProjectService } from 'services/project.services';
+import { ProjectService } from 'services/projects.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 
-const projectController = (router: Router): void => {
+const projectsController = (router: Router): void => {
   const projectService = new ProjectService();
 
   router.get('/projects', async function (req: Request, res: Response) {
@@ -38,4 +38,4 @@ const projectController = (router: Router): void => {
   });
 };
 
-export default projectController;
+export default projectsController;

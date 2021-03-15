@@ -6,6 +6,8 @@ import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
+// import { InputComment } from 'types/comment';
+import { InputComment } from 'types/comment';
 
 // Actions change things
 
@@ -181,6 +183,18 @@ export const createProject = async (
   try {
     const response = await api.post('/projects', project);
     return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createComment = async (
+  comment: InputComment
+): Promise<InputComment | null> => {
+  try {
+    const res = await api.post('/comments', comment);
+    return res.data;
   } catch (e) {
     console.error(e);
     return null;

@@ -32,4 +32,7 @@ export class Person {
 
   @UpdateDateColumn()
   updated_at?: Date;
+
+  @Column({ default: (): boolean => false })
+  hidden: boolean;
 }

@@ -25,10 +25,8 @@ export class UserService {
 
   async getUserPersonById(userId: string): Promise<Person> {
     const user = await this.getUserById(userId);
-    console.log('user:', user);
     const personService = new PersonService();
     const person = await personService.getPersonById(user.person_id);
-    console.log('person:', person);
     return person;
   }
 

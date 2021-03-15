@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { UserService } from 'services/user.services';
+import { UserService } from 'services/users.services';
 import { createErrorResponse } from 'utils';
-import { User } from '../../../types/user';
 import { castUser, castPerson } from 'cast';
 
 // The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
 
-const userController = (router: Router): void => {
+const usersController = (router: Router): void => {
   const userService = new UserService();
 
   router.get('/users', async function (req: Request, res: Response) {
@@ -67,4 +66,4 @@ const userController = (router: Router): void => {
   });
 };
 
-export default userController;
+export default usersController;
