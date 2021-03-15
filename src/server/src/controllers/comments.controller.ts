@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { CommentsService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-import { Comment as CommentEntity } from 'entity/Comment';
+// import { Comment as CommentEntity } from 'entity/Comment';
 import { castComment } from 'cast';
 
 import { IoRequest } from 'utils';

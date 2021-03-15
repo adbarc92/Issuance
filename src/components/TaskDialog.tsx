@@ -31,7 +31,7 @@ import {
   NotificationSeverity,
 } from 'hooks/notification';
 
-import { useForm } from 'hooks/form';
+import { useForm, FormAction } from 'hooks/form';
 
 import { useGetProjects, useGetPersonnel } from 'hooks/axiosHooks';
 
@@ -103,11 +103,6 @@ export enum TaskDialogAction {
   SET_PROJECT = 'setProject',
   SET_STORYPOINTS = 'setStoryPoints',
   RESET_STATE = 'setState',
-}
-
-export interface ITaskDialogActions {
-  type: string;
-  payload?: any;
 }
 
 const TaskPriorityMap = {
@@ -219,10 +214,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     pristine,
   } = useForm({
     initialState,
-    reducer: (
-      state: TaskDialogState,
-      action: ITaskDialogActions
-    ): TaskDialogState => {
+    reducer: (state: TaskDialogState, action: FormAction): TaskDialogState => {
       let newState = { ...state };
       switch (action.type) {
         case TaskDialogAction.SET_NAME:

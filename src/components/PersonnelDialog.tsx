@@ -23,7 +23,7 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { useForm } from 'hooks/form';
+import { useForm, FormAction } from 'hooks/form';
 
 import {
   isEmailValid,
@@ -61,11 +61,6 @@ const PersonJobMap = {
     label: 'Manager',
   },
 };
-
-export interface IPersonnelDialogActions {
-  type: string;
-  payload?: any;
-}
 
 export interface PersonnelDialogState {
   id?: string;
@@ -118,7 +113,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     initialState,
     reducer: (
       state: PersonnelDialogState,
-      action: IPersonnelDialogActions
+      action: FormAction
     ): PersonnelDialogState => {
       const { payload, type } = action;
       const newState = { ...state };
@@ -157,6 +152,11 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     },
     onSubmit: async state => {
       if (errors) {
+        showNotification(
+          "Person doesn't meet requirements.",
+          NotificationSeverity.ERROR
+        );
+        return;
       }
 
       const { userEmail, firstName, lastName, job } = state;
