@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { CommentsService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-import { Comment as EComment } from 'entity/Comment';
+import { Comment as CommentEntity } from 'entity/Comment';
 import { castComment } from 'cast';
 
 import { IoRequest } from 'utils';
@@ -16,9 +16,7 @@ const commentsController = (router: Router): void => {
   ) {
     try {
       const comments = await commentsService.createComment(req.body);
-      return res.send(
-        comments.map((comment): EComment => castComment(comment))
-      );
+      return res.send(comments.map(comment => castComment(comment)));
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -80,3 +78,5 @@ const commentsController = (router: Router): void => {
     }
   });
 };
+
+export default commentsController;
