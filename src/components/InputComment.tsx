@@ -13,9 +13,12 @@ import {
   NotificationSeverity,
 } from 'hooks/notification';
 
-import { InputComment } from 'types/comment';
+import { NewComment } from 'types/comment';
 
 import { reRenderApp } from 'App';
+
+import ErrorBox from 'elements/ErrorBox';
+import ErrorBoxWrapper from 'elements/ErrorBoxWrapper';
 
 export enum InputCommentAction {
   SET_CONTENT = 'setContent',
@@ -26,8 +29,9 @@ export interface InputCommentState {
 }
 
 export interface InputCommentProps {
-  headerCommentId?: string;
+  headerCommentId: string | null;
   taskId: string;
+  personId: string;
 }
 
 const InputComment = (props: InputCommentProps): JSX.Element => {
@@ -37,15 +41,7 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
 
   const [snackbar, showNotification] = useNotificationSnackbar();
 
-  const {
-    state,
-    submit,
-    reset,
-    errors,
-    triedSubmit,
-    dispatch,
-    pristine,
-  } = useForm({
+  const { state, submit, errors, triedSubmit, dispatch, pristine } = useForm({
     initialState,
     reducer: (
       state: InputCommentState,
@@ -88,12 +84,14 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
 
       // Get CommenterId here
 
-      const commentToSubmit: InputComment = {
-        headerCommentId: props.headerCommentId ?? null,
-        commenterId: '',
+      const commentToSubmit: NewComment = {
+        headerCommentId: props.headerCommentId,
+        commenterId: props.personId,
         content: state.content,
         taskId: props.taskId,
       };
+
+      console.log('commentToSubmit:', commentToSubmit);
 
       const commentResponse = await createComment(commentToSubmit);
 
@@ -102,6 +100,7 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
           'Comment created successfully!',
           NotificationSeverity.SUCCESS
         );
+        reRenderApp();
       } else {
         showNotification(
           `Comment creation failed!`,
@@ -113,6 +112,7 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
 
   return (
     <div>
+      {snackbar}
       <TextField
         variant="outlined"
         required
@@ -133,12 +133,11 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
       >
         Submit
       </Button>
-
-      {triedSubmit && errors
-        ? Object.values(errors).map((errorMessage, index) => {
-            return <div key={index}>{errorMessage}</div>;
-          })
-        : null}
+      {triedSubmit && errors ? (
+        <ErrorBoxWrapper>
+          <ErrorBox errors={errors} />
+        </ErrorBoxWrapper>
+      ) : null}
     </div>
   );
 };

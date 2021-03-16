@@ -6,26 +6,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-export enum TaskPriority {
-  HIGHEST = 'Highest',
-  HIGH = 'High',
-  MEDIUM = 'Medium',
-  LOW = 'Low',
-  LOWEST = 'Lowest',
-}
-
-export enum TaskType {
-  FEATURE = 'Feature',
-  BUG = 'Bug',
-  EPIC = 'Epic',
-}
-
-export enum TaskStatus {
-  BACKLOG = 'Backlog',
-  ACTIVE = 'Active',
-  COMPLETE = 'Complete',
-}
-
+import { TaskPriority, TaskType, TaskStatus } from '../../../types/task';
 @Entity()
 // @Unique(['row_index'])
 export class Task {

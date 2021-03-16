@@ -20,7 +20,7 @@ export class Comment {
   @Column('uuid')
   commenter_id!: string;
 
-  @Column('uuid')
+  @Column('uuid', { nullable: true })
   header_comment_id!: string | null;
 
   @Column()

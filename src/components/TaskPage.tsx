@@ -4,6 +4,7 @@ import { Task } from 'types/task';
 import { useGetTask } from 'hooks/axiosHooks';
 
 import TaskDialog from 'components/TaskDialog';
+import InputComment from 'components/InputComment';
 
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
@@ -18,9 +19,12 @@ import Comment from 'components/Comment';
 
 export interface TaskPageProps {
   taskId: string;
+  personId: string;
 }
 
 const TaskPage = (props: TaskPageProps): JSX.Element => {
+  const { personId } = props;
+
   const { loading, data, error, clearCache: clearTasksCache } = useGetTask(
     props.taskId
   );
@@ -92,6 +96,11 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
                     return <Comment key={index} comment={comment} />;
                   })
                 : null}
+              <InputComment
+                personId={personId}
+                headerCommentId={null}
+                taskId={task.id}
+              />
             </InfoBox>
           </GridWrapper>
         </>

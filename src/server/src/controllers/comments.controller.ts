@@ -2,21 +2,23 @@ import { Router } from 'express';
 import { CommentsService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-// import { Comment as CommentEntity } from 'entity/Comment';
-import { castComment } from 'cast';
+import { castPersonedComment, castPersonComment } from 'cast';
 
 import { IoRequest } from 'utils';
 
 const commentsController = (router: Router): void => {
   const commentsService = new CommentsService();
 
-  router.post('/comments/task/:id', async function (
-    req: Request,
-    res: Response
-  ) {
+  router.post('/comments', async function (req: Request, res: Response) {
     try {
+      console.log('req.body:', req.body);
       const comments = await commentsService.createComment(req.body);
-      return res.send(comments.map(comment => castComment(comment)));
+      const personedComments = comments.map(comment =>
+        castPersonComment(comment)
+      );
+      return res.send(
+        personedComments.map(comment => castPersonedComment(comment))
+      );
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -28,7 +30,9 @@ const commentsController = (router: Router): void => {
     res: Response
   ) {
     try {
-      const comment = await commentsService.getCommentsByTaskId(req.params.id);
+      const personedComments = await commentsService.getCommentsByTaskId(
+        req.params.id
+      );
       return res.send(castComment(comment));
     } catch (e) {
       res.status(500);
@@ -38,7 +42,7 @@ const commentsController = (router: Router): void => {
 
   router.get('/comments/:id', async function (req: Request, res: Response) {
     try {
-      const comment = await commentsService.getCommentById(req.params.id);
+      const { comments } = await commentsService.getCommentById(req.params.id);
       return res.send(castComment(comment));
     } catch (e) {
       res.status(500);

@@ -1,3 +1,5 @@
+// Todo: Refactor ReactCookies and PageWrapper.person into React.Context
+
 import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
@@ -27,6 +29,8 @@ import { getUserToken } from 'store/auth';
 
 import { useGetUserPersonById } from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
+
+import { Person } from 'types/person';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -143,7 +147,10 @@ const App = (): JSX.Element => {
             render={({ match, location, history }) => {
               return (
                 <PageWrapper person={personData}>
-                  <TaskPage taskId={match.params.taskId} />
+                  <TaskPage
+                    personId={(personData as Person).id}
+                    taskId={match.params.taskId}
+                  />
                 </PageWrapper>
               );
             }}

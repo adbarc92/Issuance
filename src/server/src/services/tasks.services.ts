@@ -1,17 +1,24 @@
 import { getConnection, Repository } from 'typeorm';
-import { Task } from 'entity/Task';
+import { Task as TaskEntity } from 'entity/Task';
+import { Comment as CommentEntity } from 'entity/Comment';
 import { Task as ITask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
+import { CommentsService } from 'services/comments.services';
 
 export class TaskService {
-  taskRepository: Repository<Task>;
+  taskRepository: Repository<TaskEntity>;
 
   constructor() {
-    this.taskRepository = getConnection().getRepository(Task);
+    this.taskRepository = getConnection().getRepository(TaskEntity);
   }
 
-  async getTaskById(id: string): Promise<Task> {
-    return await this.taskRepository.findOne(id);
+  async getTaskById(
+    taskId: string
+  ): Promise<{ task: TaskEntity; comments: CommentEntity[] }> {
+    const commentsService = new CommentsService();
+    const comments = await commentsService.getCommentsByTaskId(taskId);
+    const task = await this.taskRepository.findOne({ id: taskId });
+    return { task, comments };
   }
 
   async getTaskOrdering(): Promise<{ id: string }[]> {
@@ -23,7 +30,7 @@ export class TaskService {
       .execute();
   }
 
-  async getTasks(): Promise<Task[]> {
+  async getTasks(): Promise<TaskEntity[]> {
     return await this.taskRepository
       .createQueryBuilder('task')
       .select('*')
@@ -32,7 +39,7 @@ export class TaskService {
       .execute();
   }
 
-  async getTasksByProjectId(projectId: string): Promise<Task[]> {
+  async getTasksByProjectId(projectId: string): Promise<TaskEntity[]> {
     return await this.taskRepository
       .createQueryBuilder('task')
       .select('*')
@@ -40,7 +47,7 @@ export class TaskService {
       .execute();
   }
 
-  async createTask(task: ITask): Promise<Task[]> {
+  async createTask(task: ITask): Promise<TaskEntity[]> {
     fixInputTask(task);
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository
@@ -54,7 +61,7 @@ export class TaskService {
 
   // Pass in either
 
-  async modifyTask(updatedTask: ITask, id: string): Promise<Task> {
+  async modifyTask(updatedTask: ITask, id: string): Promise<TaskEntity> {
     const task = await this.taskRepository.findOne(id);
 
     let newIndex = updatedTask.rowIndex;
@@ -110,7 +117,7 @@ export class TaskService {
     await getConnection()
       .createQueryBuilder()
       .delete()
-      .from(Task)
+      .from(TaskEntity)
       .where('id = :id', { id })
       .execute();
     await this.taskRepository

@@ -4,7 +4,7 @@ import { Project as EProject } from 'entity/Project';
 import { NewProject, Project as IProject } from '../../../types/project';
 import { snakeCasify } from 'utils';
 import { castProject } from 'cast';
-import { TaskService } from './tasks.services';
+import { TaskService } from 'services/tasks.services';
 
 export class ProjectService {
   projectRepository: Repository<EProject>;

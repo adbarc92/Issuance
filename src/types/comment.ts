@@ -2,7 +2,19 @@
 
 import { Person } from 'types/person';
 
-export interface Comment {
+export interface personedComment {
+  id: string;
+  index: number;
+  task_id: string;
+  commenter: Person;
+  header_comment_id: string | null;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+// How the comment looks on the client
+export interface ClientComment {
   id: string;
   index: number;
   taskId: string;
@@ -13,7 +25,8 @@ export interface Comment {
   updatedAt: Date | string;
 }
 
-export interface DComment {
+// How a comment looks on the server
+export interface ServerComment {
   id: string;
   index: number;
   taskId: string;
@@ -24,7 +37,8 @@ export interface DComment {
   updatedAt: Date | string;
 }
 
-export interface InputComment {
+// Information required to create a new comment
+export interface NewComment {
   commenterId: string;
   headerCommentId: string | null;
   content: string;

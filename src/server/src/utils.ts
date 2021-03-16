@@ -2,7 +2,7 @@ import { randomBytes, createHmac } from 'crypto';
 
 import { Task } from '../../types/task';
 
-import { Comment as IComment, DComment } from '../../types/comment';
+import { ServerComment, ClientComment } from '../../types/comment';
 import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
 
@@ -78,16 +78,6 @@ export const toSnakeCase = (str: string): string => {
   return ret;
 };
 
-// export const snakeCasify = (obj: any): any => {
-//   const retObj = {};
-//   const keys = Object.keys(obj);
-//   for (let i = 0; i < keys.length; i++) {
-//     const newKey = toSnakeCase(keys[i]);
-//     retObj[newKey] = obj[keys[i]];
-//   }
-//   return retObj;
-// };
-
 export const snakeCasify = (obj: any): any => {
   const fixedObj = {};
   const keys = Object.keys(obj);
@@ -110,33 +100,10 @@ export const fixInputTask = (task: Partial<Task>): void => {
   }
 };
 
-export const fixInputComment = (comment: IComment): DComment => {
-  const {
-    id,
-    index,
-    taskId,
-    commenter,
-    headerCommentId,
-    content,
-    createdAt,
-    updatedAt,
-  } = comment;
-  return {
-    id,
-    index,
-    taskId,
-    commenterId: commenter.id,
-    headerCommentId,
-    content,
-    createdAt,
-    updatedAt,
-  };
-};
-
 export const fixOutputComment = (
-  comment: DComment,
+  comment: ServerComment,
   commenter: Person
-): IComment => {
+): ClientComment => {
   const {
     id,
     index,

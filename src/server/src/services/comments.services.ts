@@ -1,7 +1,12 @@
 import { getConnection, Repository } from 'typeorm';
 import { Comment as CommentEntity } from 'entity/Comment';
-import { Comment as IComment } from '../../../types/comment';
-import { snakeCasify, toCamelCase, fixInputComment } from 'utils';
+import { Person as PersonEntity } from 'entity/Person';
+import { ClientComment, NewComment } from '../../../types/comment';
+import { snakeCasify, toCamelCase } from 'utils';
+
+import { castPersonComment } from 'cast';
+
+import { PersonService } from 'services/personnel.services';
 
 export class CommentsService {
   commentRepository: Repository<CommentEntity>;
@@ -10,10 +15,11 @@ export class CommentsService {
     this.commentRepository = getConnection().getRepository(CommentEntity);
   }
 
-  async createComment(comment: IComment): Promise<CommentEntity[]> {
-    const newComment = this.commentRepository.create(
-      snakeCasify(fixInputComment(comment))
-    );
+  async createComment(comment: NewComment): Promise<CommentEntity[]> {
+    // const fixedComment = fixInputComment(comment);
+    // console.log('fixedComment:', fixedComment);
+    const newComment = this.commentRepository.create(snakeCasify(comment));
+    console.log('newComment:', newComment);
     await this.commentRepository
       .createQueryBuilder()
       .update('comment')
@@ -24,12 +30,27 @@ export class CommentsService {
     // return ()[0];
   }
 
-  async getCommentsByTaskId(taskId: string): Promise<CommentEntity> {
-    return await this.commentRepository
+  async getCommentsByTaskId(
+    taskId: string
+  ): Promise<{ comments: CommentEntity[]; persons: PersonEntity[] }> {
+    const personService = new PersonService();
+    const comments = await this.commentRepository
       .createQueryBuilder('comment')
       .select('*')
       .where('task_id = :id', { id: taskId })
       .execute();
+
+    const personedComments = comments.map(comment =>
+      castPersonComment(comment)
+    );
+
+    for (let i = 0; i < personedComments.length; i++) {
+      const person = await personService.getPersonById(
+        comments[i].commenter_id
+      );
+      personedComments[i].commenter = person;
+    }
+    return personedComments;
   }
 
   async getCommentById(commentId: string): Promise<CommentEntity> {
@@ -60,11 +81,12 @@ export class CommentsService {
 
   async modifyComment(
     commentId: string,
-    updatedComment: IComment
+    updatedComment: ClientComment
   ): Promise<CommentEntity> {
     const oldComment = await this.commentRepository.findOne(commentId);
 
-    let newIndex = fixInputComment(updatedComment).index;
+    // let newIndex = fixInputComment(updatedComment).index;
+    let newIndex = updatedComment.index;
     const oldIndex = oldComment.index;
 
     if (newIndex !== oldIndex) {

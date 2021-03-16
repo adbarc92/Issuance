@@ -6,8 +6,7 @@ import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
-// import { InputComment } from 'types/comment';
-import { InputComment } from 'types/comment';
+import { NewComment } from 'types/comment';
 
 // Actions change things
 
@@ -190,8 +189,8 @@ export const createProject = async (
 };
 
 export const createComment = async (
-  comment: InputComment
-): Promise<InputComment | null> => {
+  comment: NewComment
+): Promise<NewComment | null> => {
   try {
     const res = await api.post('/comments', comment);
     return res.data;
