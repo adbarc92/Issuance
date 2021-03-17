@@ -1,7 +1,10 @@
 import { getConnection, Repository } from 'typeorm';
 import { Comment as CommentEntity } from 'entity/Comment';
-import { Person as PersonEntity } from 'entity/Person';
-import { ClientComment, NewComment } from '../../../types/comment';
+import {
+  ClientComment,
+  NewComment,
+  personedComment,
+} from '../../../types/comment';
 import { snakeCasify, toCamelCase } from 'utils';
 
 import { castPersonComment } from 'cast';
@@ -15,7 +18,7 @@ export class CommentsService {
     this.commentRepository = getConnection().getRepository(CommentEntity);
   }
 
-  async createComment(comment: NewComment): Promise<CommentEntity[]> {
+  async createComment(comment: NewComment): Promise<personedComment[]> {
     // const fixedComment = fixInputComment(comment);
     // console.log('fixedComment:', fixedComment);
     const newComment = this.commentRepository.create(snakeCasify(comment));
@@ -26,13 +29,12 @@ export class CommentsService {
       .set({ index: () => 'index + 1' })
       .where('index >= 1')
       .execute();
-    return await this.commentRepository.save(newComment);
+    const comments = await this.commentRepository.save(newComment);
+    return comments.map(comment => castPersonComment(comment));
     // return ()[0];
   }
 
-  async getCommentsByTaskId(
-    taskId: string
-  ): Promise<{ comments: CommentEntity[]; persons: PersonEntity[] }> {
+  async getCommentsByTaskId(taskId: string): Promise<personedComment[]> {
     const personService = new PersonService();
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
@@ -40,7 +42,7 @@ export class CommentsService {
       .where('task_id = :id', { id: taskId })
       .execute();
 
-    const personedComments = comments.map(comment =>
+    const personedComments: personedComment[] = comments.map(comment =>
       castPersonComment(comment)
     );
 
@@ -53,8 +55,17 @@ export class CommentsService {
     return personedComments;
   }
 
-  async getCommentById(commentId: string): Promise<CommentEntity> {
-    return await this.commentRepository.findOne({ id: commentId });
+  async getCommentById(commentId: string): Promise<personedComment> {
+    const comment = await this.commentRepository.findOne({ id: commentId });
+    const personedComment = castPersonComment(comment);
+
+    const personService = new PersonService();
+
+    personedComment.commenter = await personService.getPersonById(
+      comment.commenter_id
+    );
+
+    return personedComment;
   }
 
   async removeComment(commentId: string): Promise<CommentEntity> {

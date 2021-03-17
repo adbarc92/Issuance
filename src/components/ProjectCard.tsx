@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import { Project } from 'types/project';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
@@ -67,7 +67,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
     setExpanded(!expanded);
   };
 
-  const displayTasks = (tasks: Task[]): JSX.Element => {
+  const displayTasks = (tasks: ClientTask[]): JSX.Element => {
     return (
       <List>
         {tasks.map((task, index) => {

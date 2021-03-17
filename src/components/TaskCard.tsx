@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import {
   Card,
   CardContent,
@@ -21,15 +21,15 @@ const CARD_DESCRIPTION_LENGTH = 140;
 const CARD_NAME_LENGTH = 50;
 
 export interface TaskCardProps {
-  task: Task;
+  task: ClientTask;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
-  setDialogTask: (task: Task) => void;
-  setHoveredTask: (task: Task | null) => void;
+  setDialogTask: (task: ClientTask) => void;
+  setHoveredTask: (task: ClientTask | null) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
-  draggedTask: Task | null;
-  hoveredTask: Task | null;
+  draggedTask: ClientTask | null;
+  hoveredTask: ClientTask | null;
 }
 
 const MenuButton = styled(Button)(() => {

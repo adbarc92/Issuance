@@ -1,5 +1,5 @@
 import React from 'react';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 
 import { useGetTask } from 'hooks/axiosHooks';
 
@@ -55,7 +55,9 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
     );
   };
 
-  const task = data as Task;
+  const task = data as ClientTask;
+
+  console.log('task:', task);
 
   return (
     <RootWrapper>

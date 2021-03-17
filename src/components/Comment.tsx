@@ -2,12 +2,12 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { Comment as IComment } from 'types/comment';
+import { ClientComment } from 'types/comment';
 
 import { styled } from '@material-ui/core';
 
 export interface CommentProps {
-  comment: IComment;
+  comment: ClientComment;
 }
 
 const CommentContainer = styled('div')(() => {
@@ -23,7 +23,7 @@ const Comment = (props: CommentProps): JSX.Element => {
   const { profilePicture, firstName, lastName, id } = commenter;
   return (
     <CommentContainer>
-      <img alt={'Person'}>{profilePicture ?? ''}</img>
+      {/* <img alt={'Person'}>{profilePicture ?? ''}</img> */}
       <div>
         <div>
           <Link to={`/personnel/${id}`}>

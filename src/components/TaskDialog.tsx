@@ -18,7 +18,7 @@ import { Alert } from '@material-ui/lab';
 import Select from 'elements/Select';
 import DateTimePicker from 'elements/DateTimePicker';
 
-import { TaskPriority, TaskType, TaskStatus, Task } from 'types/task';
+import { TaskPriority, TaskType, TaskStatus, ClientTask } from 'types/task';
 
 import { createTask, updateTask } from 'store/actions';
 
@@ -75,7 +75,7 @@ export interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   clearTasksCache: () => void;
-  dialogTask: Task | null;
+  dialogTask: ClientTask | null;
 }
 
 export interface TaskDialogState {
@@ -141,7 +141,7 @@ const TaskTypeMap = {
   [TaskType.EPIC]: { label: 'Epic' },
 };
 
-const taskToDialogState = (task: Task | null): TaskDialogState | null => {
+const taskToDialogState = (task: ClientTask | null): TaskDialogState | null => {
   if (task) {
     const {
       name,
@@ -305,7 +305,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
 
       const task = await (addingTask
         ? createTask(taskToSubmit)
-        : updateTask((props.dialogTask as Task).id, taskToSubmit));
+        : updateTask((props.dialogTask as ClientTask).id, taskToSubmit));
 
       if (task) {
         showNotification(

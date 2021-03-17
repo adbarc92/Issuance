@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import TaskDialog from 'components/TaskDialog';
 
-import { Task, TaskStatus } from 'types/task';
+import { ClientTask, TaskStatus } from 'types/task';
 import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
@@ -22,7 +22,7 @@ import PageTitle from 'elements/PageTitle';
 
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+  const [dialogTask, setDialogTask] = React.useState<ClientTask | null>(null);
 
   const reRender = useForceUpdate();
 
@@ -60,9 +60,9 @@ const TaskTablePage = (): JSX.Element => {
     return <div>There was an error: {error}</div>;
   }
 
-  let backlogTasks: Task[] = [],
-    activeTasks: Task[] = [],
-    completeTasks: Task[] = [];
+  let backlogTasks: ClientTask[] = [],
+    activeTasks: ClientTask[] = [],
+    completeTasks: ClientTask[] = [];
 
   if (taskData) {
     backlogTasks = taskData.filter(task => {

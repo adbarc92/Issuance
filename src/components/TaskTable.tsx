@@ -3,7 +3,7 @@ import React from 'react';
 import { styled, Card } from '@material-ui/core';
 
 import { TaskCard } from 'components/TaskCard';
-import { Task, TaskStatus } from 'types/task';
+import { ClientTask, TaskStatus } from 'types/task';
 
 import { updateTask } from 'store/actions';
 
@@ -64,11 +64,11 @@ const PlusCard = styled(Card)(
 
 export interface TaskTableProps {
   taskData: {
-    backlogTasks: Task[];
-    activeTasks: Task[];
-    completeTasks: Task[];
+    backlogTasks: ClientTask[];
+    activeTasks: ClientTask[];
+    completeTasks: ClientTask[];
   };
-  setDialogTask: (task: Task) => void;
+  setDialogTask: (task: ClientTask) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
   reRender: () => void;
@@ -85,13 +85,13 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
     [TaskStatus.COMPLETE]: completeTasks.length,
   };
 
-  const [draggedTask, setDraggedTask] = React.useState<Task | null>(null);
+  const [draggedTask, setDraggedTask] = React.useState<ClientTask | null>(null);
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
-  const [hoveredTask, setHoveredTask] = React.useState<Task | null>(null);
+  const [hoveredTask, setHoveredTask] = React.useState<ClientTask | null>(null);
 
   // Figure out how many task statuses there are => variable column numbers
 
-  const endDrag = (task: Task) => {
+  const endDrag = (task: ClientTask) => {
     return async () => {
       let rowIndex = 0;
       if (hoveredTask) {
@@ -114,7 +114,7 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
     };
   };
 
-  const renderTask = (task: Task, index: number) => {
+  const renderTask = (task: ClientTask, index: number) => {
     return (
       <TaskCard
         key={index}

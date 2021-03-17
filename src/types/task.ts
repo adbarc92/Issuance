@@ -1,4 +1,4 @@
-import { Comment } from 'types/comment';
+import { personedComment, ClientComment } from './comment';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',
@@ -20,7 +20,7 @@ export enum TaskStatus {
   COMPLETE = 'Complete',
 }
 
-export interface Task {
+export interface ClientTask {
   id: string;
   name: string;
   description: string;
@@ -36,13 +36,33 @@ export interface Task {
   reportedBy: string;
   storyPoints: number;
   typeName: 'Task'; // this is server-side only
-  comments?: Comment[];
+  comments: ClientComment[];
+  hidden: boolean;
 }
 
 export interface UpdateTaskResponse {
-  task: Task;
+  task: ClientTask;
   ordering: { id: string }[];
   userId: string;
 }
 
-export type TaskInput = Partial<Task> & Record<string, unknown>;
+export type TaskInput = Partial<ClientTask> & Record<string, unknown>;
+
+export interface CommentedTask {
+  id: string;
+  name: string;
+  description: string;
+  type: TaskType;
+  priority: TaskPriority;
+  status: TaskStatus;
+  created_at: Date;
+  updated_at: Date;
+  assigned_to: string;
+  row_index: number;
+  deadline: Date;
+  project_id: string;
+  reported_by: string;
+  story_points: number;
+  comments: personedComment[];
+  hidden: boolean;
+}

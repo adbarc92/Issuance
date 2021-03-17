@@ -1,5 +1,5 @@
 import { Person } from 'types/person';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import { User } from 'types/user';
 import { Project } from 'types/project';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
@@ -59,7 +59,7 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const getTask = async (taskId: string): Promise<Task | null> => {
+export const getTask = async (taskId: string): Promise<ClientTask | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
     return res.data;
@@ -70,7 +70,7 @@ export const getTask = async (taskId: string): Promise<Task | null> => {
   }
 };
 
-export const useGetTask = (id: string): IDataLoader<Task | null> => {
+export const useGetTask = (id: string): IDataLoader<ClientTask | null> => {
   return useGetData(
     () => {
       return getTask(id);
@@ -80,18 +80,17 @@ export const useGetTask = (id: string): IDataLoader<Task | null> => {
   );
 };
 
-export const getTasks = async (): Promise<Task[] | null> => {
+export const getTasks = async (): Promise<ClientTask[] | null> => {
   try {
     const res = await api.get('/tasks');
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };
 
-export const useGetTasks = (): IDataLoader<Task[] | null> => {
+export const useGetTasks = (): IDataLoader<ClientTask[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
 
@@ -187,4 +186,18 @@ export const useGetUserPersonById = (
     CacheKey.USERS,
     userId
   );
+};
+
+export const getComments = async (): Promise<Comment[] | null> => {
+  try {
+    const res = await api.get('/comments');
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetComments = (): IDataLoader<Comment[] | null> => {
+  return useGetData(getComments, CacheKey.COMMENTS);
 };

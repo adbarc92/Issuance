@@ -1,6 +1,6 @@
 import { randomBytes, createHmac } from 'crypto';
 
-import { Task } from '../../types/task';
+import { ClientTask } from '../../types/task';
 
 import { ServerComment, ClientComment } from '../../types/comment';
 import { Person } from '../../types/person';
@@ -91,7 +91,7 @@ export const snakeCasify = (obj: any): any => {
   return fixedObj;
 };
 
-export const fixInputTask = (task: Partial<Task>): void => {
+export const fixInputTask = (task: Partial<ClientTask>): void => {
   if (!task.reportedBy) {
     task.reportedBy = null;
   }

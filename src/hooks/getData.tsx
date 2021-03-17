@@ -24,6 +24,7 @@ export enum CacheKey {
   TASKS = 'TASKS',
   USERS = 'USERS',
   PROJECTS = 'PROJECTS',
+  COMMENTS = 'COMMENTS',
 }
 
 type LoaderFunction = () => Promise<any>;

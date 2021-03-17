@@ -2,6 +2,7 @@
 
 import { Person } from 'types/person';
 
+// Server-side property naming, except with a person
 export interface personedComment {
   id: string;
   index: number;

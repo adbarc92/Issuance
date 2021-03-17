@@ -1,9 +1,9 @@
 import { getConnection, Repository } from 'typeorm';
 import { Task as TaskEntity } from 'entity/Task';
-import { Comment as CommentEntity } from 'entity/Comment';
-import { Task as ITask } from '../../../types/task';
+import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 import { CommentsService } from 'services/comments.services';
+import { castCommentTask } from 'cast';
 
 export class TaskService {
   taskRepository: Repository<TaskEntity>;
@@ -12,13 +12,13 @@ export class TaskService {
     this.taskRepository = getConnection().getRepository(TaskEntity);
   }
 
-  async getTaskById(
-    taskId: string
-  ): Promise<{ task: TaskEntity; comments: CommentEntity[] }> {
+  async getTaskById(taskId: string): Promise<CommentedTask> {
     const commentsService = new CommentsService();
     const comments = await commentsService.getCommentsByTaskId(taskId);
     const task = await this.taskRepository.findOne({ id: taskId });
-    return { task, comments };
+    const commentedTask = castCommentTask(task);
+    commentedTask.comments = comments;
+    return commentedTask;
   }
 
   async getTaskOrdering(): Promise<{ id: string }[]> {
@@ -47,7 +47,7 @@ export class TaskService {
       .execute();
   }
 
-  async createTask(task: ITask): Promise<TaskEntity[]> {
+  async createTask(task: ClientTask): Promise<TaskEntity[]> {
     fixInputTask(task);
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository
@@ -61,7 +61,7 @@ export class TaskService {
 
   // Pass in either
 
-  async modifyTask(updatedTask: ITask, id: string): Promise<TaskEntity> {
+  async modifyTask(updatedTask: ClientTask, id: string): Promise<TaskEntity> {
     const task = await this.taskRepository.findOne(id);
 
     let newIndex = updatedTask.rowIndex;

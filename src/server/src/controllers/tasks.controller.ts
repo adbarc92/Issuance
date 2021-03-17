@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { TaskService } from 'services/tasks.services';
 import { Request, Response } from 'express';
-import { castTask } from 'cast';
+import { castTask, castCommentedTask } from 'cast';
 import { createErrorResponse } from 'utils';
-import { Task as ITask } from '../../../types/task';
+import { ClientTask } from '../../../types/task';
 
 import { IoRequest } from 'utils';
 
@@ -13,7 +13,9 @@ const tasksController = (router: Router): void => {
   router.get('/tasks/:id', async function (req: Request, res: Response) {
     try {
       const task = await taskService.getTaskById(req.params.id);
-      return res.send(castTask(task));
+      const commentedTask = castCommentedTask(task);
+      console.log('commentedTask:', commentedTask);
+      return res.send(commentedTask);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -58,7 +60,7 @@ const tasksController = (router: Router): void => {
     res: Response
   ) {
     try {
-      const updatedTask: ITask = req.body;
+      const updatedTask: ClientTask = req.body;
       const task = await taskService.modifyTask(updatedTask, req.params.id);
       const taskOrder = await taskService.getTaskOrdering();
       const response = {

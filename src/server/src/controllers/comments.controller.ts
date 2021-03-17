@@ -12,10 +12,8 @@ const commentsController = (router: Router): void => {
   router.post('/comments', async function (req: Request, res: Response) {
     try {
       console.log('req.body:', req.body);
-      const comments = await commentsService.createComment(req.body);
-      const personedComments = comments.map(comment =>
-        castPersonComment(comment)
-      );
+      const personedComments = await commentsService.createComment(req.body);
+
       return res.send(
         personedComments.map(comment => castPersonedComment(comment))
       );
@@ -33,7 +31,9 @@ const commentsController = (router: Router): void => {
       const personedComments = await commentsService.getCommentsByTaskId(
         req.params.id
       );
-      return res.send(castComment(comment));
+      return res.send(
+        personedComments.map(comment => castPersonedComment(comment))
+      );
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -42,8 +42,8 @@ const commentsController = (router: Router): void => {
 
   router.get('/comments/:id', async function (req: Request, res: Response) {
     try {
-      const { comments } = await commentsService.getCommentById(req.params.id);
-      return res.send(castComment(comment));
+      const comment = await commentsService.getCommentById(req.params.id);
+      return res.send(castPersonedComment(comment));
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -71,7 +71,7 @@ const commentsController = (router: Router): void => {
         updatedComment
       );
       const response = {
-        comment: castComment(fixedComment),
+        comment: castPersonedComment(castPersonComment(fixedComment)),
         userId: req.userId,
       };
       req.io.emit('comments', response);

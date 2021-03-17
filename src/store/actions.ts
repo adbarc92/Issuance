@@ -1,5 +1,5 @@
 import { api } from 'store/api';
-import { Task as ITask, TaskInput } from 'types/task';
+import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { NewProject as IProject } from 'types/project';
 import { User, UserInput } from 'types/user';
@@ -54,7 +54,7 @@ export const updateCacheOrdering = (
 export const updateTask = async (
   id: string,
   task: TaskInput
-): Promise<ITask | null> => {
+): Promise<ClientTask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
     handleUpdateTask(response.data);
@@ -71,7 +71,9 @@ export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
-export const createTask = async (task: TaskInput): Promise<ITask | null> => {
+export const createTask = async (
+  task: TaskInput
+): Promise<ClientTask | null> => {
   try {
     const response = await api.post('/tasks', {
       name: task.name,
