@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ClientTask } from 'types/task';
 
 import { useGetTask } from 'hooks/axiosHooks';
@@ -9,8 +9,9 @@ import InputComment from 'components/InputComment';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
+import PageWrapper from 'elements/PageWrapper';
+import SectionWrapper from 'elements/SectionWrapper';
 import InfoBox from 'elements/InfoBox';
-import GridWrapper from 'elements/GridWrapper';
 
 import { Edit } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
@@ -29,7 +30,13 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
     props.taskId
   );
 
+  const [comments, setComments] = React.useState(data?.comments || null);
+
   const [editingTask, setEditingTask] = React.useState(false);
+
+  useEffect(() => {
+    setComments(data?.comments || null);
+  }, [data?.comments]);
 
   const handleOpenDialog = () => {
     setEditingTask(true);
@@ -70,41 +77,39 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
             subtitle={String(task.projectId)}
             headerElem={EditButton()}
           />
-          <GridWrapper>
-            <InfoBox title="Details" gridarea="details">
-              <div>Type: {task.type}</div>
-              <div>Priority: {task.priority}</div>
-              <div>Status: {task.status}</div>
-            </InfoBox>
-
-            <InfoBox title="Description" gridarea="description">
-              <div>{task.description}</div>
-            </InfoBox>
-
-            <InfoBox title="Dates" gridarea="dates">
-              <div>Created On: {task.createdAt}</div>
-              <div>Last Updated: {task.updatedAt}</div>
-              <div>Deadline: {task.deadline}</div>
-            </InfoBox>
-
-            <InfoBox title="People" gridarea="people">
-              <div>Assignee ID: {task.assignedTo}</div>
-              <div>Reporter ID: {task.reportedBy}</div>
-            </InfoBox>
-
-            <InfoBox title="Comments" gridarea="comments">
-              {task.comments
-                ? task.comments.map((comment, index) => {
-                    return <Comment key={index} comment={comment} />;
-                  })
-                : null}
-              <InputComment
-                personId={personId}
-                headerCommentId={null}
-                taskId={task.id}
-              />
-            </InfoBox>
-          </GridWrapper>
+          <PageWrapper>
+            <SectionWrapper>
+              <InfoBox title="Details">
+                <div>Type: {task.type}</div>
+                <div>Priority: {task.priority}</div>
+                <div>Status: {task.status}</div>
+              </InfoBox>
+              <InfoBox title="People">
+                <div>Assignee ID: {task.assignedTo}</div>
+                <div>Reporter ID: {task.reportedBy}</div>
+              </InfoBox>
+            </SectionWrapper>
+            <SectionWrapper>
+              <InfoBox title="Description">{task.description}</InfoBox>
+              <InfoBox title="Dates">
+                <div>Created On: {task.createdAt}</div>
+                <div>Last Updated: {task.updatedAt}</div>
+                <div>Deadline: {task.deadline}</div>
+              </InfoBox>
+            </SectionWrapper>
+            <SectionWrapper>
+              <InfoBox title="Comments">
+                {comments?.map((comment, index) => {
+                  return <Comment key={index} comment={comment} />;
+                })}
+                <InputComment
+                  headerCommentId={null}
+                  taskId={task.id}
+                  personId={personId}
+                />
+              </InfoBox>
+            </SectionWrapper>
+          </PageWrapper>
         </>
       )}
       {editingTask ? (

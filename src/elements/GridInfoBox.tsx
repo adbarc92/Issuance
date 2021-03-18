@@ -7,6 +7,11 @@ import theme, { colors } from 'theme';
 interface InfoBoxProps {
   title: string;
   children?: any;
+  gridarea?: string;
+}
+
+interface InfoBoxWrapperProps {
+  gridarea?: string;
 }
 
 const InfoBoxHeader = styled('div')(() => {
@@ -19,8 +24,9 @@ const InfoBoxHeader = styled('div')(() => {
   };
 });
 
-const InfoBoxWrapper = styled('div')(() => {
+const InfoBoxWrapper = styled('div')((props: InfoBoxWrapperProps) => {
   return {
+    gridArea: props.gridarea,
     border: `2px solid ${colors.grey}`,
     borderRadius: '4px',
     padding: '0.5rem',
@@ -31,7 +37,7 @@ const InfoBoxWrapper = styled('div')(() => {
 
 const InfoBox = (props: InfoBoxProps): JSX.Element => {
   return (
-    <InfoBoxWrapper>
+    <InfoBoxWrapper gridarea={props.gridarea}>
       <InfoBoxHeader>{props.title}</InfoBoxHeader>
       {props.children}
     </InfoBoxWrapper>

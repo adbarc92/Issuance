@@ -18,10 +18,11 @@ export class CommentsService {
     this.commentRepository = getConnection().getRepository(CommentEntity);
   }
 
-  async createComment(comment: NewComment): Promise<personedComment[]> {
-    // const fixedComment = fixInputComment(comment);
-    // console.log('fixedComment:', fixedComment);
-    const newComment = this.commentRepository.create(snakeCasify(comment));
+  async createComment(comment: NewComment): Promise<personedComment> {
+    const snakeComment: NewComment = snakeCasify(comment);
+    const newComment: CommentEntity = this.commentRepository.create(
+      snakeComment
+    );
     console.log('newComment:', newComment);
     await this.commentRepository
       .createQueryBuilder()
@@ -29,9 +30,15 @@ export class CommentsService {
       .set({ index: () => 'index + 1' })
       .where('index >= 1')
       .execute();
-    const comments = await this.commentRepository.save(newComment);
-    return comments.map(comment => castPersonComment(comment));
-    // return ()[0];
+    const repoComment = await this.commentRepository.save(newComment);
+    console.log('comment:', comment);
+    const personService = new PersonService();
+    const fixedComment = castPersonComment(repoComment);
+    fixedComment.commenter = personService.getPersonById(
+      repoComment.commenter_id
+    );
+    console.log('fixedComment:', fixedComment);
+    return fixedComment;
   }
 
   async getCommentsByTaskId(taskId: string): Promise<personedComment[]> {

@@ -1,3 +1,5 @@
+// Todo: Refactor to remove GridInfoBox
+
 import React from 'react';
 
 import PersonnelDialog from 'components/PersonnelDialog';
@@ -7,7 +9,7 @@ import { useGetPersonById } from 'hooks/axiosHooks';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
-import InfoBox from 'elements/InfoBox';
+import InfoBox from 'elements/GridInfoBox';
 import GridWrapper from 'elements/GridWrapper';
 import AddButton from 'elements/AddButton';
 

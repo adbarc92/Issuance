@@ -1,10 +1,12 @@
+// Todo: Refactor to remove GridInfoBox
+
 import React from 'react';
 import { Project } from 'types/project';
 
 import { List, ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import InfoBox from 'elements/InfoBox';
+import InfoBox from 'elements/GridInfoBox';
 import GridWrapper from 'elements/GridWrapper';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
