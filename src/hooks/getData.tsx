@@ -29,31 +29,6 @@ export enum CacheKey {
 
 type LoaderFunction = () => Promise<any>;
 
-// export const useDataLoader = (loaders: LoaderFunction[]): IDataLoader => {
-//   const [loading, setLoading] = useState(true);
-//   const [data, setData] = useState([] as any[]);
-//   const [error, setError] = useState('');
-
-//   useEffect(() => {
-//     Promise.all(
-//       loaders.map(loader => {
-//         return loader();
-//       })
-//     )
-//       .then((data: any[]) => {
-//         setData(data);
-//         setError('');
-//         setLoading(false);
-//       })
-//       .catch(err => {
-//         setError(err);
-//         setLoading(false);
-//       });
-//   });
-
-//   return { loading, data, error };
-// };
-
 // For editing the cache from a different component with no access to clearCache
 export const clearCacheWithoutRender = (
   baseCacheKey: CacheKey,
@@ -70,6 +45,9 @@ export function useGetData<Datatype>(
   id?: string
 ): IDataLoader<Datatype> {
   const cacheKey = baseCacheKey + (id ?? ''); // If id is 0, we still want to append it even though it would be falsy; if 0 were not appended, it would return the cached data for all users, which would be incorrect
+
+  // console.log('cacheKey:', cacheKey);
+  // console.log('requestCache:', requestCache);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<null | Datatype | undefined>(

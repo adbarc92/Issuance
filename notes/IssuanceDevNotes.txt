@@ -20,9 +20,17 @@ Issuance Dev Notes
 	* Document Attachments (Screenshot-pasting)
 	* Profile Pictures
 	* Functional Web-hosted Demo (Amazon S3 or Google Cloud)
+		* Free-Tier Heroku
 * Ideal Inclusion:
 	* Timeline/Burndown
 	* CDN?
+
+=== 15Mar2021 ===
+
+* Fixes:
+	* Fix Task and Comment requests to use Join
+* Additions:
+	* Comment Pagination
 
 
 === 10Mar2021 ===

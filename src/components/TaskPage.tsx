@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ClientTask } from 'types/task';
+import { ClientComment } from 'types/comment';
 
 import { useGetTask } from 'hooks/axiosHooks';
 
@@ -16,7 +17,7 @@ import InfoBox from 'elements/InfoBox';
 import { Edit } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 
-import Comment from 'components/Comment';
+import Comments from 'components/Comment';
 
 export interface TaskPageProps {
   taskId: string;
@@ -29,15 +30,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
   const { loading, data, error, clearCache: clearTasksCache } = useGetTask(
     props.taskId
   );
-
-  const [comments, setComments] = React.useState(data?.comments || null);
-
   const [editingTask, setEditingTask] = React.useState(false);
-
-  useEffect(() => {
-    setComments(data?.comments || null);
-  }, [data?.comments]);
-
   const handleOpenDialog = () => {
     setEditingTask(true);
   };
@@ -99,9 +92,9 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
             </SectionWrapper>
             <SectionWrapper>
               <InfoBox title="Comments">
-                {comments?.map((comment, index) => {
-                  return <Comment key={index} comment={comment} />;
-                })}
+                {data?.comments ? (
+                  <Comments comments={data.comments as ClientComment[]} />
+                ) : null}
                 <InputComment
                   headerCommentId={null}
                   taskId={task.id}

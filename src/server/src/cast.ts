@@ -110,12 +110,10 @@ export const castPersonedComment = (
   comment: personedComment
 ): ClientComment => {
   const commenter = castPerson(comment.commenter);
-  const fixedComment = camelCasify(comment);
-  fixedComment.commenter = commenter;
+  const clientComment = camelCasify(comment);
+  clientComment.commenter = commenter;
 
-  console.log('fixedComment:', fixedComment);
-
-  return fixedComment;
+  return clientComment;
 };
 
 export const castPersonComment = (comment: CommentEntity): personedComment => {

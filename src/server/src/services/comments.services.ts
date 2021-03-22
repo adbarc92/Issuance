@@ -23,7 +23,6 @@ export class CommentsService {
     const newComment: CommentEntity = this.commentRepository.create(
       snakeComment
     );
-    console.log('newComment:', newComment);
     await this.commentRepository
       .createQueryBuilder()
       .update('comment')
@@ -31,10 +30,10 @@ export class CommentsService {
       .where('index >= 1')
       .execute();
     const repoComment = await this.commentRepository.save(newComment);
-    console.log('comment:', comment);
+    console.log('repoComment:', repoComment);
     const personService = new PersonService();
     const fixedComment = castPersonComment(repoComment);
-    fixedComment.commenter = personService.getPersonById(
+    fixedComment.commenter = await personService.getPersonById(
       repoComment.commenter_id
     );
     console.log('fixedComment:', fixedComment);

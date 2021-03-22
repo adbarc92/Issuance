@@ -3,7 +3,7 @@ import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { NewProject as IProject } from 'types/project';
 import { User, UserInput } from 'types/user';
-import { CacheKey, requestCache } from 'hooks/getData';
+import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
@@ -195,7 +195,12 @@ export const createComment = async (
 ): Promise<NewComment | null> => {
   try {
     const res = await api.post('/comments', comment);
-    return res.data;
+    const { data } = res;
+    const baseCacheKey = CacheKey.TASKS;
+    const { taskId: id } = data;
+    const cacheKey = baseCacheKey + (id ?? '');
+    requestCache[cacheKey].comments.push(data);
+    return data;
   } catch (e) {
     console.error(e);
     return null;

@@ -27,7 +27,7 @@ const Comment = (props: CommentProps): JSX.Element => {
       <div>
         <div>
           <Link to={`/personnel/${id}`}>
-            <div>{firstName + lastName}</div>
+            <div>{`${firstName} ${lastName}`}</div>
           </Link>
           <div>{createdAt}</div>
         </div>
@@ -37,4 +37,24 @@ const Comment = (props: CommentProps): JSX.Element => {
   );
 };
 
-export default Comment;
+export interface CommentsProps {
+  comments: ClientComment[];
+}
+
+const Comments = (props: CommentsProps): JSX.Element => {
+  const { comments } = props;
+
+  const [commentState, setCommentState] = React.useState(comments);
+
+  // useEffect(() => {}, []);
+
+  return (
+    <>
+      {commentState.map((comment, index) => {
+        return <Comment key={index} comment={comment} />;
+      })}
+    </>
+  );
+};
+
+export default Comments;

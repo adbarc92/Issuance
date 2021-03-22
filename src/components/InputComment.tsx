@@ -22,6 +22,7 @@ import ErrorBoxWrapper from 'elements/ErrorBoxWrapper';
 
 export enum InputCommentAction {
   SET_CONTENT = 'setContent',
+  RESET_STATE = 'setState',
 }
 
 export interface InputCommentState {
@@ -41,18 +42,35 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
 
   const [snackbar, showNotification] = useNotificationSnackbar();
 
-  const { state, submit, errors, triedSubmit, dispatch, pristine } = useForm({
+  const handleSubmit = () => {
+    reset();
+  };
+
+  const {
+    state,
+    submit,
+    errors,
+    triedSubmit,
+    dispatch,
+    reset,
+    pristine,
+  } = useForm({
     initialState,
     reducer: (
       state: InputCommentState,
       action: FormAction
     ): InputCommentState => {
       const { payload, type } = action;
-      const newState = { ...state };
+      let newState = { ...state };
 
-      if (type === 'setContent') {
+      if (type === InputCommentAction.SET_CONTENT) {
         newState.content = payload;
       }
+
+      if (type === InputCommentAction.RESET_STATE) {
+        newState = initialState;
+      }
+
       return newState;
     },
     validateState: (
@@ -82,16 +100,12 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
 
       trimState(state);
 
-      // Get CommenterId here
-
       const commentToSubmit: NewComment = {
         headerCommentId: props.headerCommentId,
         commenterId: props.personId,
         content: state.content,
         taskId: props.taskId,
       };
-
-      console.log('commentToSubmit:', commentToSubmit);
 
       const commentResponse = await createComment(commentToSubmit);
 
@@ -101,6 +115,7 @@ const InputComment = (props: InputCommentProps): JSX.Element => {
           NotificationSeverity.SUCCESS
         );
         reRenderApp();
+        handleSubmit();
       } else {
         showNotification(
           `Comment creation failed!`,
