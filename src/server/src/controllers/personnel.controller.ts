@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 import { castPerson } from 'cast';
 
-// This function sets all the routes
+// * This function sets all the routes
 const personnelController = (router: Router): void => {
   const personService = new PersonService();
 
@@ -22,17 +22,6 @@ const personnelController = (router: Router): void => {
       return res.send(createErrorResponse(e));
     }
   });
-
-  // Todo: this route seems problematic
-  // router.get('/personnel/:userEmail', async function (
-  //   req: Request,
-  //   res: Response
-  // ) {
-  //   const person = await personService.getPersonByUserEmail(
-  //     req.params.userEmail
-  //   );
-  //   return res.send(person);
-  // });
 
   router.post('/personnel', async function (req: Request, res: Response) {
     try {

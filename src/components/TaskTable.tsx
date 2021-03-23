@@ -10,7 +10,7 @@ import { updateTask } from 'store/actions';
 import theme from 'theme';
 import { colors } from 'theme';
 
-// This is a higher-order component
+// * This is a higher-order component
 const Header = styled('div')((props: any) => {
   return {
     fontSize: '24px',
@@ -88,8 +88,6 @@ const TaskTable = (props: TaskTableProps): JSX.Element => {
   const [draggedTask, setDraggedTask] = React.useState<ClientTask | null>(null);
   const [dragColumn, setDragColumn] = React.useState<TaskStatus | null>(null);
   const [hoveredTask, setHoveredTask] = React.useState<ClientTask | null>(null);
-
-  // Figure out how many task statuses there are => variable column numbers
 
   const endDrag = (task: ClientTask) => {
     return async () => {

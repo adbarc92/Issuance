@@ -4,7 +4,7 @@ import { UserService } from 'services/users.services';
 import { createErrorResponse } from 'utils';
 import { castUser, castPerson } from 'cast';
 
-// The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
+// * The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
 
 const usersController = (router: Router): void => {
   const userService = new UserService();

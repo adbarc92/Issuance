@@ -25,13 +25,6 @@ export const trimState = function <T>(state: T): void {
   }
 };
 
-// export const validateEmail = (email: string): boolean => {
-//   let username,
-//   for(let i = 0; i < email.length; i++){
-//     if()
-//   }
-// };
-
 export const mapEnumToSelectItems = (
   set:
     | typeof TaskPriority

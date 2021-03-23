@@ -6,7 +6,7 @@ import { ServerComment, ClientComment } from '../../types/comment';
 import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
 
-// Standardizes error messages for later handling, client-side
+// * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
   return JSON.stringify({ errors });
 };
@@ -33,7 +33,6 @@ export const sha256 = (password: string, salt: string): PasswordData => {
 };
 
 export const saltHashPassword = (userpassword: string): PasswordData => {
-  // const salt = generateRandomString(16);
   const salt = uuid();
   return sha256(userpassword, salt);
 };

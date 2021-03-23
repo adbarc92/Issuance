@@ -19,7 +19,6 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Apps as ProjectsIcon,
-  // Timeline as TimelineIcon,
   FormatListNumbered as TasksIcon,
   People as PersonnelIcon,
   Settings as SettingsIcon,
@@ -99,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
+      // * Necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
   })
@@ -174,7 +173,6 @@ const Navigation = (props: NavigationProps): JSX.Element => {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
-        // Question: Classes?
         classes={{
           paper: clsx({
             [classes.drawerOpen]: open,

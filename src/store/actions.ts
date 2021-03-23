@@ -8,16 +8,14 @@ import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
 
-// Actions change things
+// * Actions change things
 
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
   for (const i in cache) {
     const value = cache[i];
-    // check if object
     if (Array.isArray(value)) {
       updateCache(obj, value);
-      // Bug fix: typeof null === object
     } else if (value && typeof value === 'object') {
       if (
         value.typeName &&
@@ -32,7 +30,6 @@ const updateCache = (obj: any, subCache?: any) => {
   }
 };
 
-// Should be generic,
 export const updateCacheOrdering = (
   orderingArray: { id: string }[],
   cacheKey: CacheKey
@@ -45,7 +42,6 @@ export const updateCacheOrdering = (
   const newArray = orderingArray.map((elem: { id: string }) => {
     return hashedCache[elem.id];
   });
-  // requestCache[cacheKey] = newArray;
   for (let i = 0; i < newArray.length; i++) {
     requestCache[cacheKey][i] = newArray[i];
   }
@@ -61,7 +57,6 @@ export const updateTask = async (
     return response.data;
   } catch (error) {
     console.error(error);
-    // throw e;
     return null;
   }
 };

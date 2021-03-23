@@ -8,7 +8,6 @@ import {
 
 import { TaskPriority, TaskType, TaskStatus } from '../../../types/task';
 @Entity()
-// @Unique(['row_index'])
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

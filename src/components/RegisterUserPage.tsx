@@ -10,7 +10,12 @@ import {
 
 import ErrorBox from 'elements/ErrorBox';
 
-import { isNotFilledOut, isTooLong, isEmailValid } from 'utils/index';
+import {
+  isNotFilledOut,
+  isTooLong,
+  isEmailValid,
+  trimState,
+} from 'utils/index';
 
 import { useForm } from 'hooks/form';
 import { createUser } from 'store/actions';
@@ -20,7 +25,6 @@ import { UserRole } from 'types/user';
 import { setSessionToken } from 'store/auth';
 import { login } from 'store/actions';
 
-// DRY-candidate
 const MarginTopWrapper = styled('div')(() => {
   return {
     marginTop: '1rem',
@@ -56,7 +60,7 @@ const RegisterUserPage = (): JSX.Element => {
       const errors: Record<string, string> = {};
       const vState = { ...state };
 
-      // trimState(vState);
+      // trimState(vState); // Todo: bug-test
       if (!isEmailValid(vState.email)) {
         errors.email = 'A valid email must be provided.';
       }

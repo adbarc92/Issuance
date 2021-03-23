@@ -1,3 +1,5 @@
+// Todo: remove all transferList code
+
 import React from 'react';
 
 import {
@@ -14,7 +16,6 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import DateTimePicker from 'elements/DateTimePicker';
-// import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { Person } from 'types/person';
 import { NewProject } from 'types/project';
@@ -29,9 +30,6 @@ import {
 } from 'hooks/notification';
 
 import { useForm } from 'hooks/form';
-// import { useGetPersonnel } from 'hooks/axiosHooks';
-
-// import TransferList from 'components/PersonnelTransferList';
 
 import { FormAction } from 'hooks/form';
 
@@ -57,16 +55,10 @@ interface ProjectDialogState {
 }
 
 interface ProjectDialogProps {
-  // project: Project | null;
   showingDialog: boolean;
   hideDialog: () => void;
   clearProjectsCache: () => void;
 }
-
-// interface IProjectDialogAction {
-//   type: string;
-//   payload?: any;
-// }
 
 export enum ProjectDialogAction {
   SET_TITLE = 'setTitle',
@@ -76,7 +68,6 @@ export enum ProjectDialogAction {
   SET_DEADLINE = 'setDeadline',
 }
 
-// S/N: Personnel need an additional property--selected--that will determine if their column changes on arrow click
 const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
   const { clearProjectsCache } = props;
 
@@ -89,14 +80,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       new Date().getTime() + 24 * 60 * 60 * 1000
     ).toISOString(), // defaults to tomorrow,
   };
-
-  // const [personnel, setPersonnel] = React.useState<Person[]>([]);
-
-  // const {
-  //   loading: personnelLoading,
-  //   data: personnelData,
-  //   error: personnelError,
-  // } = useGetPersonnel();
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -139,10 +122,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         errors.description =
           'A description cannot be longer than 180 characters';
       }
-      // if (assignedPersonnel.length === 0) {
-      //   errors.personnel = 'Personnel must be assigned';
-      // }
-      // ...
       return Object.keys(errors).length ? errors : undefined;
     },
     onSubmit: async () => {
@@ -186,18 +165,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
     reset();
     props.hideDialog();
   };
-
-  // const displayTransferList = () => {
-  //   if (personnelLoading) {
-  //     return <LoadingSpinner />;
-  //   } else if (personnelError) {
-  //     console.error(personnelError);
-  //   }
-
-  //   const inputList = personnelData || [];
-
-  //   return <TransferList inputList={inputList} setPersonnel={setPersonnel} />;
-  // };
 
   return (
     <>

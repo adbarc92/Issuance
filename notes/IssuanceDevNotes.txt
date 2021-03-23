@@ -7,6 +7,9 @@ Issuance Dev Notes
 	* Solve a Business Problem
 	* Add User Authentication (Oauth/Auth0) and Authorization
 
+
+
+
 * Remaining Vital Features:
 	** Improve Task, Project, User UI
 	* Task Comments
@@ -21,9 +24,16 @@ Issuance Dev Notes
 	* Profile Pictures
 	* Functional Web-hosted Demo (Amazon S3 or Google Cloud)
 		* Free-Tier Heroku
+	* Guest Accounts, Permissions
 * Ideal Inclusion:
 	* Timeline/Burndown
 	* CDN?
+
+=== 22Mar2021 ===
+
+* Add Pagination to Task API
+* Feature: Link to Particular comments
+	* URL includes a query parameter that will indicate a comment to highlight and scroll down to
 
 === 15Mar2021 ===
 

@@ -5,9 +5,7 @@ import { Project } from 'types/project';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
-// Temp
-
-// Helper function for the hook below, not technically a hook
+// * Helper function for the hook below, not technically a hook
 export const getPersonById = async (
   personId: string
 ): Promise<Person | null> => {
@@ -16,7 +14,6 @@ export const getPersonById = async (
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };
@@ -28,7 +25,7 @@ export const getPersonByUsername = async (
   return response.data;
 };
 
-// This is a hook because it returns a function that contains a hook
+// * This is a hook because it returns a function that contains a hook
 export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
   return useGetData(
     () => {
@@ -38,12 +35,6 @@ export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
     id
   );
 };
-
-// export const useGetPersonByUsername = (
-//   username: string
-// ): IDataLoader<Person> => {
-//   return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
-// };
 
 export const getPersonnel = async (): Promise<Person[] | null> => {
   try {
@@ -65,7 +56,6 @@ export const getTask = async (taskId: string): Promise<ClientTask | null> => {
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };

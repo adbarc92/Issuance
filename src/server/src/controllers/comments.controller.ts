@@ -12,7 +12,6 @@ const commentsController = (router: Router): void => {
   router.post('/comments', async function (req: Request, res: Response) {
     try {
       const personedComment = await commentsService.createComment(req.body);
-      console.log('personedComment:', personedComment);
       return res.send(castPersonedComment(personedComment));
     } catch (e) {
       res.status(500);

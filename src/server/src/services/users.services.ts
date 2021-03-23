@@ -1,7 +1,6 @@
 import { getConnection, Repository } from 'typeorm';
 import { User } from 'entity/User';
 import { UserInput } from '../../../types/user';
-// import { Person } from '../../../types/person';
 import { Person } from 'entity/Person';
 import { snakeCasify } from 'utils';
 import { PersonService } from 'services/personnel.services';
@@ -33,7 +32,6 @@ export class UserService {
   async createUser(user: UserInput): Promise<User> {
     const { loginEmail: email, password, role } = user;
 
-    // Check if User Exists
     const users: User[] = await this.userRepository.find();
 
     const userEmails = users.map(user => user.email);

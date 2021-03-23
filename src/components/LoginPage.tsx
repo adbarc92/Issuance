@@ -24,12 +24,6 @@ import { setSessionToken } from 'store/auth';
 
 import FormButtonContainer from 'elements/FormButtonContainer';
 
-// const WideDiv = styled('div')(() => {
-//   return {
-//     width: '25rem',
-//   };
-// });
-
 const ErrorBoxWrapper = styled('div')(() => {
   return {
     marginTop: '1rem',

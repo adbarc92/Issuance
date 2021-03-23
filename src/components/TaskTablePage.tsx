@@ -34,7 +34,6 @@ const TaskTablePage = (): JSX.Element => {
   } = useGetTasks();
 
   useEffect(() => {
-    // On page load, register task register;
     socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
       if (taskPayload.userId !== getUserToken()) {
         handleUpdateTask(taskPayload);

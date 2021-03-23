@@ -200,8 +200,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     error: personError,
   } = useGetPersonnel();
 
-  // console.log('projectData:', projectData);
-
   const addingTask = taskToDialogState(props.dialogTask) ? false : true;
 
   const {

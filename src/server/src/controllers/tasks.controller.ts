@@ -24,7 +24,7 @@ const tasksController = (router: Router): void => {
 
   router.get('/tasks', async function (req: Request, res: Response) {
     try {
-      // Group by Status, Order by Row Index
+      // * Group by Status, Order by Row Index
       const tasks = await taskService.getTasks();
       return res.send(tasks.map(task => castTask(task)));
     } catch (e) {
@@ -47,7 +47,6 @@ const tasksController = (router: Router): void => {
     try {
       const tasks = await taskService.createTask(req.body);
       const taskOrder = await taskService.getTaskOrdering();
-      // return res.send(castTask(tasks[0]));
       return res.send({ updatedTask: castTask(tasks[0]), ordering: taskOrder });
     } catch (e) {
       res.status(500);

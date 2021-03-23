@@ -47,7 +47,6 @@ const start = async () => {
     };
 
     const authMiddleware = async function (req, res, next) {
-      // const { rawHeaders, httpVersion, method, socket, url } = req;
       console.log('URL:', req.url);
 
       if (!/^(\/api\/)*/.test(req.url)) {
@@ -118,7 +117,7 @@ const start = async () => {
     projectsController(router);
     commentsController(router);
 
-    // Should take a token, check validity, return loggedIn status
+    // * Should take a token, check validity, return loggedIn status
     router.put('/login', async function (
       req: Request & { userId: string },
       res: Response
@@ -126,7 +125,7 @@ const start = async () => {
       return res.send({ loggedIn: true, userId: req.userId });
     });
 
-    // Take password, hash it, check against stored password (also hashed)
+    // * Take password, hash it, check against stored password (also hashed)
     router.post('/login', async function (req: Request, res: Response) {
       console.log('login post');
       const user = await userRepository

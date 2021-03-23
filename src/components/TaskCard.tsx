@@ -32,14 +32,6 @@ export interface TaskCardProps {
   hoveredTask: ClientTask | null;
 }
 
-const MenuButton = styled(Button)(() => {
-  return {
-    // position: 'absolute',
-    // right: '0.5rem',
-    // bottom: '0.5rem',
-  };
-});
-
 const CardTitle = styled(Typography)(() => {
   return {
     marginTop: '0.3rem',
@@ -109,9 +101,6 @@ const TaskPlaceholder = styled('div')((props: any) => {
 });
 
 const fixStringSize = (text: string, maxSize: number): string => {
-  // description.length <= CARD_DESCRIPTION_LENGTH
-  //                   ? description
-  //                   : description.slice(0, CARD_DESCRIPTION_LENGTH) + '...'
   if (text.length <= maxSize) {
     return text;
   } else {
@@ -210,9 +199,9 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
               </CardInfo>
               <CardMenu>
                 <Avatar title={assignedTo} />
-                <MenuButton onClick={handleClick}>
+                <Button onClick={handleClick}>
                   <MoreVert />
-                </MenuButton>
+                </Button>
                 <SimpleMenu
                   menuItems={menuItems}
                   anchorElement={anchorElement}

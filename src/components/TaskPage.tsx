@@ -1,4 +1,5 @@
-import React from 'react';
+// Todo: get Sockets running on this page
+import React, { useEffect } from 'react';
 import { ClientTask } from 'types/task';
 import { ClientComment } from 'types/comment';
 
@@ -18,6 +19,15 @@ import { Edit } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 
 import Comments from 'components/Comment';
+import { socket } from 'io';
+import { SocketMessages } from 'types/socket';
+// import { UpdateCommentResponse } from 'types/comment';
+import { UpdateTaskResponse } from 'types/task';
+import { getUserToken } from 'store/auth';
+
+import { reRenderApp } from 'App';
+
+import { clearCacheWithoutRender, CacheKey } from 'hooks/getData';
 
 export interface TaskPageProps {
   taskId: string;
@@ -31,6 +41,20 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
     props.taskId
   );
   const [editingTask, setEditingTask] = React.useState(false);
+
+  // useEffect(() => {
+  //   // On page load, register task register;
+  //   socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
+  //     if (taskPayload.userId !== getUserToken()) {
+  //       reRenderApp();
+  //     }
+  //   });
+  //   return () => {
+  //     clearCacheWithoutRender(CacheKey.TASKS);
+  //     socket.off('tasks');
+  //   };
+  // }, []);
+
   const handleOpenDialog = () => {
     setEditingTask(true);
   };
@@ -56,8 +80,6 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
   };
 
   const task = data as ClientTask;
-
-  console.log('task:', task);
 
   return (
     <RootWrapper>

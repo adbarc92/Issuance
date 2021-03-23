@@ -1,6 +1,6 @@
 // Todo: Refactor ReactCookies and PageWrapper.person into React.Context
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelTablePage from 'components/PersonnelTablePage';
@@ -23,9 +23,7 @@ import PageContainer from 'elements/PageContainer';
 
 import './io';
 
-import { getUserToken } from 'store/auth';
-
-// import { useCookies } from 'react-cookie';
+import { getUserToken, setUserToken } from 'store/auth';
 
 import { useGetUserPersonById } from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
@@ -39,8 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      ...theme.mixins.toolbar, // * Necessary for content to be below app bar
     },
   })
 );
@@ -91,14 +88,14 @@ const App = (): JSX.Element => {
     loading: personLoading,
     data: personData,
     error: personError,
-    // clearCache,
   } = useGetUserPersonById(userId);
 
   const rerender = useForceUpdate();
 
   render = rerender;
 
-  console.log('Rendering');
+  // Todo: renders should be counted here
+  console.log('Rendering!');
 
   if (personError) {
     return <div>{personError}</div>;
@@ -124,6 +121,14 @@ const App = (): JSX.Element => {
           <Route exact path="/login">
             <LoginPage />
           </Route>
+          <Route
+            exact
+            path="/logout"
+            render={({ match, location, history }) => {
+              setUserToken(null);
+              return <LoginPage />;
+            }}
+          />
           <Route exact path="/personnel">
             <PageWrapper person={personData}>
               <PersonnelTablePage />
@@ -144,7 +149,7 @@ const App = (): JSX.Element => {
           </Route>
           <Route
             path="/tasks/:taskId"
-            render={({ match, location, history }) => {
+            render={({ match, history }) => {
               return (
                 <PageWrapper person={personData}>
                   <TaskPage
@@ -157,7 +162,7 @@ const App = (): JSX.Element => {
           />
           <Route
             path="/personnel/:personId"
-            render={({ match, location, history }) => {
+            render={({ match, history }) => {
               return (
                 <PageWrapper person={personData}>
                   <PersonPage personId={match.params.personId} />
@@ -167,7 +172,7 @@ const App = (): JSX.Element => {
           />
           <Route
             path="/projects/:projectId"
-            render={({ match, location, history }) => {
+            render={({ match, history }) => {
               return (
                 <PageWrapper person={personData}>
                   <ProjectPage projectId={match.params.projectId} />

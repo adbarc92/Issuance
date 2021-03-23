@@ -2,7 +2,7 @@
 
 import { Person } from 'types/person';
 
-// Server-side property naming, except with a person
+// * Server-side property naming, except with a person
 export interface personedComment {
   id: string;
   index: number;
@@ -14,19 +14,19 @@ export interface personedComment {
   updated_at: Date;
 }
 
-// How the comment looks on the client
+// * How the comment looks on the client
 export interface ClientComment {
   id: string;
   index: number;
   taskId: string;
-  commenter: Person; // Converts to the ID in DB
+  commenter: Person; // * Converts to the ID in DB
   headerCommentId: string | null;
   content: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
 
-// How a comment looks on the server
+// * How a comment looks on the server
 export interface ServerComment {
   id: string;
   index: number;
@@ -38,10 +38,16 @@ export interface ServerComment {
   updatedAt: Date | string;
 }
 
-// Information required to create a new comment
+// * Information required to create a new comment; the rest is created on the server-side
 export interface NewComment {
   commenterId: string;
   headerCommentId: string | null;
   content: string;
   taskId: string;
+}
+
+// * For use of Socket.IO
+export interface updateCommentResponse {
+  updatedClient: ClientComment;
+  userId: string;
 }

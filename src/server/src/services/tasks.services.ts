@@ -59,8 +59,6 @@ export class TaskService {
     return await this.taskRepository.save(curTask);
   }
 
-  // Pass in either
-
   async modifyTask(updatedTask: ClientTask, id: string): Promise<TaskEntity> {
     const task = await this.taskRepository.findOne(id);
 
@@ -71,14 +69,14 @@ export class TaskService {
       if (newIndex > oldIndex) {
         newIndex -= 1;
         updatedTask.rowIndex -= 1;
-        // Close original gap: substract 1 from everything >= oldIndex
+        // * Close original gap: substract 1 from everything >= oldIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
@@ -92,7 +90,7 @@ export class TaskService {
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
@@ -126,6 +124,5 @@ export class TaskService {
       .set({ row_index: () => 'row_index - 1' })
       .where('row_index >= :id', { id: deletedIndex })
       .execute();
-    // return await this.taskRepository.save();
   }
 }

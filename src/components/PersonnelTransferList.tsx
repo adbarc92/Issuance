@@ -14,10 +14,6 @@ import theme from 'theme';
 
 import { Person } from 'types/person';
 
-// import { FormAction } from 'hooks/form';
-
-// import { ProjectDialogAction } from 'components/ProjectDialog';
-
 const SpacedButton = styled(Button)(() => {
   return {
     margin: theme.spacing(0.5),
@@ -58,10 +54,6 @@ const getDisjoint = (a: Person[], b: Person[]) => {
   return a.filter(value => b.indexOf(value) === -1);
 };
 
-// const getUnion = (a: Person[], b: Person[]) => {
-//   return [...a, ...getDisjoint(b, a)];
-// };
-
 const TransferList = (props: TransferListProps): JSX.Element => {
   const { setPersonnel } = props;
 
@@ -88,30 +80,14 @@ const TransferList = (props: TransferListProps): JSX.Element => {
 
   const handleAllLeft = () => {
     setLeft(left.concat(right));
-    // dispatch({
-    //   type: ProjectDialogAction.SET_AVAILABLE_PERSONNEL,
-    //   payload: left.concat(right),
-    // });
     setRight([]);
     setPersonnel([]);
-    // dispatch({
-    //   type: ProjectDialogAction.SET_ASSIGNED_PERSONNEL,
-    //   payload: [],
-    // });
   };
 
   const handleAllRight = () => {
     setRight(right.concat(left));
     setPersonnel(right.concat(left));
-    // dispatch({
-    //   type: ProjectDialogAction.SET_ASSIGNED_PERSONNEL,
-    //   payload: right.concat(left),
-    // });
     setLeft([]);
-    // dispatch({
-    //   type: ProjectDialogAction.SET_AVAILABLE_PERSONNEL,
-    //   payload: [],
-    // });
   };
 
   const handleCheckedLeft = () => {

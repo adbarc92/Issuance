@@ -1,5 +1,4 @@
 import { checkLogin } from 'store/actions';
-// import {LoginResponse} from ''
 
 const LOCAL_STORAGE_KEY = 'SESSION_TOKEN';
 const LOCAL_STORAGE_USER_KEY = 'SESSION_USER';
@@ -20,12 +19,12 @@ export const setUserToken = (token: string | null): void => {
   localStorage.setItem(LOCAL_STORAGE_USER_KEY, token || '');
 };
 
-// Do you have a working session token?
+// * Do you have a working session token?
 export const isLoggedIn = async (): Promise<boolean> => {
   const loginResponse = await checkLogin();
   if (loginResponse?.loggedIn) {
     setUserToken(loginResponse.userId || '');
   }
   return !!loginResponse?.loggedIn;
-  // Make a request to login endpoint to check if it is valid
+  // * Make a request to login endpoint to check if it is valid
 };

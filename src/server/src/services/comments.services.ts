@@ -30,13 +30,11 @@ export class CommentsService {
       .where('index >= 1')
       .execute();
     const repoComment = await this.commentRepository.save(newComment);
-    console.log('repoComment:', repoComment);
     const personService = new PersonService();
     const fixedComment = castPersonComment(repoComment);
     fixedComment.commenter = await personService.getPersonById(
       repoComment.commenter_id
     );
-    console.log('fixedComment:', fixedComment);
     return fixedComment;
   }
 
@@ -102,7 +100,6 @@ export class CommentsService {
   ): Promise<CommentEntity> {
     const oldComment = await this.commentRepository.findOne(commentId);
 
-    // let newIndex = fixInputComment(updatedComment).index;
     let newIndex = updatedComment.index;
     const oldIndex = oldComment.index;
 
@@ -110,14 +107,14 @@ export class CommentsService {
       if (newIndex > oldIndex) {
         newIndex -= 1;
         updatedComment.index -= 1;
-        // Close original gap: substract 1 from everything >= oldIndex
+        // * Close original gap: substract 1 from everything >= oldIndex
         await this.commentRepository
           .createQueryBuilder()
           .update('task')
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.commentRepository
           .createQueryBuilder()
           .update('task')
@@ -131,7 +128,7 @@ export class CommentsService {
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.commentRepository
           .createQueryBuilder()
           .update('task')

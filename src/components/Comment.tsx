@@ -20,14 +20,17 @@ const CommentContainer = styled('div')(() => {
 const Comment = (props: CommentProps): JSX.Element => {
   const { commenter, content, createdAt } = props.comment;
 
-  const { profilePicture, firstName, lastName, id } = commenter;
+  const { profilePicture, firstName, lastName, id, userEmail } = commenter;
+
+  const displayName = firstName && lastName ? `/personnel/${id}` : userEmail;
+
   return (
     <CommentContainer>
       {/* <img alt={'Person'}>{profilePicture ?? ''}</img> */}
       <div>
         <div>
           <Link to={`/personnel/${id}`}>
-            <div>{`${firstName} ${lastName}`}</div>
+            <div>{displayName}</div>
           </Link>
           <div>{createdAt}</div>
         </div>
@@ -44,9 +47,7 @@ export interface CommentsProps {
 const Comments = (props: CommentsProps): JSX.Element => {
   const { comments } = props;
 
-  const [commentState, setCommentState] = React.useState(comments);
-
-  // useEffect(() => {}, []);
+  const [commentState] = React.useState(comments);
 
   return (
     <>

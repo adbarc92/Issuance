@@ -82,7 +82,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
   const [curPerson, setCurPerson] = React.useState(person);
 
-  const addingPerson = person ? false : true; // If a person is passed in, it is being edited
+  const addingPerson = person ? false : true; // * If a person is passed in, it is being edited
 
   console.log('Dialog Person:', person);
 
@@ -182,7 +182,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
           NotificationSeverity.SUCCESS
         );
         onClose();
-        clearPersonnelCache(); // calls a setState on the hook
+        clearPersonnelCache(); // * Calls a setState on the hook
       } else {
         showNotification('User creation failed!', NotificationSeverity.ERROR);
       }

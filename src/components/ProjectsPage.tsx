@@ -4,11 +4,8 @@ import { useGetProjects } from 'hooks/axiosHooks';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import ProjectDialog from 'components/ProjectDialog';
-// import { Project } from 'types/project';
 import ProjectCard from 'components/ProjectCard';
 import { styled } from '@material-ui/core';
-
-// import { useForceUpdate } from 'hooks/render';
 
 import AddButton from 'elements/AddButton';
 

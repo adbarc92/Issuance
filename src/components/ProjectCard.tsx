@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Card,
   CardHeader,
-  // CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -87,20 +86,6 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
       </List>
     );
   };
-
-  // const displayList = (strArr: string[]): JSX.Element => {
-  //   return (
-  //     <List>
-  //       {strArr.map((str, index) => {
-  //         return (
-  //           <ListItem key={index}>
-  //             <ListItemText>{str}</ListItemText>
-  //           </ListItem>
-  //         );
-  //       })}
-  //     </List>
-  //   );
-  // };
 
   return (
     <CustomCard>

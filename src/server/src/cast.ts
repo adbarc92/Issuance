@@ -16,18 +16,11 @@ export const castTask = (task: TaskEntity): ClientTask => {
   return camelCasify({ ...task, typeName: 'Task' });
 };
 
+// Todo: refactor to shorten
 export const castCommentedTask = (task: CommentedTask): ClientTask => {
   const comments = task.comments.map(comment => castPersonedComment(comment));
 
-  // console.log('comments:', comments);
-
   const camelTask: ClientTask = camelCasify(task);
-
-  // const fixedTask = { comments, ...camelTask };
-
-  // console.log('fixedTask:', fixedTask);
-
-  // return fixedTask;
 
   const {
     id,
