@@ -35,6 +35,7 @@ const TaskTablePage = (): JSX.Element => {
 
   useEffect(() => {
     socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
+      console.log('updating task');
       if (taskPayload.userId !== getUserToken()) {
         handleUpdateTask(taskPayload);
         reRenderApp();
@@ -42,7 +43,7 @@ const TaskTablePage = (): JSX.Element => {
     });
     return () => {
       clearCacheWithoutRender(CacheKey.TASKS);
-      socket.off('tasks');
+      socket.off(SocketMessages.TASKS);
     };
   }, []);
 

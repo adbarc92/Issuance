@@ -1,17 +1,15 @@
 
 Issuance Dev Notes
-* Core Features:
+* Code Foundry Features:
 	* What to Build: Use a Design Pattern (like MVC)
 	* Clean and Attractive UI
 	* Use a Database with CRUD Functionality
 	* Solve a Business Problem
 	* Add User Authentication (Oauth/Auth0) and Authorization
 
-
-
-
 * Remaining Vital Features:
 	** Improve Task, Project, User UI
+	* Editable Projects
 	* Task Comments
 	* Front-end Delete for Tasks, Projects, etc. for Authorized Users
 	* Task Table Filters
@@ -28,6 +26,7 @@ Issuance Dev Notes
 * Ideal Inclusion:
 	* Timeline/Burndown
 	* CDN?
+	* Cookie-Usage
 
 === 22Mar2021 ===
 

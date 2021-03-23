@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { castTask, castCommentedTask } from 'cast';
 import { createErrorResponse } from 'utils';
 import { ClientTask } from '../../../types/task';
+import { SocketMessages } from '../../../types/socket';
 
 import { IoRequest } from 'utils';
 
@@ -67,7 +68,7 @@ const tasksController = (router: Router): void => {
         ordering: taskOrder,
         userId: req.userId,
       };
-      req.io.emit('tasks', response);
+      req.io.emit(SocketMessages.TASKS, response); // * Emit Publisher signal
       return res.send(response);
     } catch (e) {
       res.status(500);
