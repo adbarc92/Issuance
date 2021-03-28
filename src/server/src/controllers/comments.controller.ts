@@ -5,14 +5,24 @@ import { createErrorResponse } from 'utils';
 import { castPersonedComment, castPersonComment } from 'cast';
 
 import { IoRequest } from 'utils';
+import { SocketMessages } from '../../../types/socket';
 
 const commentsController = (router: Router): void => {
   const commentsService = new CommentsService();
 
-  router.post('/comments', async function (req: Request, res: Response) {
+  router.post('/comments', async function (
+    req: Request & { io: any; userId: string },
+    res: Response
+  ) {
     try {
       const personedComment = await commentsService.createComment(req.body);
-      return res.send(castPersonedComment(personedComment));
+      const response = {
+        userId: req.userId,
+        comment: castPersonedComment(personedComment),
+      };
+      req.io.emit(SocketMessages.COMMENTS, response);
+      console.log('comment post response:', response);
+      return res.send(response.comment);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

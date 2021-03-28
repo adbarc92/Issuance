@@ -18,6 +18,12 @@ Issuance Dev Notes
 		* Recently-Altered Tickets
 		* Tasks delegated to the User
 	* Notification Feed
+		* Keep track of last user login
+		* Keep track of update history
+			* Tracks when an item is updated
+			* Tracks what kind of item
+			* Tracks the UUID of the updated item
+		* Update Table tracks most recent 100 items
 	* Document Attachments (Screenshot-pasting)
 	* Profile Pictures
 	* Functional Web-hosted Demo (Amazon S3 or Google Cloud)
@@ -27,6 +33,12 @@ Issuance Dev Notes
 	* Timeline/Burndown
 	* CDN?
 	* Cookie-Usage
+
+=== 28Mar2021 ===
+
+* Goal: Task Deletion
+
+
 
 === 22Mar2021 ===
 

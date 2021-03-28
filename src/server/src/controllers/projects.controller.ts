@@ -3,6 +3,10 @@ import { ProjectService } from 'services/projects.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 
+import { SocketMessages } from '../../../types/socket';
+
+import { IoRequest } from 'utils';
+
 const projectsController = (router: Router): void => {
   const projectService = new ProjectService();
 
@@ -30,6 +34,23 @@ const projectsController = (router: Router): void => {
       console.error(e);
       res.status(500);
       return res.send(createErrorResponse(['Project could not be created.']));
+    }
+  });
+
+  router.put('/projects/:id', async function (
+    req: Request & { io: any; userId: string },
+    res: Response
+  ) {
+    try {
+      const updatedProject = await projectService.modifyProject(
+        req.body,
+        req.params.id
+      );
+      req.io.emit(SocketMessages.PROJECTS, updatedProject);
+      return res.send(updatedProject);
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
     }
   });
 };

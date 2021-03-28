@@ -102,7 +102,6 @@ export class TaskService {
 
     for (const prop in task) {
       const camelProp = toCamelCase(prop);
-
       task[prop] = updatedTask[camelProp] ?? task[prop];
     }
 

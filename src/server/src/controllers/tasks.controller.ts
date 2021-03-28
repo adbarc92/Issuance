@@ -60,6 +60,7 @@ const tasksController = (router: Router): void => {
     res: Response
   ) {
     try {
+      console.log('req:', req);
       const updatedTask: ClientTask = req.body;
       const task = await taskService.modifyTask(updatedTask, req.params.id);
       const taskOrder = await taskService.getTaskOrdering();

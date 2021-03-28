@@ -1,6 +1,6 @@
 import { checkLogin } from 'store/actions';
 
-const LOCAL_STORAGE_KEY = 'SESSION_TOKEN';
+const LOCAL_STORAGE_KEY = 'SESSION_TOKEN'; // * Keeps the user logged in
 const LOCAL_STORAGE_USER_KEY = 'SESSION_USER';
 
 export const getSessionToken = (): string | null => {

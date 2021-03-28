@@ -64,6 +64,7 @@ const ProjectsPage = (): JSX.Element => {
           )}
           {showingDialog ? (
             <ProjectDialog
+              project={null}
               showingDialog={showingDialog}
               hideDialog={hideDialog}
               clearProjectsCache={clearProjectsCache}

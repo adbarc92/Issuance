@@ -48,6 +48,6 @@ export interface NewComment {
 
 // * For use of Socket.IO
 export interface updateCommentResponse {
-  updatedClient: ClientComment;
+  comment: ClientComment;
   userId: string;
 }

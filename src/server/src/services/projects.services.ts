@@ -1,16 +1,16 @@
 import { getConnection, Repository } from 'typeorm';
 import { PersonService } from 'services/personnel.services';
-import { Project as EProject } from 'entity/Project';
+import { Project as ProjectEntity } from 'entity/Project';
 import { NewProject, Project as IProject } from '../../../types/project';
-import { snakeCasify } from 'utils';
+import { snakeCasify, toCamelCase } from 'utils';
 import { castProject } from 'cast';
 import { TaskService } from 'services/tasks.services';
 
 export class ProjectService {
-  projectRepository: Repository<EProject>;
+  projectRepository: Repository<ProjectEntity>;
 
   constructor() {
-    this.projectRepository = getConnection().getRepository(EProject);
+    this.projectRepository = getConnection().getRepository(ProjectEntity);
   }
 
   async getProjectById(projectId: string): Promise<IProject> {
@@ -37,11 +37,25 @@ export class ProjectService {
     return Promise.all(iProjects).then(values => values);
   }
 
-  async createProject(project: NewProject): Promise<EProject> {
+  async createProject(project: NewProject): Promise<ProjectEntity> {
     const { title, description, deadline } = project;
     const newProject = this.projectRepository.create(
       snakeCasify({ title, description, deadline }) as NewProject
     );
     return await this.projectRepository.save(newProject);
+  }
+
+  async modifyProject(
+    updatedProject: IProject,
+    id: string
+  ): Promise<ProjectEntity> {
+    const project = await this.projectRepository.findOne(id);
+
+    for (const prop in project) {
+      const camelProp = toCamelCase(prop);
+      project[prop] = updatedProject[camelProp] ?? project[prop];
+    }
+
+    return await this.projectRepository.save(project);
   }
 }

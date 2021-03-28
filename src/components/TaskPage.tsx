@@ -1,7 +1,7 @@
 // Todo: get Sockets running on this page
 import React, { useEffect } from 'react';
 import { ClientTask } from 'types/task';
-import { ClientComment } from 'types/comment';
+import { ClientComment, updateCommentResponse } from 'types/comment';
 
 import { useGetTask } from 'hooks/axiosHooks';
 
@@ -21,8 +21,7 @@ import { IconButton } from '@material-ui/core';
 import Comments from 'components/Comment';
 import { socket } from 'io';
 import { SocketMessages } from 'types/socket';
-// import { UpdateCommentResponse } from 'types/comment';
-import { UpdateTaskResponse } from 'types/task';
+import { handleUpdateComment } from 'store/actions';
 import { getUserToken } from 'store/auth';
 
 import { reRenderApp } from 'App';
@@ -42,18 +41,21 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
   );
   const [editingTask, setEditingTask] = React.useState(false);
 
-  // useEffect(() => {
-  //   // On page load, register task register;
-  //   socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
-  //     if (taskPayload.userId !== getUserToken()) {
-  //       reRenderApp();
-  //     }
-  //   });
-  //   return () => {
-  //     clearCacheWithoutRender(CacheKey.TASKS);
-  //     socket.off('tasks');
-  //   };
-  // }, []);
+  useEffect(() => {
+    socket.on(
+      SocketMessages.COMMENTS,
+      (commentPayload: updateCommentResponse) => {
+        if (commentPayload.userId !== getUserToken()) {
+          handleUpdateComment(commentPayload.comment);
+          reRenderApp();
+        }
+      }
+    );
+    return () => {
+      clearCacheWithoutRender(CacheKey.COMMENTS);
+      socket.off(SocketMessages.COMMENTS);
+    };
+  }, []);
 
   const handleOpenDialog = () => {
     setEditingTask(true);

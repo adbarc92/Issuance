@@ -17,10 +17,9 @@ import { Alert } from '@material-ui/lab';
 
 import DateTimePicker from 'elements/DateTimePicker';
 
-import { Person } from 'types/person';
-import { NewProject } from 'types/project';
+import { Project } from 'types/project';
 
-import { createProject } from 'store/actions';
+import { createProject, updateProject } from 'store/actions';
 
 import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
 
@@ -49,15 +48,15 @@ const TrimmedDialogContent = styled(DialogContent)(() => {
 interface ProjectDialogState {
   title: string;
   description: string;
-  availablePersonnel: Person[];
-  assignedPersonnel: Person[];
   deadline: Date | string | null;
+  id?: string;
 }
 
 interface ProjectDialogProps {
   showingDialog: boolean;
   hideDialog: () => void;
   clearProjectsCache: () => void;
+  project: Project | null;
 }
 
 export enum ProjectDialogAction {
@@ -69,17 +68,24 @@ export enum ProjectDialogAction {
 }
 
 const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
-  const { clearProjectsCache } = props;
+  const { showingDialog, hideDialog, clearProjectsCache, project } = props;
 
-  const initialState: ProjectDialogState = {
-    title: '',
-    description: '',
-    availablePersonnel: [],
-    assignedPersonnel: [],
-    deadline: new Date(
-      new Date().getTime() + 24 * 60 * 60 * 1000
-    ).toISOString(), // defaults to tomorrow,
-  };
+  const isCreatingProject = project ? false : true;
+
+  const initialState: ProjectDialogState = isCreatingProject
+    ? {
+        title: '',
+        description: '',
+        deadline: new Date(
+          new Date().getTime() + 24 * 60 * 60 * 1000
+        ).toISOString(), // defaults to tomorrow,
+      }
+    : {
+        title: (project as Project).title,
+        description: (project as Project).description,
+        deadline: (project as Project).deadline,
+        id: (project as Project).id,
+      };
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({
     initialState,
@@ -136,15 +142,16 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
 
       trimState(state);
 
-      const projectToSubmit: NewProject = {
+      const projectToSubmit = {
         title: state.title,
         description: state.description,
         deadline: state.deadline,
       };
-
       console.log('projectToSubmit:', projectToSubmit);
 
-      const project = await createProject(projectToSubmit);
+      const project = isCreatingProject
+        ? await createProject(projectToSubmit)
+        : await updateProject(projectToSubmit, state.id as string);
 
       if (project) {
         showNotification('Project created', NotificationSeverity.SUCCESS);
@@ -163,7 +170,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
 
   const handleClose = () => {
     reset();
-    props.hideDialog();
+    hideDialog();
   };
 
   return (
@@ -172,7 +179,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
       <Dialog
         maxWidth="md"
         fullWidth
-        open={props.showingDialog}
+        open={showingDialog}
         onClose={handleClose}
       >
         <div>

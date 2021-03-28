@@ -1,10 +1,11 @@
 import { api } from 'store/api';
 import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
-import { NewProject as IProject } from 'types/project';
+import { NewProject as IProject, Project } from 'types/project';
 import { User, UserInput } from 'types/user';
 import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
+import { ClientComment } from 'types/comment';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
 
@@ -64,6 +65,13 @@ export const updateTask = async (
 export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCache(data.task);
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
+};
+
+export const handleUpdateComment = (comment: ClientComment): void => {
+  const baseCacheKey = CacheKey.TASKS;
+  const { taskId: id } = comment;
+  const cacheKey = baseCacheKey + (id ?? '');
+  requestCache[cacheKey].comments.push(comment);
 };
 
 export const createTask = async (
@@ -185,16 +193,26 @@ export const createProject = async (
   }
 };
 
+export const updateProject = async (
+  project: IProject,
+  id: string
+): Promise<Project | null> => {
+  try {
+    const response = await api.put(`projects/${id}`, project);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
 export const createComment = async (
   comment: NewComment
 ): Promise<NewComment | null> => {
   try {
     const res = await api.post('/comments', comment);
     const { data } = res;
-    const baseCacheKey = CacheKey.TASKS;
-    const { taskId: id } = data;
-    const cacheKey = baseCacheKey + (id ?? '');
-    requestCache[cacheKey].comments.push(data);
+    handleUpdateComment(data);
     return data;
   } catch (e) {
     console.error(e);
