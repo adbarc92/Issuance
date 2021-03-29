@@ -34,6 +34,14 @@ Issuance Dev Notes
 	* CDN?
 	* Cookie-Usage
 
+=== 03Apr2021 ===
+
+* Hidden Entities: Persons, Comments, Tasks, Projects
+
+=== 02Apr2021 ===
+
+* User Settings, Settings Page
+
 === 01Apr2021 ===
 
 * Pagination, Notification Feed

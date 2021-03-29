@@ -1,3 +1,4 @@
+// Todo: Styling properties should be standardized in theme
 import React from 'react';
 import Input from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
