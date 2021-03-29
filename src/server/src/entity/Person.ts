@@ -10,7 +10,7 @@ import { PersonJob } from '../../../types/person';
 @Entity()
 export class Person {
   @PrimaryGeneratedColumn('uuid')
-  id!: string; // one-to-one
+  id!: string;
 
   @Column()
   user_email: string;
@@ -32,4 +32,7 @@ export class Person {
 
   @UpdateDateColumn()
   updated_at?: Date;
+
+  @Column({ default: (): boolean => false })
+  hidden: boolean;
 }

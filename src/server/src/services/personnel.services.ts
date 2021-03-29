@@ -22,7 +22,6 @@ export class PersonService {
     return await this.personRepository.find();
   }
 
-  // Needs to be fixed
   async createPerson(
     person: Partial<Person> & { userEmail: string }
   ): Promise<Person> {
@@ -31,7 +30,7 @@ export class PersonService {
       ...snakeCasePerson,
       userEmail: person.userEmail,
       job: person.job ? person.job : PersonJob.CODER,
-    } as Person); // BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
+    } as Person); // * BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
     return this.personRepository.save(curPerson);
   }
 

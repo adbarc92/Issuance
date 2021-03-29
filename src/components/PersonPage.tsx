@@ -1,3 +1,5 @@
+// Todo: Modify Styling to be less terrible
+
 import React from 'react';
 
 import PersonnelDialog from 'components/PersonnelDialog';
@@ -8,8 +10,8 @@ import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
 import InfoBox from 'elements/InfoBox';
-import GridWrapper from 'elements/GridWrapper';
 import AddButton from 'elements/AddButton';
+import SectionWrapper from 'elements/SectionWrapper';
 
 import { Person } from 'types/person';
 
@@ -54,7 +56,7 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
               <AddButton title={'Edit Person'} handleClick={handleOpen} />
             }
           />
-          <GridWrapper>
+          <SectionWrapper direction={'row'}>
             <InfoBox title="Profile Picture">
               <div>
                 Profile Picture: {(personData as Person).profilePicture}
@@ -66,7 +68,7 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
               <div>Last Name: {(personData as Person).lastName}</div>
               <div>Job: {(personData as Person).job}</div>
             </InfoBox>
-          </GridWrapper>
+          </SectionWrapper>
           <PersonnelDialog
             person={personData as Person}
             selectedValue={'none'}

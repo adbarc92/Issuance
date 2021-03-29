@@ -1,10 +1,12 @@
 import { randomBytes, createHmac } from 'crypto';
 
-import { Task } from '../../types/task';
+import { ClientTask } from '../../types/task';
 
+import { ServerComment, ClientComment } from '../../types/comment';
+import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
 
-// Standardizes error messages for later handling, client-side
+// * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
   return JSON.stringify({ errors });
 };
@@ -31,7 +33,6 @@ export const sha256 = (password: string, salt: string): PasswordData => {
 };
 
 export const saltHashPassword = (userpassword: string): PasswordData => {
-  // const salt = generateRandomString(16);
   const salt = uuid();
   return sha256(userpassword, salt);
 };
@@ -76,16 +77,6 @@ export const toSnakeCase = (str: string): string => {
   return ret;
 };
 
-// export const snakeCasify = (obj: any): any => {
-//   const retObj = {};
-//   const keys = Object.keys(obj);
-//   for (let i = 0; i < keys.length; i++) {
-//     const newKey = toSnakeCase(keys[i]);
-//     retObj[newKey] = obj[keys[i]];
-//   }
-//   return retObj;
-// };
-
 export const snakeCasify = (obj: any): any => {
   const fixedObj = {};
   const keys = Object.keys(obj);
@@ -99,13 +90,38 @@ export const snakeCasify = (obj: any): any => {
   return fixedObj;
 };
 
-export const fixInputTask = (task: Partial<Task>): void => {
+export const fixInputTask = (task: Partial<ClientTask>): void => {
   if (!task.reportedBy) {
     task.reportedBy = null;
   }
   if (!task.assignedTo) {
     task.assignedTo = null;
   }
+};
+
+export const fixOutputComment = (
+  comment: ServerComment,
+  commenter: Person
+): ClientComment => {
+  const {
+    id,
+    index,
+    taskId,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  } = comment;
+  return {
+    id,
+    index,
+    taskId,
+    commenter,
+    headerCommentId,
+    content,
+    createdAt,
+    updatedAt,
+  };
 };
 
 export type IoRequest = Request & { io: any };

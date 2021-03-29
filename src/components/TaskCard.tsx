@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import {
   Card,
   CardContent,
@@ -17,28 +17,22 @@ import SimpleMenu from 'elements/SimpleMenu';
 import { MoreVert } from '@material-ui/icons';
 import theme, { colors } from 'theme';
 
+// import Avatar from 'components/Avatar';
+
 const CARD_DESCRIPTION_LENGTH = 140;
 const CARD_NAME_LENGTH = 50;
 
 export interface TaskCardProps {
-  task: Task;
+  task: ClientTask;
   startDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
   endDrag: (ev: React.DragEvent<HTMLDivElement>) => void;
-  setDialogTask: (task: Task) => void;
-  setHoveredTask: (task: Task | null) => void;
+  setDialogTask: (task: ClientTask) => void;
+  setHoveredTask: (task: ClientTask | null) => void;
   setAddingTask: (addingTask: boolean) => void;
   clearTasksCache: () => void;
-  draggedTask: Task | null;
-  hoveredTask: Task | null;
+  draggedTask: ClientTask | null;
+  hoveredTask: ClientTask | null;
 }
-
-const MenuButton = styled(Button)(() => {
-  return {
-    // position: 'absolute',
-    // right: '0.5rem',
-    // bottom: '0.5rem',
-  };
-});
 
 const CardTitle = styled(Typography)(() => {
   return {
@@ -109,9 +103,6 @@ const TaskPlaceholder = styled('div')((props: any) => {
 });
 
 const fixStringSize = (text: string, maxSize: number): string => {
-  // description.length <= CARD_DESCRIPTION_LENGTH
-  //                   ? description
-  //                   : description.slice(0, CARD_DESCRIPTION_LENGTH) + '...'
   if (text.length <= maxSize) {
     return text;
   } else {
@@ -210,9 +201,9 @@ export const TaskCard = (props: TaskCardProps): JSX.Element => {
               </CardInfo>
               <CardMenu>
                 <Avatar title={assignedTo} />
-                <MenuButton onClick={handleClick}>
+                <Button onClick={handleClick}>
                   <MoreVert />
-                </MenuButton>
+                </Button>
                 <SimpleMenu
                   menuItems={menuItems}
                   anchorElement={anchorElement}

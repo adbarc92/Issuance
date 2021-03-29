@@ -1,10 +1,12 @@
+// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
+
 import { Router } from 'express';
 import { PersonService } from 'services/personnel.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 import { castPerson } from 'cast';
 
-// This function sets all the routes
+// * This function sets all the routes
 const personnelController = (router: Router): void => {
   const personService = new PersonService();
 
@@ -21,16 +23,6 @@ const personnelController = (router: Router): void => {
       res.status(500);
       return res.send(createErrorResponse(e));
     }
-  });
-
-  router.get('/personnel/:userEmail', async function (
-    req: Request,
-    res: Response
-  ) {
-    const person = await personService.getPersonByUserEmail(
-      req.params.userEmail
-    );
-    return res.send(person);
   });
 
   router.post('/personnel', async function (req: Request, res: Response) {

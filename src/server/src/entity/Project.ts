@@ -27,4 +27,7 @@ export class Project {
 
   @UpdateDateColumn()
   updated_at?: Date;
+
+  @Column({ default: (): boolean => false })
+  hidden: boolean;
 }

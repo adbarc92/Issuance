@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import TaskDialog from 'components/TaskDialog';
 
-import { Task, TaskStatus } from 'types/task';
+import { ClientTask, TaskStatus } from 'types/task';
 import TaskTable from 'components/TaskTable';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { useGetTasks } from 'hooks/axiosHooks';
@@ -20,25 +20,9 @@ import RootWrapper from 'elements/RootWrapper';
 import AddButton from 'elements/AddButton';
 import PageTitle from 'elements/PageTitle';
 
-// const HeaderWrapper = styled('div')(() => {
-//   return {
-//     fontSize: '3rem',
-//     margin: '0',
-//   };
-// });
-
-// const SubHeaderWrapper = styled('div')(() => {
-//   return {
-//     display: 'flex',
-//     justifyContent: 'flex-end',
-//     marginRight: '1%',
-//     marginBottom: '0.5rem',
-//   };
-// });
-
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
-  const [dialogTask, setDialogTask] = React.useState<Task | null>(null);
+  const [dialogTask, setDialogTask] = React.useState<ClientTask | null>(null);
 
   const reRender = useForceUpdate();
 
@@ -50,8 +34,8 @@ const TaskTablePage = (): JSX.Element => {
   } = useGetTasks();
 
   useEffect(() => {
-    // On page load, register task register;
     socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
+      console.log('updating task');
       if (taskPayload.userId !== getUserToken()) {
         handleUpdateTask(taskPayload);
         reRenderApp();
@@ -59,7 +43,7 @@ const TaskTablePage = (): JSX.Element => {
     });
     return () => {
       clearCacheWithoutRender(CacheKey.TASKS);
-      socket.off('tasks');
+      socket.off(SocketMessages.TASKS);
     };
   }, []);
 
@@ -76,9 +60,9 @@ const TaskTablePage = (): JSX.Element => {
     return <div>There was an error: {error}</div>;
   }
 
-  let backlogTasks: Task[] = [],
-    activeTasks: Task[] = [],
-    completeTasks: Task[] = [];
+  let backlogTasks: ClientTask[] = [],
+    activeTasks: ClientTask[] = [],
+    completeTasks: ClientTask[] = [];
 
   if (taskData) {
     backlogTasks = taskData.filter(task => {
@@ -106,10 +90,6 @@ const TaskTablePage = (): JSX.Element => {
               <AddButton title={'Create Task'} handleClick={handleAddingTask} />
             }
           />
-          {/* <HeaderWrapper>Tasks</HeaderWrapper>
-          <SubHeaderWrapper>
-            <AddButton title={'Create Task'} handleClick={handleAddingTask} />
-          </SubHeaderWrapper> */}
           <TaskTable
             taskData={{ backlogTasks, activeTasks, completeTasks }}
             setDialogTask={setDialogTask}

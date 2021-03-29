@@ -1,22 +1,22 @@
 import { api } from 'store/api';
-import { Task as ITask, TaskInput } from 'types/task';
+import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
-import { NewProject as IProject } from 'types/project';
+import { NewProject as IProject, Project } from 'types/project';
 import { User, UserInput } from 'types/user';
-import { CacheKey, requestCache } from 'hooks/getData';
+import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
+import { ClientComment } from 'types/comment';
 import { LoginResponse } from 'types/auth';
+import { NewComment } from 'types/comment';
 
-// Actions change things
+// * Actions change things
 
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
   for (const i in cache) {
     const value = cache[i];
-    // check if object
     if (Array.isArray(value)) {
       updateCache(obj, value);
-      // Bug fix: typeof null === object
     } else if (value && typeof value === 'object') {
       if (
         value.typeName &&
@@ -31,7 +31,6 @@ const updateCache = (obj: any, subCache?: any) => {
   }
 };
 
-// Should be generic,
 export const updateCacheOrdering = (
   orderingArray: { id: string }[],
   cacheKey: CacheKey
@@ -44,7 +43,6 @@ export const updateCacheOrdering = (
   const newArray = orderingArray.map((elem: { id: string }) => {
     return hashedCache[elem.id];
   });
-  // requestCache[cacheKey] = newArray;
   for (let i = 0; i < newArray.length; i++) {
     requestCache[cacheKey][i] = newArray[i];
   }
@@ -53,14 +51,13 @@ export const updateCacheOrdering = (
 export const updateTask = async (
   id: string,
   task: TaskInput
-): Promise<ITask | null> => {
+): Promise<ClientTask | null> => {
   try {
     const response = await api.put(`/tasks/${id}`, task);
     handleUpdateTask(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
-    // throw e;
     return null;
   }
 };
@@ -70,7 +67,16 @@ export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
-export const createTask = async (task: TaskInput): Promise<ITask | null> => {
+export const handleUpdateComment = (comment: ClientComment): void => {
+  const baseCacheKey = CacheKey.TASKS;
+  const { taskId: id } = comment;
+  const cacheKey = baseCacheKey + (id ?? '');
+  requestCache[cacheKey].comments.push(comment);
+};
+
+export const createTask = async (
+  task: TaskInput
+): Promise<ClientTask | null> => {
   try {
     const response = await api.post('/tasks', {
       name: task.name,
@@ -181,6 +187,33 @@ export const createProject = async (
   try {
     const response = await api.post('/projects', project);
     return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const updateProject = async (
+  project: IProject,
+  id: string
+): Promise<Project | null> => {
+  try {
+    const response = await api.put(`projects/${id}`, project);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createComment = async (
+  comment: NewComment
+): Promise<NewComment | null> => {
+  try {
+    const res = await api.post('/comments', comment);
+    const { data } = res;
+    handleUpdateComment(data);
+    return data;
   } catch (e) {
     console.error(e);
     return null;

@@ -1,15 +1,13 @@
 import React from 'react';
 
-// Hook should return: current state, function to submit, function to reset, current list of errors, submission status, dispatch
-
-// Requires: initialState, reducer, validation function,
+// * Hook should return: current state, function to submit, function to reset, current list of errors, submission status, dispatch
 
 export interface FormAction {
   type: string;
   payload?: any;
 }
 
-// Generalized for state of type T
+// * Generalized for state of type T
 export interface FormProps<T> {
   initialState: T;
   reducer: (state: T, action: FormAction) => T;

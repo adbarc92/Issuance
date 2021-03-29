@@ -1,4 +1,4 @@
-// Prepends `/api` to route
+// * Prepends `/api` to route
 import axios from 'axios';
 import { getSessionToken } from './auth';
 

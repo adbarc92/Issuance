@@ -23,7 +23,7 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { useForm } from 'hooks/form';
+import { useForm, FormAction } from 'hooks/form';
 
 import {
   isEmailValid,
@@ -62,11 +62,6 @@ const PersonJobMap = {
   },
 };
 
-export interface IPersonnelDialogActions {
-  type: string;
-  payload?: any;
-}
-
 export interface PersonnelDialogState {
   id?: string;
   firstName: string;
@@ -87,9 +82,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
   const [curPerson, setCurPerson] = React.useState(person);
 
-  const addingPerson = person ? false : true; // If a person is passed in, it is being edited
-
-  console.log('Dialog Person:', person);
+  const addingPerson = person ? false : true; // * If a person is passed in, it is being edited
 
   const initialState: PersonnelDialogState = person
     ? {
@@ -118,7 +111,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     initialState,
     reducer: (
       state: PersonnelDialogState,
-      action: IPersonnelDialogActions
+      action: FormAction
     ): PersonnelDialogState => {
       const { payload, type } = action;
       const newState = { ...state };
@@ -157,6 +150,11 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
     },
     onSubmit: async state => {
       if (errors) {
+        showNotification(
+          "Person doesn't meet requirements.",
+          NotificationSeverity.ERROR
+        );
+        return;
       }
 
       const { userEmail, firstName, lastName, job } = state;
@@ -182,7 +180,7 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
           NotificationSeverity.SUCCESS
         );
         onClose();
-        clearPersonnelCache(); // calls a setState on the hook
+        clearPersonnelCache(); // * Calls a setState on the hook
       } else {
         showNotification('User creation failed!', NotificationSeverity.ERROR);
       }

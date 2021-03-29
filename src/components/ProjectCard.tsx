@@ -1,10 +1,9 @@
-// Todo: re-integrate Personnel
+// Todo: Test aria properties
 
 import React from 'react';
 import {
   Card,
   CardHeader,
-  // CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -23,8 +22,7 @@ import { Link } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-import { Person } from 'types/person';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import { Project } from 'types/project';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
@@ -58,7 +56,7 @@ const CustomCard = styled(Card)(() => {
 const ProjectCard = (props: ProjectCardProps): JSX.Element => {
   const { project } = props;
 
-  const { tasks } = project; // Todo: destructure here
+  const { tasks } = project;
 
   const [expanded, setExpanded] = React.useState(false);
 
@@ -68,7 +66,7 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
     setExpanded(!expanded);
   };
 
-  const displayTasks = (tasks: Task[]): JSX.Element => {
+  const displayTasks = (tasks: ClientTask[]): JSX.Element => {
     return (
       <List>
         {tasks.map((task, index) => {
@@ -82,20 +80,6 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
                     : task.description}
                 </ListItemText>
               </Link>
-            </ListItem>
-          );
-        })}
-      </List>
-    );
-  };
-
-  const displayList = (strArr: string[]): JSX.Element => {
-    return (
-      <List>
-        {strArr.map((str, index) => {
-          return (
-            <ListItem key={index}>
-              <ListItemText>{str}</ListItemText>
             </ListItem>
           );
         })}
@@ -138,16 +122,6 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           ) : (
             <Typography>This project has no tasks!</Typography>
           )}
-          {/* <Typography>Assigned Personnel:</Typography>
-          {personnel && personnel.length ? (
-            displayList(
-              (personnel as Person[]).map(person => {
-                return person?.userEmail;
-              })
-            )
-          ) : (
-            <Typography>There are no assigned personnel!</Typography>
-          )} */}
         </CardContent>
       </Collapse>
     </CustomCard>

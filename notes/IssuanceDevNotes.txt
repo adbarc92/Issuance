@@ -1,10 +1,110 @@
 
 Issuance Dev Notes
+* Code Foundry Features:
+	* What to Build: Use a Design Pattern (like MVC)
+	* Clean and Attractive UI
+	* Use a Database with CRUD Functionality
+	* Solve a Business Problem
+	* Add User Authentication (Oauth/Auth0) and Authorization
+
+* Remaining Vital Features:
+	** Improve Task, Project, User UI
+	* Editable Projects
+	* Task Comments
+	* Front-end Delete for Tasks, Projects, etc. for Authorized Users
+	* Task Table Filters
+	* Authorization/Log-in
+	* Useful Dashboard: 
+		* Recently-Altered Tickets
+		* Tasks delegated to the User
+	* Notification Feed
+		* Keep track of last user login
+		* Keep track of update history
+			* Tracks when an item is updated
+			* Tracks what kind of item
+			* Tracks the UUID of the updated item
+		* Update Table tracks most recent 100 items
+	* Document Attachments (Screenshot-pasting)
+	* Profile Pictures
+	* Functional Web-hosted Demo (Amazon S3 or Google Cloud)
+		* Free-Tier Heroku
+	* Guest Accounts, Permissions
+* Ideal Inclusion:
+	* Timeline/Burndown
+	* CDN?
+	* Cookie-Usage
+
+=== 01Apr2021 ===
+
+* Pagination, Notification Feed
+
+=== 31Mar2021 ===
+
+* Guest Accounts, Authentication
+
+=== 30Mar2021 ===
+
+* Left-Join
+
+=== 29Mar2021 ===
+
+* Profile Pictures
+
+=== 28Mar2021 ===
+
+* Task Feed X
+
+=== 22Mar2021 ===
+
+* Add Pagination to Task API
+* Feature: Link to Particular comments
+	* URL includes a query parameter that will indicate a comment to highlight and scroll down to
+
+=== 15Mar2021 ===
+
+* Fixes:
+	* Fix Task and Comment requests to use Join
+* Additions:
+	* Comment Pagination
+
+
+=== 10Mar2021 ===
+
+* Things
+
+=== 08Mar2021 ===
+
+* Reaches:
+	* Customizable Task Status Columns
+
+* Things to Add:
+	* Database Migrations
+	* "Hidden Status": soft-delete flag should be added to all displayed entities
+
+* Completion Conditions:
+	* 
 
 === 05Mar2021 ===
 
 * Things to Add:
 	* Personnel can only be assigned tickets from projects of which they are part
+	* Filter tickets by assignee
+	* Sprint Dates
+	* Ticket Point Total, Historical Total
+	* Attach files
+	* Add Comments to Individual Task Pages
+	* Addable subtasks
+	* Image-pasting into Comments
+	* Customizable Columns
+	* Notifications
+	* Non-click reassignable tasks
+	* To ProjectPage: should display only
+	* To Dashboard: View All Highest Priority Ticket
+	* To Dashboard: Recent Tickets Edited (and commented)
+	* Dashboard should list: Project Summaries, Activity Feed, Recently Edited Tickets, 
+	* Savable Filters: Filter Task Table 
+	* Task Table should be filterable by Project, and By
+	* Add field Task Points
 	* 
 * Things to Fix:
 	* ProjectCard should display Tasks and Assigned Personnel :onHover

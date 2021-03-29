@@ -1,17 +1,24 @@
 import { getConnection, Repository } from 'typeorm';
-import { Task } from 'entity/Task';
-import { Task as ITask } from '../../../types/task';
+import { Task as TaskEntity } from 'entity/Task';
+import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
+import { CommentsService } from 'services/comments.services';
+import { castCommentTask } from 'cast';
 
 export class TaskService {
-  taskRepository: Repository<Task>;
+  taskRepository: Repository<TaskEntity>;
 
   constructor() {
-    this.taskRepository = getConnection().getRepository(Task);
+    this.taskRepository = getConnection().getRepository(TaskEntity);
   }
 
-  async getTaskById(id: string): Promise<Task> {
-    return await this.taskRepository.findOne(id);
+  async getTaskById(taskId: string): Promise<CommentedTask> {
+    const commentsService = new CommentsService();
+    const comments = await commentsService.getCommentsByTaskId(taskId);
+    const task = await this.taskRepository.findOne({ id: taskId });
+    const commentedTask = castCommentTask(task);
+    commentedTask.comments = comments;
+    return commentedTask;
   }
 
   async getTaskOrdering(): Promise<{ id: string }[]> {
@@ -23,7 +30,7 @@ export class TaskService {
       .execute();
   }
 
-  async getTasks(): Promise<Task[]> {
+  async getTasks(): Promise<TaskEntity[]> {
     return await this.taskRepository
       .createQueryBuilder('task')
       .select('*')
@@ -32,7 +39,7 @@ export class TaskService {
       .execute();
   }
 
-  async getTasksByProjectId(projectId: string): Promise<Task[]> {
+  async getTasksByProjectId(projectId: string): Promise<TaskEntity[]> {
     return await this.taskRepository
       .createQueryBuilder('task')
       .select('*')
@@ -40,7 +47,7 @@ export class TaskService {
       .execute();
   }
 
-  async createTask(task: ITask): Promise<Task[]> {
+  async createTask(task: ClientTask): Promise<TaskEntity[]> {
     fixInputTask(task);
     const curTask = this.taskRepository.create(snakeCasify(task));
     await this.taskRepository
@@ -52,9 +59,7 @@ export class TaskService {
     return await this.taskRepository.save(curTask);
   }
 
-  // Pass in either
-
-  async modifyTask(updatedTask: ITask, id: string): Promise<Task> {
+  async modifyTask(updatedTask: ClientTask, id: string): Promise<TaskEntity> {
     const task = await this.taskRepository.findOne(id);
 
     let newIndex = updatedTask.rowIndex;
@@ -64,14 +69,14 @@ export class TaskService {
       if (newIndex > oldIndex) {
         newIndex -= 1;
         updatedTask.rowIndex -= 1;
-        // Close original gap: substract 1 from everything >= oldIndex
+        // * Close original gap: substract 1 from everything >= oldIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
@@ -85,7 +90,7 @@ export class TaskService {
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
-        // Open a gap at the new index: add 1 to everything >= newIndex
+        // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
           .update('task')
@@ -97,7 +102,6 @@ export class TaskService {
 
     for (const prop in task) {
       const camelProp = toCamelCase(prop);
-
       task[prop] = updatedTask[camelProp] ?? task[prop];
     }
 
@@ -110,7 +114,7 @@ export class TaskService {
     await getConnection()
       .createQueryBuilder()
       .delete()
-      .from(Task)
+      .from(TaskEntity)
       .where('id = :id', { id })
       .execute();
     await this.taskRepository
@@ -119,6 +123,5 @@ export class TaskService {
       .set({ row_index: () => 'row_index - 1' })
       .where('row_index >= :id', { id: deletedIndex })
       .execute();
-    // return await this.taskRepository.save();
   }
 }

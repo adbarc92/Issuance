@@ -1,8 +1,8 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-// This returns a JSX element that is then rendered
-// This should also return a function that shows/opens the JSX Element
+// * This returns a JSX element that is then rendered
+// * This should also return a function that shows/opens the JSX Element
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;

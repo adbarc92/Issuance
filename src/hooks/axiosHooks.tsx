@@ -1,13 +1,13 @@
+// Todo: Refactor--it is not a 404 if the requested data does not exist; If no matching entity exists, is that really an error?
+
 import { Person } from 'types/person';
-import { Task } from 'types/task';
+import { ClientTask } from 'types/task';
 import { User } from 'types/user';
 import { Project } from 'types/project';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
-// Temp
-
-// Helper function for the hook below, not technically a hook
+// * Helper function for the hook below, not technically a hook
 export const getPersonById = async (
   personId: string
 ): Promise<Person | null> => {
@@ -16,7 +16,6 @@ export const getPersonById = async (
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };
@@ -28,7 +27,7 @@ export const getPersonByUsername = async (
   return response.data;
 };
 
-// This is a hook because it returns a function that contains a hook
+// * This is a hook because it returns a function that contains a hook
 export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
   return useGetData(
     () => {
@@ -37,12 +36,6 @@ export const useGetPersonById = (id: string): IDataLoader<Person | null> => {
     CacheKey.PERSONNEL,
     id
   );
-};
-
-export const useGetPersonByUsername = (
-  username: string
-): IDataLoader<Person> => {
-  return useGetData(() => getPersonByUsername(username), CacheKey.PERSONNEL);
 };
 
 export const getPersonnel = async (): Promise<Person[] | null> => {
@@ -59,18 +52,17 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const getTask = async (taskId: string): Promise<Task | null> => {
+export const getTask = async (taskId: string): Promise<ClientTask | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };
 
-export const useGetTask = (id: string): IDataLoader<Task | null> => {
+export const useGetTask = (id: string): IDataLoader<ClientTask | null> => {
   return useGetData(
     () => {
       return getTask(id);
@@ -80,18 +72,17 @@ export const useGetTask = (id: string): IDataLoader<Task | null> => {
   );
 };
 
-export const getTasks = async (): Promise<Task[] | null> => {
+export const getTasks = async (): Promise<ClientTask[] | null> => {
   try {
     const res = await api.get('/tasks');
     return res.data;
   } catch (e) {
     console.error(e);
-    // throw e;
     return null;
   }
 };
 
-export const useGetTasks = (): IDataLoader<Task[] | null> => {
+export const useGetTasks = (): IDataLoader<ClientTask[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
 
@@ -145,4 +136,60 @@ export const useGetProjectById = (
     CacheKey.PROJECTS,
     projectId
   );
+};
+
+export const getUserById = async (userId: string): Promise<User | null> => {
+  try {
+    const res = await api.get(`/users/${userId}`);
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetUserById = (userId: string): IDataLoader<User | null> => {
+  return useGetData(
+    () => {
+      return getUserById(userId);
+    },
+    CacheKey.USERS,
+    userId
+  );
+};
+
+export const getUserPerson = async (userId: string): Promise<Person | null> => {
+  try {
+    const res = await api.get(`/users/person/${userId}`);
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetUserPersonById = (
+  userId: string
+): IDataLoader<Person | null> => {
+  return useGetData(
+    () => {
+      return getUserPerson(userId);
+    },
+    CacheKey.USERS,
+    userId
+  );
+};
+
+export const getComments = async (): Promise<Comment[] | null> => {
+  try {
+    const res = await api.get('/comments');
+    return res.data;
+  } catch (e) {
+    console.error('Error occurred:', e);
+    return null;
+  }
+};
+
+export const useGetComments = (): IDataLoader<Comment[] | null> => {
+  return useGetData(getComments, CacheKey.COMMENTS);
 };
