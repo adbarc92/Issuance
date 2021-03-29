@@ -1,9 +1,8 @@
+// Todo: add profile picture to comment
+
 import React from 'react';
-
 import { Link } from 'react-router-dom';
-
 import { ClientComment } from 'types/comment';
-
 import { styled } from '@material-ui/core';
 
 export interface CommentProps {
@@ -20,7 +19,7 @@ const CommentContainer = styled('div')(() => {
 const Comment = (props: CommentProps): JSX.Element => {
   const { commenter, content, createdAt } = props.comment;
 
-  const { profilePicture, firstName, lastName, id, userEmail } = commenter;
+  const { firstName, lastName, id, userEmail } = commenter;
 
   const displayName = firstName && lastName ? `/personnel/${id}` : userEmail;
 

@@ -1,6 +1,6 @@
 // Todo: Refactor ReactCookies and PageWrapper.person into React.Context? Implement React-Cookie?
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelTablePage from 'components/PersonnelTablePage';

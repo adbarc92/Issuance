@@ -60,7 +60,7 @@ const RegisterUserPage = (): JSX.Element => {
       const errors: Record<string, string> = {};
       const vState = { ...state };
 
-      // trimState(vState); // Todo: bug-test
+      trimState(vState);
       if (!isEmailValid(vState.email)) {
         errors.email = 'A valid email must be provided.';
       }
