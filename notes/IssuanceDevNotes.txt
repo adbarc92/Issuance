@@ -1,0 +1,97 @@
+
+Issuance Dev Notes
+
+=== 05Mar2021 ===
+
+* Things to Add:
+	* Personnel can only be assigned tickets from projects of which they are part
+	* 
+* Things to Fix:
+	* ProjectCard should display Tasks and Assigned Personnel :onHover
+	* ProjectCard bottom-right button should be a vertical action menu
+X	* ProjectCards should truncate Titles
+	* ProjectPersonnel is an unnecessary table;
+		* People are not assigned to projects, they are part of projects by virtue of being assigned tickets that are associated with projects;
+
+
+=== 02Mar2021 ===
+
+* Feature: Personnel Page Actions should work
+
+* Issue: navigating from the personnel table to a person page results in an undefined user being displayed
+* Issue: if the app has been reloaded from 
+
+* Feature: React-Router Authentication
+
+=== 26Feb2021 ===
+
+* Person Page will not load, despite Links on the PersonnelTablePage changing the URL
+* Based on the Network tab, the `useGetPersonById` requests are not proxying correctly
+
+* Furthermore, a weird discrepancy: the `useGetPersonnel` hook passes its ancestor hook, `getPersonnel` to `useGetData` directly, as opposed to passing a callback as all of the others do...
+
+
+
+=========================================================================
+
+Issuance
+
+Dashboard:
+	Tickets Assigned to you
+	Burn-down Chart
+	Projects
+		Open Tickets
+		Deadline
+	Activity Stream
+		New Ticket Creation
+		Comments?
+	Performance
+		Last Progress Made
+
+
+
+Other Features
+	Ticket Searching
+	Edit Person
+	Upload Profile Picture
+		
+	Generic User Account (Login)
+
+=========================================================================
+
+* Project: context for 
+	* Issues
+
+* Scrum vs. Kanban
+
+* Issue/Ticket
+	* Project (Required)
+	* Summary (Required)
+	* Category/Issue Type (Required)
+		* Story
+		* Task
+		* Bug (Problem)
+		* Epic: collection of stories and tasks for a specific purpose
+	* Assigned To 
+	* Reported By (Automatic?)
+	* Reported On (Automatic)
+	* Description: includes markup text options
+	* Status:
+		* Backlog
+		* Pending
+		* Complete
+	* Deadline
+	* Priority
+	* Labels
+
+	* Task
+		* Priority
+		* Summary
+		* Project
+		* Type
+
+* Project
+	* Tasks
+	* Milestones
+	* Momentum
+

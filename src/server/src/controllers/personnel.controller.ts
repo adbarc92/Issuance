@@ -14,8 +14,13 @@ const personnelController = (router: Router): void => {
   });
 
   router.get('/personnel/:id', async function (req: Request, res: Response) {
-    const person = await personService.getPersonById(req.params.id);
-    return res.send(castPerson(person));
+    try {
+      const person = await personService.getPersonById(req.params.id);
+      return res.send(castPerson(person));
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
   });
 
   router.get('/personnel/:userEmail', async function (
@@ -41,8 +46,13 @@ const personnelController = (router: Router): void => {
   });
 
   router.put('/personnel/:id', async function (req: Request, res: Response) {
-    const person = await personService.modifyPerson(req.body);
-    return res.send(castPerson(person));
+    try {
+      const person = await personService.modifyPerson(req.body);
+      return res.send(castPerson(person));
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
   });
 
   router.delete('/personnel/:id', async function (req: Request, res: Response) {

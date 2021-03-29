@@ -1,14 +1,13 @@
 import { api } from 'store/api';
-import { Task as ITask } from 'types/task';
+import { Task as ITask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
+import { NewProject as IProject } from 'types/project';
 import { User, UserInput } from 'types/user';
 import { CacheKey, requestCache } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { LoginResponse } from 'types/auth';
 
 // Actions change things
-
-export type TaskInput = Partial<ITask> & Record<string, unknown>;
 
 const updateCache = (obj: any, subCache?: any) => {
   const cache = subCache ?? requestCache;
@@ -81,7 +80,8 @@ export const createTask = async (task: TaskInput): Promise<ITask | null> => {
       status: task.status,
       assignedTo: 0,
       deadline: task.deadline,
-      projectId: 0,
+      projectId: task.projectId,
+      storyPoints: task.storyPoints,
       reportedBy: 0,
     });
     return response.data;
@@ -142,6 +142,23 @@ export const createUser = async (
   }
 };
 
+export const updatePerson = async (
+  person: Partial<IPerson> & { id: string }
+): Promise<IPerson | null> => {
+  try {
+    const res = await api.put(`/personnel/${person.id}`, person);
+    handleUpdatePerson(res.data);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const handleUpdatePerson = (data: IPerson): void => {
+  updateCache(data);
+};
+
 export const createPerson = async (
   person: Partial<IPerson> & { userEmail: string }
 ): Promise<IPerson | null> => {
@@ -151,6 +168,18 @@ export const createPerson = async (
       userEmail: person.userEmail,
     };
     const response = await api.post('/personnel', newPerson);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const createProject = async (
+  project: IProject
+): Promise<IProject | null> => {
+  try {
+    const response = await api.post('/projects', project);
     return response.data;
   } catch (e) {
     console.error(e);

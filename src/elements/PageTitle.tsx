@@ -4,33 +4,48 @@ import { styled } from '@material-ui/core';
 const TitleWrapper = styled('div')(() => {
   return {
     padding: '0.5rem',
+    fontSize: '3rem',
+    margin: '0',
   };
 });
 
-const ProjectLabel = styled('div')(() => {
+const SubtitleWrapper = styled('div')(() => {
   return {
-    paddingBottom: '0.25rem',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginRight: '1%',
+    marginBottom: '0.5rem',
     fontSize: '1rem',
   };
 });
 
-const TitleHeader = styled('div')(() => {
+const HeaderElemWrapper = styled('div')(() => {
   return {
-    fontSize: '2rem',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginRight: '1%',
+    marginBottom: '0.5rem',
+    fontSize: '1rem',
   };
 });
 
 interface TitleProps {
   title: string;
-  projectId?: number;
+  subtitle?: string;
+  headerElem?: JSX.Element;
 }
 
 const PageTitle = (props: TitleProps): JSX.Element => {
   return (
-    <TitleWrapper>
-      {props.projectId ? <ProjectLabel>{props.projectId}</ProjectLabel> : null}
-      <TitleHeader>{props.title}</TitleHeader>
-    </TitleWrapper>
+    <>
+      <TitleWrapper>{props.title}</TitleWrapper>
+      {props.subtitle ? (
+        <SubtitleWrapper>{props.subtitle}</SubtitleWrapper>
+      ) : null}
+      {props.headerElem ? (
+        <HeaderElemWrapper>{props.headerElem}</HeaderElemWrapper>
+      ) : null}
+    </>
   );
 };
 

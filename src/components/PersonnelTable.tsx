@@ -11,13 +11,17 @@ import {
   Paper,
   Button,
   styled,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { Person } from 'types/person';
 
-import SimpleMenu from 'elements/SimpleMenu';
+import { Link } from 'react-router-dom';
 
 export interface PersonnelTableProps {
   personnelData: Person[];
+  openDialog: () => void;
+  setDialogPerson: (person: Person | null) => void;
 }
 
 const VertIconWrapper = styled(Button)(() => {
@@ -25,7 +29,7 @@ const VertIconWrapper = styled(Button)(() => {
 });
 
 const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
-  const { personnelData } = props;
+  const { personnelData, openDialog, setDialogPerson } = props;
 
   const columnHeaders = [
     '',
@@ -34,27 +38,6 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
     'Last Name',
     'Role',
     'Actions',
-  ];
-
-  const menuItems = [
-    {
-      key: 'View Page',
-      onClick: () => {
-        console.log('View Page');
-      },
-    },
-    {
-      key: 'Edit',
-      onClick: () => {
-        console.log('Edit');
-      },
-    },
-    {
-      key: 'Hide',
-      onClick: () => {
-        console.log('Edit');
-      },
-    },
   ];
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -85,7 +68,11 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{person.profilePicture}</TableCell>
-                    <TableCell>{person.userEmail}</TableCell>
+                    <TableCell>
+                      <Link to={`/personnel/${person.id}`}>
+                        {person.userEmail}
+                      </Link>
+                    </TableCell>
                     <TableCell>{person.firstName}</TableCell>
                     <TableCell>{person.lastName}</TableCell>
                     <TableCell>{person.job}</TableCell>
@@ -93,11 +80,28 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
                       <VertIconWrapper onClick={handleClick}>
                         <MoreVert />
                       </VertIconWrapper>
-                      <SimpleMenu
-                        menuItems={menuItems}
-                        anchorElement={anchorElement}
-                        handleClose={handleClose}
-                      />
+                      <Menu
+                        anchorEl={anchorElement}
+                        onClose={handleClose}
+                        keepMounted
+                        open={Boolean(anchorElement)}
+                      >
+                        <MenuItem key={0}>
+                          <Link to={`/personnel/${person.id}`}>View</Link>
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            setDialogPerson(person);
+                            setTimeout(() => {
+                              openDialog();
+                            }, 0);
+                          }}
+                          key={1}
+                        >
+                          Edit
+                        </MenuItem>
+                        <MenuItem key={2}>Hide</MenuItem>
+                      </Menu>
                     </TableCell>
                   </TableRow>
                 );

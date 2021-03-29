@@ -1,78 +1,26 @@
 import React from 'react';
-import { styled } from '@material-ui/core';
 import { Task } from 'types/task';
-import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { useGetTask } from 'hooks/axiosHooks';
+
+import LoadingSpinner from 'elements/LoadingSpinner';
 import PageTitle from 'elements/PageTitle';
-
-import theme, { colors } from 'theme';
-
-const RootWrapper = styled('div')(() => {
-  return {
-    width: '100%',
-  };
-});
+import RootWrapper from 'elements/RootWrapper';
+import InfoBox from 'elements/InfoBox';
+import GridWrapper from 'elements/GridWrapper';
 
 export interface TaskPageProps {
-  taskId: number;
+  taskId: string;
 }
-
-interface InfoBoxProps {
-  title: string;
-  children?: any;
-  gridArea?: string;
-}
-
-const InfoBoxHeader = styled('div')(() => {
-  return {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-    padding: '0.25rem 0',
-    margin: '0.25rem 0',
-    borderBottom: `2px solid ${theme.palette.primary.main}`,
-  };
-});
-
-interface InfoBoxWrapperProps {
-  gridArea?: string;
-}
-
-const InfoBoxWrapper = styled('div')((props: InfoBoxWrapperProps) => {
-  return {
-    gridArea: props.gridArea,
-    border: `2px solid ${colors.grey}`,
-    borderRadius: '4px',
-    padding: '0.5rem',
-  };
-});
-
-const InfoBox = (props: InfoBoxProps): JSX.Element => {
-  return (
-    <InfoBoxWrapper gridArea={props.gridArea}>
-      <InfoBoxHeader>{props.title}</InfoBoxHeader>
-      {props.children}
-    </InfoBoxWrapper>
-  );
-};
-
-const GridWrapper = styled('div')(() => {
-  return {
-    display: 'grid',
-    gridTemplateColumns: 'auto auto auto',
-    gridTemplateRows: 'auto auto',
-    gridTemplateAreas: "'details description comments' 'people dates comments'",
-  };
-});
 
 const TaskPage = (props: TaskPageProps): JSX.Element => {
   const { loading, data, error } = useGetTask(props.taskId);
 
-  const task = data as Task;
-
   if (error) {
     return <div>{error}</div>;
   }
+
+  const task = data as Task;
 
   return (
     <RootWrapper>
@@ -80,24 +28,24 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <PageTitle title={task.name} projectId={task.projectId} />
+          <PageTitle title={task.name} subtitle={String(task.projectId)} />
           <GridWrapper>
-            <InfoBox title="Details" gridArea="details">
+            <InfoBox title="Details" gridarea="details">
               <div>Type: {task.type}</div>
               <div>Priority: {task.priority}</div>
               <div>Status: {task.status}</div>
             </InfoBox>
 
-            <InfoBox title="Description" gridArea="description">
+            <InfoBox title="Description" gridarea="description">
               <div>{task.description}</div>
             </InfoBox>
 
-            <InfoBox title="Dates" gridArea="dates">
+            <InfoBox title="Dates" gridarea="dates">
               <div>Created On: {task.createdOn}</div>
               <div>Deadline: {task.deadline}</div>
             </InfoBox>
 
-            <InfoBox title="People" gridArea="people">
+            <InfoBox title="People" gridarea="people">
               <div>Assignee ID: {task.assignedTo}</div>
               <div>Reporter ID: {task.reportedBy}</div>
             </InfoBox>

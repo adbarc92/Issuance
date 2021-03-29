@@ -19,7 +19,7 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Apps as ProjectsIcon,
-  Timeline as TimelineIcon,
+  // Timeline as TimelineIcon,
   FormatListNumbered as TasksIcon,
   People as PersonnelIcon,
   Settings as SettingsIcon,
@@ -33,14 +33,12 @@ import {
 } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
+import Root from 'elements/Root';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
       transition: theme.transitions.create(['width', 'margin'], {
@@ -121,7 +119,7 @@ const Navigation = (): JSX.Element => {
   };
 
   return (
-    <div className={classes.root}>
+    <Root>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -192,10 +190,14 @@ const Navigation = (): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Projects'}>
-            <ListItemIcon>
-              <ProjectsIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Projects'} />
+            <Link to="/projects">
+              <ListItemIcon>
+                <ProjectsIcon />
+              </ListItemIcon>
+            </Link>
+            <Link to="/projects">
+              <ListItemText primary={'Projects'} />
+            </Link>
           </ListItem>
           <ListItem button key={'Tasks'}>
             <Link to="/tasks">
@@ -205,17 +207,6 @@ const Navigation = (): JSX.Element => {
             </Link>
             <Link to="/tasks">
               <ListItemText primary={'Tasks'} />
-            </Link>
-          </ListItem>
-          <ListItem button key={'Timeline'}>
-            <Link to="/">
-              <ListItemIcon>
-                <TimelineIcon />
-              </ListItemIcon>
-            </Link>
-            <Link to="/">
-              {/*='/timeline'*/}
-              <ListItemText primary={'Timeline'} />
             </Link>
           </ListItem>
           <ListItem button key={'Personnel'}>
@@ -229,12 +220,12 @@ const Navigation = (): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Notifications Feed'}>
-            <Link to="/notifications">
+            <Link to="/">
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/notifications">
+            <Link to="/">
               <ListItemText primary={'Notifications Feed'} />
             </Link>
           </ListItem>
@@ -259,7 +250,7 @@ const Navigation = (): JSX.Element => {
           </ListItem>
         </List>
       </Drawer>
-    </div>
+    </Root>
   );
 };
 

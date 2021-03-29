@@ -23,6 +23,7 @@ export enum CacheKey {
   PERSONNEL = 'PERSONNEL',
   TASKS = 'TASKS',
   USERS = 'USERS',
+  PROJECTS = 'PROJECTS',
 }
 
 type LoaderFunction = () => Promise<any>;
@@ -99,14 +100,13 @@ export function useGetData<Datatype>(
   }, [data, loader, cacheKey]);
 
   return {
-    loading,
+    loading: loading || (data === undefined && !error ? true : false),
     data,
     error,
     clearCache: () => {
       delete requestCache[cacheKey];
       setData(undefined);
+      setLoading(true);
     },
   };
 }
-
-// export function usePostData<>

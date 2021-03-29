@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import TaskDialog from 'components/TaskDialog';
-import { Add } from '@material-ui/icons';
-import { styled, Button } from '@material-ui/core';
 
 import { Task, TaskStatus } from 'types/task';
 import TaskTable from 'components/TaskTable';
@@ -18,28 +16,25 @@ import { getUserToken } from 'store/auth';
 import { clearCacheWithoutRender, CacheKey } from 'hooks/getData';
 import { reRenderApp } from 'App';
 import { SocketMessages } from 'types/socket';
+import RootWrapper from 'elements/RootWrapper';
+import AddButton from 'elements/AddButton';
+import PageTitle from 'elements/PageTitle';
 
-const RootWrapper = styled('div')(() => {
-  return {
-    width: '100%',
-  };
-});
+// const HeaderWrapper = styled('div')(() => {
+//   return {
+//     fontSize: '3rem',
+//     margin: '0',
+//   };
+// });
 
-const HeaderWrapper = styled('div')(() => {
-  return {
-    fontSize: '3rem',
-    margin: '0',
-  };
-});
-
-const SubHeaderWrapper = styled('div')(() => {
-  return {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: '1%',
-    marginBottom: '0.5rem',
-  };
-});
+// const SubHeaderWrapper = styled('div')(() => {
+//   return {
+//     display: 'flex',
+//     justifyContent: 'flex-end',
+//     marginRight: '1%',
+//     marginBottom: '0.5rem',
+//   };
+// });
 
 const TaskTablePage = (): JSX.Element => {
   const [addingTask, setAddingTask] = React.useState(false);
@@ -105,17 +100,16 @@ const TaskTablePage = (): JSX.Element => {
         <LoadingSpinner />
       ) : (
         <>
-          <HeaderWrapper>Tasks</HeaderWrapper>
+          <PageTitle
+            title={'Tasks'}
+            headerElem={
+              <AddButton title={'Create Task'} handleClick={handleAddingTask} />
+            }
+          />
+          {/* <HeaderWrapper>Tasks</HeaderWrapper>
           <SubHeaderWrapper>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddingTask}
-            >
-              Create Task
-              <Add />
-            </Button>
-          </SubHeaderWrapper>
+            <AddButton title={'Create Task'} handleClick={handleAddingTask} />
+          </SubHeaderWrapper> */}
           <TaskTable
             taskData={{ backlogTasks, activeTasks, completeTasks }}
             setDialogTask={setDialogTask}

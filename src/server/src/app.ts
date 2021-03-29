@@ -15,7 +15,7 @@ import ormconfig from '../ormconfig.json';
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
 import userController from 'controllers/users.controller';
-// import { PersonService } from 'services/personnel.services.ts';
+import projectController from 'controllers/project.controller';
 
 import socketIo from 'socket.io';
 import http from 'http';
@@ -37,12 +37,7 @@ const start = async () => {
     ...ormconfig,
   } as any);
   try {
-    // const personRepository = connection.getRepository(Person);
-
-    // const taskRepository = connection.getRepository(Task);
-
     const tokenRepository = connection.getRepository(Token);
-
     const userRepository = connection.getRepository(User);
 
     const socketMiddleware = async function (req, res, next) {
@@ -119,6 +114,7 @@ const start = async () => {
     personnelController(router);
     taskController(router);
     userController(router);
+    projectController(router);
 
     // Should take a token, check validity, return loggedIn status
     router.put('/login', async function (

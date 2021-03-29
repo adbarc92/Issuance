@@ -6,6 +6,9 @@ import TaskTablePage from 'components/TaskTablePage';
 import RegisterUserPage from 'components/RegisterUserPage';
 import LoginPage from 'components/LoginPage';
 import TaskPage from 'components/TaskPage';
+import ProjectsPage from 'components/ProjectsPage';
+import PersonPage from 'components/PersonPage';
+import ProjectPage from 'components/ProjectPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -13,18 +16,13 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 
+import PageContent from 'elements/PageContent';
+import PageContainer from 'elements/PageContainer';
+
 import './io';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
     toolbar: {
       display: 'flex',
       alignItems: 'center',
@@ -32,15 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      justifyContent: 'center',
-      display: 'flex',
-    },
-    pageContainer: {
-      padding: '0rem 4rem',
     },
   })
 );
@@ -60,9 +49,9 @@ const PageWrapper = (props: any): JSX.Element => {
     <div>
       <div className={classes.toolbar} />
       <Navigation />
-      <main className={classes.content}>
+      <PageContent>
         <ChildrenWrapper>{props.children}</ChildrenWrapper>
-      </main>
+      </PageContent>
     </div>
   );
 };
@@ -74,7 +63,7 @@ export const reRenderApp = (): void => {
 };
 
 const App = (): JSX.Element => {
-  const classes = useStyles({} as any);
+  // const classes = useStyles({} as any);
 
   const rerender = useForceUpdate();
 
@@ -84,20 +73,33 @@ const App = (): JSX.Element => {
 
   return (
     <Router>
-      <div className={classes.pageContainer}>
+      <PageContainer>
         <Switch>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <Route path="/personnel">
-            <PageWrapper>
-              <PersonnelTablePage />
-            </PageWrapper>
-          </Route>
           <Route exact path="/">
             <PageWrapper>
               <Dashboard />
             </PageWrapper>
+          </Route>
+          <Route exact path="/login">
+            <LoginPage />
+          </Route>
+          <Route exact path="/personnel">
+            <PageWrapper>
+              <PersonnelTablePage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/projects">
+            <PageWrapper>
+              <ProjectsPage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/tasks">
+            <PageWrapper>
+              <TaskTablePage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/register">
+            <RegisterUserPage />
           </Route>
           <Route
             path="/tasks/:taskId"
@@ -108,17 +110,29 @@ const App = (): JSX.Element => {
                 </PageWrapper>
               );
             }}
-          ></Route>
-          <Route path="/tasks">
-            <PageWrapper>
-              <TaskTablePage />
-            </PageWrapper>
-          </Route>
-          <Route path="/register">
-            <RegisterUserPage />
-          </Route>
+          />
+          <Route
+            path="/personnel/:personId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <PersonPage personId={match.params.personId} />
+                </PageWrapper>
+              );
+            }}
+          />
+          <Route
+            path="/projects/:projectId"
+            render={({ match, location, history }) => {
+              return (
+                <PageWrapper>
+                  <ProjectPage projectId={match.params.projectId} />
+                </PageWrapper>
+              );
+            }}
+          />
         </Switch>
-      </div>
+      </PageContainer>
     </Router>
   );
 };

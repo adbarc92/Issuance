@@ -10,7 +10,7 @@ import {
 
 import ErrorBox from 'elements/ErrorBox';
 
-import { isNotFilledOut, isTooLong } from 'utils/index';
+import { isNotFilledOut, isTooLong, isEmailValid } from 'utils/index';
 
 import { useForm } from 'hooks/form';
 import { createUser } from 'store/actions';
@@ -57,7 +57,9 @@ const RegisterUserPage = (): JSX.Element => {
       const vState = { ...state };
 
       // trimState(vState);
-
+      if (!isEmailValid(vState.email)) {
+        errors.email = 'A valid email must be provided.';
+      }
       if (isNotFilledOut(vState.email)) {
         errors.email = 'An email must be provided.';
       }
