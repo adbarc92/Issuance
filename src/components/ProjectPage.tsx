@@ -1,4 +1,4 @@
-// Todo: Refactor to remove GridInfoBox
+// Todo: Modify Styling to be less terrible
 
 import React from 'react';
 import { Project } from 'types/project';
@@ -7,8 +7,8 @@ import { List, ListItem, IconButton } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
-import InfoBox from 'elements/GridInfoBox';
-import GridWrapper from 'elements/GridWrapper';
+import InfoBox from 'elements/InfoBox';
+import SectionWrapper from 'elements/SectionWrapper';
 import PageTitle from 'elements/PageTitle';
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
@@ -68,7 +68,7 @@ const ProjectPage = (props: ProjectPageProps): JSX.Element => {
             subtitle={String(project?.id)}
             headerElem={EditButton()}
           />
-          <GridWrapper>
+          <SectionWrapper direction={'row'}>
             <InfoBox title="Details">
               <div>{project?.description}</div>
               <div>{project?.deadline}</div>
@@ -84,7 +84,7 @@ const ProjectPage = (props: ProjectPageProps): JSX.Element => {
                 })}
               </List>
             </InfoBox>
-          </GridWrapper>
+          </SectionWrapper>
         </>
       ) : null}
       {editingProject ? (

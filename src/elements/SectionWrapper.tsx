@@ -1,9 +1,13 @@
 import { styled } from '@material-ui/core';
 
-const SectionWrapper = styled('div')(() => {
+interface SectionWrapperProps {
+  direction: 'column' | 'row';
+}
+
+const SectionWrapper = styled('div')((props: SectionWrapperProps) => {
   return {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: props.direction,
   };
 });
 

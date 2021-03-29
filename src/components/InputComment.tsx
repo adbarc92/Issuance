@@ -1,4 +1,4 @@
-// Todo: test, fix error message display
+// Todo: test, fix error message display; add Profile Picture
 
 import React from 'react';
 import { TextField, Button } from '@material-ui/core';

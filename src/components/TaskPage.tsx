@@ -1,4 +1,5 @@
-// Todo: get Sockets running on this page
+// Todo: Modify Styling to be less terrible
+
 import React, { useEffect } from 'react';
 import { ClientTask } from 'types/task';
 import { ClientComment, updateCommentResponse } from 'types/comment';
@@ -95,7 +96,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
             headerElem={EditButton()}
           />
           <PageWrapper>
-            <SectionWrapper>
+            <SectionWrapper direction={'column'}>
               <InfoBox title="Details">
                 <div>Type: {task.type}</div>
                 <div>Priority: {task.priority}</div>
@@ -106,7 +107,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
                 <div>Reporter ID: {task.reportedBy}</div>
               </InfoBox>
             </SectionWrapper>
-            <SectionWrapper>
+            <SectionWrapper direction={'column'}>
               <InfoBox title="Description">{task.description}</InfoBox>
               <InfoBox title="Dates">
                 <div>Created On: {task.createdAt}</div>
@@ -114,7 +115,7 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
                 <div>Deadline: {task.deadline}</div>
               </InfoBox>
             </SectionWrapper>
-            <SectionWrapper>
+            <SectionWrapper direction={'column'}>
               <InfoBox title="Comments">
                 {data?.comments ? (
                   <Comments comments={data.comments as ClientComment[]} />
