@@ -25,7 +25,6 @@ const Comment = (props: CommentProps): JSX.Element => {
 
   return (
     <CommentContainer>
-      {/* <img alt={'Person'}>{profilePicture ?? ''}</img> */}
       <div>
         <div>
           <Link to={`/personnel/${id}`}>
