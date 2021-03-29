@@ -1,5 +1,3 @@
-// Todo: remove all transferList code
-
 import React from 'react';
 
 import {
@@ -78,7 +76,7 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         description: '',
         deadline: new Date(
           new Date().getTime() + 24 * 60 * 60 * 1000
-        ).toISOString(), // defaults to tomorrow,
+        ).toISOString(),
       }
     : {
         title: (project as Project).title,
@@ -147,7 +145,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         description: state.description,
         deadline: state.deadline,
       };
-      console.log('projectToSubmit:', projectToSubmit);
 
       const project = isCreatingProject
         ? await createProject(projectToSubmit)
@@ -219,7 +216,6 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
               });
             }}
           />
-          {/* {displayTransferList()} */}
           <DateTimePicker
             value={state.deadline as string}
             onChange={value =>

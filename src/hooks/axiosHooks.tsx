@@ -1,3 +1,5 @@
+// Todo: Refactor--it is not a 404 if the requested data does not exist; If no matching entity exists, is that really an error?
+
 import { Person } from 'types/person';
 import { ClientTask } from 'types/task';
 import { User } from 'types/user';

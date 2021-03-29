@@ -1,4 +1,4 @@
-// Todo: re-integrate Personnel
+// Todo: Test aria properties
 
 import React from 'react';
 import {
@@ -56,7 +56,7 @@ const CustomCard = styled(Card)(() => {
 const ProjectCard = (props: ProjectCardProps): JSX.Element => {
   const { project } = props;
 
-  const { tasks } = project; // Todo: destructure here
+  const { tasks } = project;
 
   const [expanded, setExpanded] = React.useState(false);
 
@@ -122,16 +122,6 @@ const ProjectCard = (props: ProjectCardProps): JSX.Element => {
           ) : (
             <Typography>This project has no tasks!</Typography>
           )}
-          {/* <Typography>Assigned Personnel:</Typography>
-          {personnel && personnel.length ? (
-            displayList(
-              (personnel as Person[]).map(person => {
-                return person?.userEmail;
-              })
-            )
-          ) : (
-            <Typography>There are no assigned personnel!</Typography>
-          )} */}
         </CardContent>
       </Collapse>
     </CustomCard>

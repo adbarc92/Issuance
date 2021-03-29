@@ -1,3 +1,5 @@
+// Todo: add media queries
+
 export const ColorPrimary = '#3f51b5';
 export const ColorSecondary = '#f48fb1';
 export const ColorError = '#d32f2f';
@@ -56,12 +58,6 @@ export default {
   mixins: {
     toolbar: {
       minHeight: '56',
-      // @media'(minWidth: '0px') and (orientation: landscape)': {
-      // 	minHeight: '48',
-      // },
-      // '@media(min-width: 600px)': {
-      // 	minHeight: '64',
-      // },
     },
   },
   spacing: function (multiplier: number): string {

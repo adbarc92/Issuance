@@ -1,3 +1,5 @@
+// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
+
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UserService } from 'services/users.services';

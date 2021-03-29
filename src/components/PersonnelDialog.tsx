@@ -84,8 +84,6 @@ function PersonnelDialog(props: SimpleDialogProps): JSX.Element {
 
   const addingPerson = person ? false : true; // * If a person is passed in, it is being edited
 
-  console.log('Dialog Person:', person);
-
   const initialState: PersonnelDialogState = person
     ? {
         id: person.id,

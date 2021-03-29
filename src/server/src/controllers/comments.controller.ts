@@ -1,3 +1,5 @@
+// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
+
 import { Router } from 'express';
 import { CommentsService } from 'services/comments.services';
 import { Request, Response } from 'express';

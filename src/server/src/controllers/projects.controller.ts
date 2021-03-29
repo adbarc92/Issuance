@@ -1,3 +1,6 @@
+// Todo: Refactor for JOIN queries
+// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
+
 import { Router } from 'express';
 import { ProjectService } from 'services/projects.services';
 import { Request, Response } from 'express';

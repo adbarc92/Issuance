@@ -20,8 +20,6 @@ import { reRenderApp } from 'App';
 import ErrorBox from 'elements/ErrorBox';
 import ErrorBoxWrapper from 'elements/ErrorBoxWrapper';
 
-// import { getUserToken } from 'store/auth';
-
 export enum InputCommentAction {
   SET_CONTENT = 'setContent',
   RESET_STATE = 'setState',

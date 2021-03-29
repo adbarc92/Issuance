@@ -34,11 +34,25 @@ Issuance Dev Notes
 	* CDN?
 	* Cookie-Usage
 
+=== 01Apr2021 ===
+
+* Pagination, Notification Feed
+
+=== 31Mar2021 ===
+
+* Guest Accounts, Authentication
+
+=== 30Mar2021 ===
+
+* Left-Join
+
+=== 29Mar2021 ===
+
+* Profile Pictures
+
 === 28Mar2021 ===
 
-* Goal: Task Deletion
-
-
+* Task Feed X
 
 === 22Mar2021 ===
 

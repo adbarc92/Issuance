@@ -1,4 +1,8 @@
+// Todo: ReportedBy and AssignedTo should be Persons, not strings
+
 import { personedComment, ClientComment } from './comment';
+
+import { Person } from 'types/person';
 
 export enum TaskPriority {
   HIGHEST = 'Highest',
@@ -35,7 +39,7 @@ export interface ClientTask {
   projectId: string;
   reportedBy: string;
   storyPoints: number;
-  typeName: 'Task'; // this is server-side only
+  typeName: 'Task'; // * Server-side only
   comments: ClientComment[];
   hidden: boolean;
 }
@@ -57,11 +61,11 @@ export interface CommentedTask {
   status: TaskStatus;
   created_at: Date;
   updated_at: Date;
-  assigned_to: string;
+  assigned_to: Person;
   row_index: number;
   deadline: Date;
   project_id: string;
-  reported_by: string;
+  reported_by: Person;
   story_points: number;
   comments: personedComment[];
   hidden: boolean;
