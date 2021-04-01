@@ -34,6 +34,10 @@ Issuance Dev Notes
 	* CDN?
 	* Cookie-Usage
 
+=== 04Apr2021 ===
+
+* Dashboard
+
 === 03Apr2021 ===
 
 * Hidden Entities: Persons, Comments, Tasks, Projects
@@ -52,7 +56,7 @@ Issuance Dev Notes
 
 === 30Mar2021 ===
 
-* Left-Join
+* Left-Join Server Queries
 
 === 29Mar2021 ===
 

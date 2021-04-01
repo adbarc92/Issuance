@@ -5,6 +5,7 @@ import { ClientTask } from '../../types/task';
 import { ServerComment, ClientComment } from '../../types/comment';
 import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
+import { ImgurToken } from 'entity/ImgurToken';
 
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
@@ -125,3 +126,11 @@ export const fixOutputComment = (
 };
 
 export type IoRequest = Request & { io: any };
+
+export const tokenIsExpired = (token: ImgurToken): boolean => {
+  const currentDate = new Date();
+  if (token.expires_at > currentDate) {
+    return false;
+  }
+  return true;
+};

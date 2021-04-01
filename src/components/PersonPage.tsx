@@ -1,10 +1,11 @@
-// Todo: Modify Styling to be less terrible
+// Todo: Modify Styling to be less terrible; add useNotificationSnackbar
 
 import React from 'react';
 
 import PersonnelDialog from 'components/PersonnelDialog';
 
 import { useGetPersonById } from 'hooks/axiosHooks';
+import { setProfilePicture, getProfilePicture } from 'store/actions';
 
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
@@ -14,6 +15,8 @@ import AddButton from 'elements/AddButton';
 import SectionWrapper from 'elements/SectionWrapper';
 
 import { Person } from 'types/person';
+
+import { Button } from '@material-ui/core';
 
 interface PersonPageProps {
   personId: string;
@@ -27,9 +30,9 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
     clearCache: clearPersonnelCache, // Might be broken
   } = useGetPersonById(props.personId);
 
-  console.log('personData:', personData);
-
   const [addingUser, setAddingUser] = React.useState(false);
+  const [fileName, setFileName] = React.useState('');
+  const [file, setFile] = React.useState<File | null>(null);
 
   const handleOpen = () => {
     setAddingUser(true);
@@ -37,6 +40,19 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
 
   const closeDialog = () => {
     setAddingUser(false);
+  };
+
+  const handleChooseFile = event => {
+    setFile(event.target.files[0]);
+    setFileName(event.target.files[0].name);
+    console.log('file:', file);
+  };
+
+  const handleFileSubmit = () => {
+    console.log('file:', file);
+    console.log('typeof file:', typeof file);
+    const res = setProfilePicture(file as File, fileName, props.personId);
+    console.log('imageRes:', res);
   };
 
   if (error) {
@@ -59,7 +75,17 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
           <SectionWrapper direction={'row'}>
             <InfoBox title="Profile Picture">
               <div>
-                Profile Picture: {(personData as Person).profilePicture}
+                {(personData as Person).profilePicture ? (
+                  <img
+                    src={`${(personData as Person).profilePicture}`}
+                    alt={`${personData.firstName} ${personData.lastName} `}
+                  />
+                ) : (
+                  <>
+                    <input type="file" onChange={e => handleChooseFile(e)} />
+                    <Button onClick={handleFileSubmit}>Submit</Button>
+                  </>
+                )}
               </div>
             </InfoBox>
             <InfoBox title="Details">
