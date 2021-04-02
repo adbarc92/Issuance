@@ -31,8 +31,7 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
   } = useGetPersonById(props.personId);
 
   const [addingUser, setAddingUser] = React.useState(false);
-  const [fileName, setFileName] = React.useState('');
-  const [file, setFile] = React.useState<File | null>(null);
+  const [form, setForm] = React.useState<FormData | null>(null);
 
   const handleOpen = () => {
     setAddingUser(true);
@@ -43,15 +42,15 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
   };
 
   const handleChooseFile = event => {
-    setFile(event.target.files[0]);
-    setFileName(event.target.files[0].name);
-    console.log('file:', file);
+    const form = new FormData();
+    form.append('file', event.target.files[0]);
+    form.append('personId', props.personId);
+    setForm(form);
   };
 
   const handleFileSubmit = () => {
-    console.log('file:', file);
-    console.log('typeof file:', typeof file);
-    const res = setProfilePicture(file as File, fileName, props.personId);
+    console.log('typeof form:', typeof form);
+    const res = setProfilePicture(form as FormData);
     console.log('imageRes:', res);
   };
 

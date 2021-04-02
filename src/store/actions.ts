@@ -223,17 +223,11 @@ export const createComment = async (
 };
 
 export const setProfilePicture = async (
-  image: File,
-  name: string,
-  personId: string
+  form: FormData
 ): Promise<any | null> => {
   try {
-    console.log('settingImage:', image);
-    const res = await api.post('/imgur', {
-      image,
-      name,
-      personId,
-    });
+    console.log('settingImage:', form);
+    const res = await api.post('/image', form);
     console.log('pfp set res:', res); // * Troubleshooting
     return res;
   } catch (e) {
@@ -246,7 +240,7 @@ export const getProfilePicture = async (
   personId: string
 ): Promise<any | null> => {
   try {
-    const res = await api.get(`/imgur/${personId}`);
+    const res = await api.get(`/image/${personId}`);
     console.log('pfp get res:', res); // * Troubleshooting
     return res;
   } catch (e) {
