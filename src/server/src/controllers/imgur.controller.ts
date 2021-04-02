@@ -9,15 +9,12 @@ const imgurController = (router: Router): void => {
   const imgurService = new ImgurService();
 
   router.post('/image', async function (req: Request, res: Response) {
-    console.log('req.files:', req.files);
-
     if (!req.files) {
       return res.status(500).send('No files attached');
     }
 
     try {
       const image = req.files.file;
-      // console.log('image:', image);
 
       const { personId } = req.body;
       const response = imgurService.postImage(image as UploadedFile, personId);

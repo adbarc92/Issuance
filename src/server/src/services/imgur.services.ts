@@ -4,7 +4,6 @@ import { getConnection, Repository } from 'typeorm';
 import axios, { AxiosResponse } from 'axios';
 import dotenv from 'dotenv';
 import FormData from 'form-data';
-import fs from 'fs';
 
 import { ImgurToken } from 'entity/ImgurToken';
 
@@ -12,7 +11,15 @@ import { PersonService } from 'services/personnel.services';
 import { tokenIsExpired } from 'utils';
 import { UploadedFile } from 'express-fileupload';
 
-dotenv.config();
+const configureDotEnv = () => {
+  const result = dotenv.config();
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result;
+};
 
 export interface ImgurTokenResponse {
   access_token: string;
@@ -109,27 +116,28 @@ export class ImgurService {
 
   constructor() {
     this.imgurRepository = getConnection().getRepository(ImgurToken);
+    configureDotEnv();
   }
 
-  // Todo: undo nested tries
   async getAccessToken(): Promise<ImgurToken> {
-    let token = await this.imgurRepository.findOne(); // * What
+    let token = await this.imgurRepository.findOne();
 
     if (!token || tokenIsExpired(token)) {
       try {
+        const url = 'https://api.imgur.com/oauth2/token';
+
         const data = JSON.stringify({
           refresh_token: process.env.REFRESH_TOKEN,
           client_id: process.env.CLIENT_ID,
           client_secret: process.env.CLIENT_SECRET,
           grant_type: 'refresh_token',
         });
-        console.log('data:', data);
 
         const res: AxiosResponse<ImgurTokenResponse> = await axios.post(
-          'https://api.imgur.com/oauth2/token',
+          url,
+          data,
           {
-            headers: { 'Content-Type': 'application/json' },
-            data,
+            headers: { 'content-type': 'application/json' },
           }
         );
 
@@ -142,16 +150,17 @@ export class ImgurService {
           token: access_token,
           expires_at: d,
         });
+        console.log('repoToken:', token);
       } catch (e) {
         if (e.isAxiosError) {
           console.error(
-            'Failed to upload image',
+            'Failed to get access token',
             e.config.method,
             e.config.url
           );
           console.error(JSON.stringify(e.response.data, null, 2));
         } else {
-          console.error('Failed to upload image', e);
+          console.error('Failed to get access token', e);
         }
       }
     }
@@ -164,26 +173,28 @@ export class ImgurService {
     personId: string
   ): Promise<string | null> {
     try {
+      const postUrl = 'https://api.imgur.com/3/upload';
+
       const data = new FormData();
 
-      data.append('image', image.data.toString('base64')); // Todo: toy with this
+      data.append('image', image.data.toString('base64'));
       data.append('type', 'base64');
 
-      const accessToken = this.getAccessToken();
+      const { token } = await this.getAccessToken();
 
       const response: AxiosResponse<ImgurImageUploadResponse> = await axios.post(
-        'https://api.imgur.com/3/upload',
+        postUrl,
+        data,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
-            ...data.getHeaders(), // undefined if default formData
+            Authorization: `Bearer ${token}`,
+            ...data.getHeaders(),
           },
-          data,
         }
       );
       // * If an Axios request rejects within an async, it skips to the catch
 
-      const profile_picture = response.data.data.id;
+      const profile_picture = response.data.data.link;
 
       const personService = new PersonService();
       personService.modifyPerson({ id: personId, profile_picture });
@@ -201,16 +212,17 @@ export class ImgurService {
   async getImage(imageId: string): Promise<string | null> {
     try {
       const accessToken = this.getAccessToken();
-      const data = new FormData();
+      // const form = new FormData();
+
+      const url = `https://api.imgur.com/3/image/${imageId}`;
 
       const response: AxiosResponse<ImgurImageDownloadResponse> = await axios.get(
-        `https://api.imgur.com/3/image/${imageId}`,
+        url,
+        // form,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            ...data.getHeaders(),
           },
-          data,
         }
       );
 

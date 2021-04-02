@@ -111,6 +111,8 @@ interface NavigationProps {
 const Navigation = (props: NavigationProps): JSX.Element => {
   const { person } = props;
 
+  console.log('navigation person', person);
+
   const classes = useStyles();
   const theme = useTheme();
 

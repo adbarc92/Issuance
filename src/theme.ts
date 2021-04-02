@@ -1,4 +1,4 @@
-// Todo: add media queries
+// Todo: add media queries;
 
 export const ColorPrimary = '#3f51b5';
 export const ColorSecondary = '#f48fb1';
