@@ -20,8 +20,6 @@ import { Button } from '@material-ui/core';
 
 import ProfilePicture from 'components/ProfilePicture';
 
-import { reRenderApp } from 'App';
-
 interface PersonPageProps {
   personId: string;
 }
