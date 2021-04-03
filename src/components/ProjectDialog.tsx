@@ -151,7 +151,10 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         : await updateProject(projectToSubmit, state.id as string);
 
       if (project) {
-        showNotification('Project created', NotificationSeverity.SUCCESS);
+        showNotification(
+          'Project creation succeeded!',
+          NotificationSeverity.SUCCESS
+        );
         handleClose();
         clearProjectsCache();
       } else {
