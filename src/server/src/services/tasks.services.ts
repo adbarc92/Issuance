@@ -4,6 +4,8 @@ import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 import { CommentsService } from 'services/comments.services';
 import { castCommentTask } from 'cast';
+import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from 'entity/UpdateItem';
 
 export class TaskService {
   taskRepository: Repository<TaskEntity>;
@@ -47,16 +49,24 @@ export class TaskService {
       .execute();
   }
 
-  async createTask(task: ClientTask): Promise<TaskEntity[]> {
+  async createTask(task: ClientTask): Promise<TaskEntity> {
     fixInputTask(task);
-    const curTask = this.taskRepository.create(snakeCasify(task));
+    const snakeTask: TaskEntity = snakeCasify(task);
+    const curTask = this.taskRepository.create(snakeTask);
     await this.taskRepository
       .createQueryBuilder()
       .update('task')
       .set({ row_index: () => 'row_index + 1' })
       .where('row_index >= 0')
       .execute();
-    return await this.taskRepository.save(curTask);
+    const newTask = await this.taskRepository.save(curTask);
+    const updateItemServices = new UpdateItemServices();
+    updateItemServices.addUpdateItem(
+      UpdateItemTypes.TASK,
+      newTask.id,
+      UpdateItemActions.CREATE
+    );
+    return newTask;
   }
 
   async modifyTask(updatedTask: ClientTask, id: string): Promise<TaskEntity> {
@@ -105,7 +115,16 @@ export class TaskService {
       task[prop] = updatedTask[camelProp] ?? task[prop];
     }
 
-    return await this.taskRepository.save(task);
+    const fixedTask = await this.taskRepository.save(task);
+
+    const updateItemServices = new UpdateItemServices();
+    updateItemServices.addUpdateItem(
+      UpdateItemTypes.TASK,
+      fixedTask.id,
+      UpdateItemActions.UPDATE
+    );
+
+    return fixedTask;
   }
 
   async removeTask(id: string): Promise<any> {

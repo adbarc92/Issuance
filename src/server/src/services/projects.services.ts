@@ -6,6 +6,9 @@ import { snakeCasify, toCamelCase } from 'utils';
 import { castProject } from 'cast';
 import { TaskService } from 'services/tasks.services';
 
+import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from 'entity/UpdateItem';
+
 export class ProjectService {
   projectRepository: Repository<ProjectEntity>;
 
@@ -42,7 +45,17 @@ export class ProjectService {
     const newProject = this.projectRepository.create(
       snakeCasify({ title, description, deadline }) as NewProject
     );
-    return await this.projectRepository.save(newProject);
+
+    const repoProject = await this.projectRepository.save(newProject);
+
+    const updateItemServices = new UpdateItemServices();
+    updateItemServices.addUpdateItem(
+      UpdateItemTypes.PROJECT,
+      repoProject.id,
+      UpdateItemActions.CREATE
+    );
+
+    return repoProject;
   }
 
   async modifyProject(
@@ -56,6 +69,15 @@ export class ProjectService {
       project[prop] = updatedProject[camelProp] ?? project[prop];
     }
 
-    return await this.projectRepository.save(project);
+    const fixedProject = await this.projectRepository.save(project);
+
+    const updateItemServices = new UpdateItemServices();
+    updateItemServices.addUpdateItem(
+      UpdateItemTypes.PROJECT,
+      fixedProject.id,
+      UpdateItemActions.UPDATE
+    );
+
+    return fixedProject;
   }
 }

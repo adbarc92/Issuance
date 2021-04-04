@@ -11,17 +11,26 @@ export enum UpdateItemTypes {
   TASK = 'Task',
 }
 
+export enum UpdateItemActions {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+}
+
 @Entity()
 export class UpdateItem {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @CreateDateColumn()
-  created_at?: Date;
+  created_at: Date;
 
   @Column()
   item_type: UpdateItemTypes;
 
   @Column('uuid')
   item_id: string;
+
+  @Column()
+  action_type: UpdateItemActions;
 }

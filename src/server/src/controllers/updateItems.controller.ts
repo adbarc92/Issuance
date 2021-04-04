@@ -4,14 +4,14 @@ import { Router } from 'express';
 import { Request, Response } from 'express';
 
 import { createErrorResponse } from 'utils';
-import { NotificationService } from 'services/notifications.services';
+import { UpdateItemServices } from 'services/updateItems.services';
 
 const notificationsController = (router: Router): void => {
-  const notificationService = new NotificationService();
+  const updateItemService = new UpdateItemServices();
 
   router.get('/notifications', async function (req: Request, res: Response) {
     try {
-      const notifications = await notificationService.getNotifications();
+      const notifications = await updateItemService.getUpdateItems();
       return res.send(notifications);
     } catch (e) {
       res.status(500);
