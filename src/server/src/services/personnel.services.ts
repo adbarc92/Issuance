@@ -39,7 +39,7 @@ export class PersonService {
   ): Promise<Person> {
     const snakePerson = snakeCasify(person);
     const curPerson = await this.getPersonById(person.id);
-    const newPerson = this.personRepository.merge(curPerson, snakePerson);
+    const newPerson = this.personRepository.merge(snakePerson, curPerson);
     return await this.personRepository.save(newPerson);
   }
 

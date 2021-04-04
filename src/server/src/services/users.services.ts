@@ -61,6 +61,30 @@ export class UserService {
     const snakeUser = snakeCasify(newUser);
     console.log(snakeUser);
     const repoUser = this.userRepository.create(newUser);
+    this.updateLogin(repoUser.id); // Todo: test this
     return this.userRepository.save(repoUser);
+  }
+
+  async modifyUser(user: Partial<User> & { id: string }): Promise<User> {
+    console.log('user to be modified:', user);
+    const snakeUser = snakeCasify(user);
+    const currentUser = await this.getUserById(user.id);
+    const newUser = this.userRepository.merge(snakeUser, currentUser);
+    return await this.userRepository.save(newUser);
+  }
+
+  async updateLogin(userId: string): Promise<User> {
+    console.log('Updating login for user:', userId);
+    const d = new Date();
+    console.log('d:', d);
+    const currentUser = await this.getUserById(userId);
+    const moddedUser = { ...currentUser, id: userId, last_login: d };
+    console.log('moddedUser:', moddedUser);
+    return this.modifyUser(moddedUser);
+  }
+
+  async getLastLogin(userId: string): Promise<string | Date> {
+    const user = await this.getUserById(userId);
+    return user.last_login;
   }
 }

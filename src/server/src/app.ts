@@ -23,6 +23,7 @@ import upload from 'express-fileupload';
 
 import socketIo from 'socket.io';
 import http from 'http';
+import { UserService } from 'services/users.services';
 
 const port = 4000;
 
@@ -80,6 +81,8 @@ const start = async () => {
         console.log('session:', session);
         if (session) {
           req.userId = session.user_id;
+          const userService = new UserService();
+          userService.updateLogin(session.user_id);
           next();
         } else {
           res.status(403);
@@ -115,7 +118,7 @@ const start = async () => {
     app.use('/api', router);
     /* Socket IO - End */
 
-    // register routes
+    // * Register routes
     personnelController(router);
     taskController(router);
     userController(router);
