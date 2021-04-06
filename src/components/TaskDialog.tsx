@@ -37,7 +37,7 @@ import { useGetProjects, useGetPersonnel } from 'hooks/axiosHooks';
 
 import LoadingSpinner from 'elements/LoadingSpinner';
 
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
 import { Person } from 'types/person';
 
 const TextFieldWrapper = styled('div')(() => {
@@ -527,7 +527,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   <Select
                     fullWidth
                     title={'Project'}
-                    items={(projectData as Project[]).map(project => {
+                    items={(projectData as ClientProject[]).map(project => {
                       return {
                         label: project.title,
                         value: project.id,

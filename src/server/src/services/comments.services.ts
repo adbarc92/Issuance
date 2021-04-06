@@ -11,9 +11,6 @@ import { castPersonComment } from 'cast';
 
 import { PersonService } from 'services/personnel.services';
 
-import { UpdateItemServices } from 'services/updateItems.services';
-import { UpdateItemTypes, UpdateItemActions } from 'entity/UpdateItem';
-
 export class CommentsService {
   commentRepository: Repository<CommentEntity>;
 
@@ -32,13 +29,6 @@ export class CommentsService {
       .set({ index: () => 'index + 1' })
       .where('index >= 1')
       .execute();
-
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.COMMENT,
-      newComment.id,
-      UpdateItemActions.CREATE
-    );
 
     const repoComment = await this.commentRepository.save(newComment);
     const personService = new PersonService();
@@ -156,13 +146,6 @@ export class CommentsService {
     }
 
     const fixedComment = await this.commentRepository.save(oldComment);
-
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.COMMENT,
-      fixedComment.id,
-      UpdateItemActions.UPDATE
-    );
 
     return fixedComment;
   }

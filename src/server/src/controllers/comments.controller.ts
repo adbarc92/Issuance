@@ -4,10 +4,13 @@ import { Router } from 'express';
 import { CommentsService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-import { castPersonedComment, castPersonComment } from 'cast';
+import { castPersonedComment, castPersonComment, castUpdateItem } from 'cast';
 
 import { IoRequest } from 'utils';
 import { SocketMessages } from '../../../types/socket';
+
+import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 const commentsController = (router: Router): void => {
   const commentsService = new CommentsService();
@@ -18,11 +21,29 @@ const commentsController = (router: Router): void => {
   ) {
     try {
       const personedComment = await commentsService.createComment(req.body);
+
       const response = {
         userId: req.userId,
         comment: castPersonedComment(personedComment),
       };
+
       req.io.emit(SocketMessages.COMMENTS, response);
+
+      const updateItemServices = new UpdateItemServices();
+
+      const newUpdateItem = await updateItemServices.addUpdateItem(
+        UpdateItemTypes.COMMENT,
+        personedComment.id,
+        UpdateItemActions.CREATE
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       console.log('comment post response:', response);
       return res.send(response.comment);
     } catch (e) {
@@ -83,6 +104,21 @@ const commentsController = (router: Router): void => {
         userId: req.userId,
       };
       req.io.emit('comments', response);
+
+      const updateItemServices = new UpdateItemServices();
+      const newUpdateItem = await updateItemServices.addUpdateItem(
+        UpdateItemTypes.COMMENT,
+        fixedComment.id,
+        UpdateItemActions.UPDATE
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       res.send(response);
     } catch (e) {
       res.status(500);

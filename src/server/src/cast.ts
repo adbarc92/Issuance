@@ -6,11 +6,15 @@ import { ClientTask, CommentedTask } from '../../types/task';
 import { Person as PersonEntity } from 'entity/Person';
 import { Person as IPerson } from '../../types/person';
 import { Project as EProject } from 'entity/Project';
-import { Project as IProject } from '../../types/project';
+import { ClientProject as IProject } from '../../types/project';
 import { User as EUser } from 'entity/User';
 import { User as IUser } from '../../types/user';
 import { Comment as CommentEntity } from 'entity/Comment';
 import { ClientComment, personedComment } from '../../types/comment';
+import { UpdateItem as UpdateItemEntity } from 'entity/UpdateItem';
+import { ClientUpdateItem } from '../../types/updateItem';
+
+// *** Object copying: Spread first, then overwrite
 
 export const castTask = (task: TaskEntity): ClientTask => {
   return camelCasify({ ...task, typeName: 'Task' });
@@ -21,6 +25,8 @@ export const castCommentedTask = (task: CommentedTask): ClientTask => {
   const comments = task.comments.map(comment => castPersonedComment(comment));
 
   const camelTask: ClientTask = camelCasify(task);
+
+  // return {...camelTask, typeName: 'Task', comments} // Todo: test this
 
   const {
     id,
@@ -41,7 +47,6 @@ export const castCommentedTask = (task: CommentedTask): ClientTask => {
   } = camelTask;
 
   return {
-    comments,
     id,
     name,
     description,
@@ -57,6 +62,7 @@ export const castCommentedTask = (task: CommentedTask): ClientTask => {
     reportedBy,
     storyPoints,
     hidden,
+    comments,
     typeName: 'Task',
   };
 };
@@ -139,7 +145,7 @@ export const castUser = (user: EUser): IUser => {
   return camelCasify({ ...user });
 };
 
-export const castProject = (
+export const fixProject = (
   project: EProject,
   tasks: TaskEntity[],
   people: PersonEntity[]
@@ -150,3 +156,15 @@ export const castProject = (
     ...project,
   });
 };
+
+export const castProject = (project: EProject): IProject => {
+  return camelCasify({ ...project });
+};
+
+export const castUpdateItem = (
+  updateItem: UpdateItemEntity
+): ClientUpdateItem => {
+  return camelCasify({ ...updateItem });
+};
+
+// Todo: UpdateItem Bundler

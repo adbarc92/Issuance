@@ -5,7 +5,6 @@ import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 import { CommentsService } from 'services/comments.services';
 import { castCommentTask } from 'cast';
 import { UpdateItemServices } from 'services/updateItems.services';
-import { UpdateItemTypes, UpdateItemActions } from 'entity/UpdateItem';
 
 export class TaskService {
   taskRepository: Repository<TaskEntity>;
@@ -60,12 +59,7 @@ export class TaskService {
       .where('row_index >= 0')
       .execute();
     const newTask = await this.taskRepository.save(curTask);
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.TASK,
-      newTask.id,
-      UpdateItemActions.CREATE
-    );
+
     return newTask;
   }
 
@@ -116,13 +110,6 @@ export class TaskService {
     }
 
     const fixedTask = await this.taskRepository.save(task);
-
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.TASK,
-      fixedTask.id,
-      UpdateItemActions.UPDATE
-    );
 
     return fixedTask;
   }

@@ -3,7 +3,8 @@
 import { Person } from 'types/person';
 import { ClientTask } from 'types/task';
 import { User } from 'types/user';
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
+import { ClientUpdateItem } from 'types/updateItem';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
@@ -100,7 +101,7 @@ export const useGetUsers = (): IDataLoader<User[] | null> => {
   return useGetData(getUsers, CacheKey.USERS);
 };
 
-export const getProjects = async (): Promise<Project[] | null> => {
+export const getProjects = async (): Promise<ClientProject[] | null> => {
   try {
     const res = await api.get('/projects');
     return res.data;
@@ -110,13 +111,13 @@ export const getProjects = async (): Promise<Project[] | null> => {
   }
 };
 
-export const useGetProjects = (): IDataLoader<Project[] | null> => {
+export const useGetProjects = (): IDataLoader<ClientProject[] | null> => {
   return useGetData(getProjects, CacheKey.PROJECTS);
 };
 
 export const getProjectById = async (
   projectId: string
-): Promise<Project | null> => {
+): Promise<ClientProject | null> => {
   try {
     const res = await api.get(`/projects/${projectId}`);
     return res.data;
@@ -128,7 +129,7 @@ export const getProjectById = async (
 
 export const useGetProjectById = (
   projectId: string
-): IDataLoader<Project | null> => {
+): IDataLoader<ClientProject | null> => {
   return useGetData(
     () => {
       return getProjectById(projectId);
@@ -192,4 +193,19 @@ export const getComments = async (): Promise<Comment[] | null> => {
 
 export const useGetComments = (): IDataLoader<Comment[] | null> => {
   return useGetData(getComments, CacheKey.COMMENTS);
+};
+
+export const getUpdateItems = async (): Promise<ClientUpdateItem[] | null> => {
+  try {
+    const res = await api.get('/notifications');
+    console.log('res:', res);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const useGetUpdateItems = (): IDataLoader<ClientUpdateItem[] | null> => {
+  return useGetData(getUpdateItems, CacheKey.UPDATE_ITEMS);
 };

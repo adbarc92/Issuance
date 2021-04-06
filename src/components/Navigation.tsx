@@ -234,12 +234,12 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Notifications Feed'}>
-            <Link to="/">
+            <Link to="/notifications">
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/">
+            <Link to="/notifications">
               <ListItemText primary={'Notifications Feed'} />
             </Link>
           </ListItem>

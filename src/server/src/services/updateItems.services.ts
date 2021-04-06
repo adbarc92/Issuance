@@ -1,9 +1,7 @@
 import { getConnection, Repository } from 'typeorm';
-import {
-  UpdateItem,
-  UpdateItemTypes,
-  UpdateItemActions,
-} from 'entity/UpdateItem';
+import { UpdateItem } from 'entity/UpdateItem';
+
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 export class UpdateItemServices {
   updateItemRepository: Repository<UpdateItem>;

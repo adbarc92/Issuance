@@ -5,17 +5,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-export enum UpdateItemTypes {
-  COMMENT = 'Comment',
-  PROJECT = 'Project',
-  TASK = 'Task',
-}
-
-export enum UpdateItemActions {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-}
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 @Entity()
 export class UpdateItem {

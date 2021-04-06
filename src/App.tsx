@@ -11,6 +11,7 @@ import TaskPage from 'components/TaskPage';
 import ProjectsPage from 'components/ProjectsPage';
 import PersonPage from 'components/PersonPage';
 import ProjectPage from 'components/ProjectPage';
+import NotificationPage from 'components/NotificationPage';
 
 import { useForceUpdate } from 'hooks/render';
 
@@ -142,6 +143,11 @@ const App = (): JSX.Element => {
           <Route exact path="/tasks">
             <PageWrapper person={personData}>
               <TaskTablePage />
+            </PageWrapper>
+          </Route>
+          <Route exact path="/notifications">
+            <PageWrapper person={personData}>
+              <NotificationPage />
             </PageWrapper>
           </Route>
           <Route exact path="/register">

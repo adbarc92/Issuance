@@ -1,14 +1,17 @@
-// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
+// Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint; reorder routes according to system
 
 import { Router } from 'express';
 import { TaskService } from 'services/tasks.services';
 import { Request, Response } from 'express';
-import { castTask, castCommentedTask } from 'cast';
+import { castTask, castCommentedTask, castUpdateItem } from 'cast';
 import { createErrorResponse } from 'utils';
 import { ClientTask } from '../../../types/task';
 import { SocketMessages } from '../../../types/socket';
 
 import { IoRequest } from 'utils';
+
+import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 const tasksController = (router: Router): void => {
   const taskService = new TaskService();
@@ -46,11 +49,30 @@ const tasksController = (router: Router): void => {
     }
   });
 
-  router.post('/tasks', async function (req: Request, res: Response) {
+  router.post('/tasks', async function (
+    req: Request & { io: any; userId: string },
+    res: Response
+  ) {
     try {
-      const tasks = await taskService.createTask(req.body);
+      const newTask = await taskService.createTask(req.body);
+
+      const updateItemServices = new UpdateItemServices();
+
+      const newUpdateItem = await updateItemServices.addUpdateItem(
+        UpdateItemTypes.TASK,
+        newTask.id,
+        UpdateItemActions.CREATE
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       const taskOrder = await taskService.getTaskOrdering();
-      return res.send({ updatedTask: castTask(tasks[0]), ordering: taskOrder });
+      return res.send({ updatedTask: castTask(newTask), ordering: taskOrder });
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -65,6 +87,21 @@ const tasksController = (router: Router): void => {
       console.log('req:', req);
       const updatedTask: ClientTask = req.body;
       const task = await taskService.modifyTask(updatedTask, req.params.id);
+
+      const updateItemServices = new UpdateItemServices();
+      const newUpdateItem = await updateItemServices.addUpdateItem(
+        UpdateItemTypes.TASK,
+        updatedTask.id,
+        UpdateItemActions.UPDATE
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       const taskOrder = await taskService.getTaskOrdering();
       const response = {
         task: castTask(task),

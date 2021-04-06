@@ -3,7 +3,7 @@
 import { api } from 'store/api';
 import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
-import { NewProject as IProject, Project } from 'types/project';
+import { NewProject as IProject, ClientProject } from 'types/project';
 import { User, UserInput } from 'types/user';
 import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
@@ -198,7 +198,7 @@ export const createProject = async (
 export const updateProject = async (
   project: IProject,
   id: string
-): Promise<Project | null> => {
+): Promise<ClientProject | null> => {
   try {
     const response = await api.put(`projects/${id}`, project);
     return response.data;

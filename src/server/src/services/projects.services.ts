@@ -1,13 +1,10 @@
 import { getConnection, Repository } from 'typeorm';
 import { PersonService } from 'services/personnel.services';
 import { Project as ProjectEntity } from 'entity/Project';
-import { NewProject, Project as IProject } from '../../../types/project';
+import { NewProject, ClientProject as IProject } from '../../../types/project';
 import { snakeCasify, toCamelCase } from 'utils';
-import { castProject } from 'cast';
+import { fixProject } from 'cast';
 import { TaskService } from 'services/tasks.services';
-
-import { UpdateItemServices } from 'services/updateItems.services';
-import { UpdateItemTypes, UpdateItemActions } from 'entity/UpdateItem';
 
 export class ProjectService {
   projectRepository: Repository<ProjectEntity>;
@@ -27,7 +24,7 @@ export class ProjectService {
     });
 
     return Promise.all(people).then(people =>
-      castProject(project, tasks, people)
+      fixProject(project, tasks, people)
     );
   }
 
@@ -48,13 +45,6 @@ export class ProjectService {
 
     const repoProject = await this.projectRepository.save(newProject);
 
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.PROJECT,
-      repoProject.id,
-      UpdateItemActions.CREATE
-    );
-
     return repoProject;
   }
 
@@ -70,13 +60,6 @@ export class ProjectService {
     }
 
     const fixedProject = await this.projectRepository.save(project);
-
-    const updateItemServices = new UpdateItemServices();
-    updateItemServices.addUpdateItem(
-      UpdateItemTypes.PROJECT,
-      fixedProject.id,
-      UpdateItemActions.UPDATE
-    );
 
     return fixedProject;
   }
