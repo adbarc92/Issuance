@@ -7,6 +7,13 @@ import { Project } from 'types/project';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 
+export const getPersonByUsername = async (
+  username: string
+): Promise<Person> => {
+  const response = await api.get(`/personnel/${username}`);
+  return response.data;
+};
+
 // * Helper function for the hook below, not technically a hook
 export const getPersonById = async (
   personId: string
@@ -18,13 +25,6 @@ export const getPersonById = async (
     console.error(e);
     return null;
   }
-};
-
-export const getPersonByUsername = async (
-  username: string
-): Promise<Person> => {
-  const response = await api.get(`/personnel/${username}`);
-  return response.data;
 };
 
 // * This is a hook because it returns a function that contains a hook

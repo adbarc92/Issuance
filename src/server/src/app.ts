@@ -17,6 +17,9 @@ import taskController from 'controllers/tasks.controller';
 import userController from 'controllers/users.controller';
 import projectsController from 'controllers/projects.controller';
 import commentsController from 'controllers/comments.controller';
+import imgurController from 'controllers/imgur.controller';
+
+import upload from 'express-fileupload';
 
 import socketIo from 'socket.io';
 import http from 'http';
@@ -85,11 +88,12 @@ const start = async () => {
       }
     };
 
-    // create and setup express app
+    // * Create and setup express app
     const app = express();
     app.use(express.json());
     app.use(authMiddleware);
     app.use(socketMiddleware);
+    app.use(upload());
 
     // app.use(
     //   expressWinston.logger({
@@ -116,6 +120,7 @@ const start = async () => {
     userController(router);
     projectsController(router);
     commentsController(router);
+    imgurController(router);
 
     // * Should take a token, check validity, return loggedIn status
     router.put('/login', async function (
@@ -177,7 +182,7 @@ const start = async () => {
       console.log(`Server running on port ${port}`);
     });
 
-    // When someone connects, emit a connection
+    // * When someone connects, emit a connection
     const io = new socketIo.Server(server);
     io.on('connection', socket => {
       console.log('a user connected');

@@ -17,6 +17,7 @@ import {
 import { Person } from 'types/person';
 
 import { Link } from 'react-router-dom';
+import ProfilePicture from './ProfilePicture';
 
 export interface PersonnelTableProps {
   personnelData: Person[];
@@ -67,7 +68,14 @@ const PersonnelTable = (props: PersonnelTableProps): JSX.Element => {
             ? personnelData.map((person: Person, index) => {
                 return (
                   <TableRow key={index}>
-                    <TableCell>{person.profilePicture}</TableCell>
+                    <TableCell>
+                      <ProfilePicture
+                        imgSrc={person.profilePicture}
+                        firstName={person.firstName}
+                        lastName={person.lastName}
+                        username={person.userEmail}
+                      />
+                    </TableCell>
                     <TableCell>
                       <Link to={`/personnel/${person.id}`}>
                         {person.userEmail}

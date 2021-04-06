@@ -58,7 +58,6 @@ const usersController = (router: Router): void => {
   router.get('/users/person/:id', async function (req: Request, res: Response) {
     try {
       const person = await userService.getUserPersonById(req.params.id);
-      console.log('controller person:', person);
       res.json(castPerson(person));
     } catch (e) {
       console.error('Error occurred:', e);

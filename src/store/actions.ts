@@ -1,3 +1,5 @@
+// Todo: type for ProfilePicture actions should be better than 'any'
+
 import { api } from 'store/api';
 import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
@@ -214,6 +216,33 @@ export const createComment = async (
     const { data } = res;
     handleUpdateComment(data);
     return data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const setProfilePicture = async (
+  form: FormData
+): Promise<any | null> => {
+  try {
+    console.log('settingImage:', form);
+    const res = await api.post('/image', form);
+    console.log('pfp set res:', res); // * Troubleshooting
+    return res;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const getProfilePicture = async (
+  personId: string
+): Promise<any | null> => {
+  try {
+    const res = await api.get(`/image/${personId}`);
+    console.log('pfp get res:', res); // * Troubleshooting
+    return res;
   } catch (e) {
     console.error(e);
     return null;

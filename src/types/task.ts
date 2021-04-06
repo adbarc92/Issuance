@@ -2,8 +2,6 @@
 
 import { personedComment, ClientComment } from './comment';
 
-import { Person } from 'types/person';
-
 export enum TaskPriority {
   HIGHEST = 'Highest',
   HIGH = 'High',
@@ -61,11 +59,11 @@ export interface CommentedTask {
   status: TaskStatus;
   created_at: Date;
   updated_at: Date;
-  assigned_to: Person;
+  assigned_to: string;
   row_index: number;
   deadline: Date;
   project_id: string;
-  reported_by: Person;
+  reported_by: string;
   story_points: number;
   comments: personedComment[];
   hidden: boolean;

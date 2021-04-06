@@ -1,10 +1,11 @@
-// Todo: Modify Styling to be less terrible
+// Todo: Modify Styling to be less terrible; add useNotificationSnackbar
 
 import React from 'react';
 
 import PersonnelDialog from 'components/PersonnelDialog';
 
 import { useGetPersonById } from 'hooks/axiosHooks';
+import { setProfilePicture } from 'store/actions';
 
 import RootWrapper from 'elements/RootWrapper';
 import LoadingSpinner from 'elements/LoadingSpinner';
@@ -14,6 +15,10 @@ import AddButton from 'elements/AddButton';
 import SectionWrapper from 'elements/SectionWrapper';
 
 import { Person } from 'types/person';
+
+import { Button } from '@material-ui/core';
+
+import ProfilePicture from 'components/ProfilePicture';
 
 interface PersonPageProps {
   personId: string;
@@ -27,9 +32,8 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
     clearCache: clearPersonnelCache, // Might be broken
   } = useGetPersonById(props.personId);
 
-  console.log('personData:', personData);
-
   const [addingUser, setAddingUser] = React.useState(false);
+  const [form, setForm] = React.useState<FormData | null>(null);
 
   const handleOpen = () => {
     setAddingUser(true);
@@ -37,6 +41,20 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
 
   const closeDialog = () => {
     setAddingUser(false);
+  };
+
+  const handleChooseFile = event => {
+    const form = new FormData();
+    form.append('file', event.target.files[0]);
+    form.append('personId', props.personId);
+    setForm(form);
+  };
+
+  const handleFileSubmit = () => {
+    console.log('typeof form:', typeof form);
+    const res = setProfilePicture(form as FormData);
+    console.log('imageRes:', res);
+    // reRenderApp();
   };
 
   if (error) {
@@ -59,7 +77,18 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
           <SectionWrapper direction={'row'}>
             <InfoBox title="Profile Picture">
               <div>
-                Profile Picture: {(personData as Person).profilePicture}
+                <ProfilePicture
+                  imgSrc={`${(personData as Person).profilePicture}`}
+                  alt={`${personData.firstName} ${personData.lastName} `}
+                  firstName={personData.firstName}
+                  lastName={personData.lastName}
+                  username={personData.userEmail}
+                  size={'large'}
+                />
+                <>
+                  <input type="file" onChange={e => handleChooseFile(e)} />
+                  <Button onClick={handleFileSubmit}>Submit</Button>
+                </>
               </div>
             </InfoBox>
             <InfoBox title="Details">
