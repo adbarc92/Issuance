@@ -88,12 +88,11 @@ const start = async () => {
       }
     };
 
-    // create and setup express app
+    // * Create and setup express app
     const app = express();
     app.use(express.json());
     app.use(authMiddleware);
     app.use(socketMiddleware);
-    // app.use(upload({ createParentPath: true }));
     app.use(upload());
 
     // app.use(
@@ -183,7 +182,7 @@ const start = async () => {
       console.log(`Server running on port ${port}`);
     });
 
-    // When someone connects, emit a connection
+    // * When someone connects, emit a connection
     const io = new socketIo.Server(server);
     io.on('connection', socket => {
       console.log('a user connected');
