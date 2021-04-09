@@ -33,11 +33,11 @@ export interface ClientTask {
   status: TaskStatus;
   createdAt: Date | string;
   updatedAt: Date | string;
-  assignedTo: string;
+  assignedTo: string; // Todo: make this a Person
   rowIndex: number;
   deadline: Date | string;
   projectId: string;
-  reportedBy: string;
+  reportedBy: string; // Todo: make this a Person
   storyPoints: number;
   typeName: 'Task'; // * Server-side only
   comments: ClientComment[];

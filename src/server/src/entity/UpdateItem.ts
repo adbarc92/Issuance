@@ -23,4 +23,7 @@ export class UpdateItem {
 
   @Column()
   action_type: UpdateItemActions;
+
+  @Column('uuid')
+  user_id: string; // * The User who made the change
 }

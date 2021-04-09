@@ -37,6 +37,7 @@ export class PersonService {
   async modifyPerson(
     person: Partial<Person> & { id: string }
   ): Promise<Person> {
+    console.log('modifying person...', person);
     const snakePerson = snakeCasify(person);
     const curPerson = await this.getPersonById(person.id);
     const newPerson = this.personRepository.merge(snakePerson, curPerson);

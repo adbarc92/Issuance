@@ -9,8 +9,13 @@ import { castPersonedComment, castPersonComment, castUpdateItem } from 'cast';
 import { IoRequest } from 'utils';
 import { SocketMessages } from '../../../types/socket';
 
-import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
+
+import { TaskService } from 'services/tasks.services';
+import { UserService } from 'services/users.services';
+import { NotificationService } from 'services/notifications.services';
+import { SubscriptionService } from 'services/subscriptions.services';
 
 const commentsController = (router: Router): void => {
   const commentsService = new CommentsService();
@@ -29,20 +34,58 @@ const commentsController = (router: Router): void => {
 
       req.io.emit(SocketMessages.COMMENTS, response);
 
-      const updateItemServices = new UpdateItemServices();
+      const updateItemServices = new UpdateItemService();
 
       const newUpdateItem = await updateItemServices.addUpdateItem(
         UpdateItemTypes.COMMENT,
         personedComment.id,
-        UpdateItemActions.CREATE
+        UpdateItemActions.CREATE,
+        req.userId
       );
 
-      const updateItemResponse = {
-        updateItem: castUpdateItem(newUpdateItem),
-        userId: req.userId,
-      };
+      const subscriptionService = new SubscriptionService();
 
-      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      subscriptionService.createSubscription(
+        personedComment.task_id,
+        req.userId,
+        UpdateItemTypes.COMMENT
+      );
+
+      const taskService = new TaskService();
+
+      const assignedPerson = await taskService.getTaskAssigneeById(
+        personedComment.task_id
+      );
+
+      subscriptionService.createSubscription(
+        personedComment.task_id,
+        assignedPerson.id,
+        UpdateItemTypes.COMMENT
+      );
+
+      // const userService = new UserService();
+
+      // const assignedUser = await userService.getUserByPersonId(
+      //   assignedPerson.id
+      // );
+
+      // if (assignedUser.id !== req.userId) {
+      //   const notificationService = new NotificationService();
+
+      //   const newNotification = notificationService.createNotification(
+      //     assignedUser.id,
+      //     newUpdateItem.id
+      //   );
+
+      //   console.log('newNotification:', newNotification);
+      // }
+
+      // const updateItemResponse = {
+      //   updateItem: castUpdateItem(newUpdateItem),
+      //   userId: req.userId,
+      // };
+
+      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
 
       console.log('comment post response:', response);
       return res.send(response.comment);
@@ -105,11 +148,12 @@ const commentsController = (router: Router): void => {
       };
       req.io.emit('comments', response);
 
-      const updateItemServices = new UpdateItemServices();
+      const updateItemServices = new UpdateItemService();
       const newUpdateItem = await updateItemServices.addUpdateItem(
         UpdateItemTypes.COMMENT,
         fixedComment.id,
-        UpdateItemActions.UPDATE
+        UpdateItemActions.UPDATE,
+        req.userId
       );
 
       const updateItemResponse = {

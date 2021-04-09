@@ -10,8 +10,9 @@ import { SocketMessages } from '../../../types/socket';
 
 import { IoRequest } from 'utils';
 
-import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
+import { SubscriptionService } from 'services/subscriptions.services';
 
 const tasksController = (router: Router): void => {
   const taskService = new TaskService();
@@ -56,12 +57,13 @@ const tasksController = (router: Router): void => {
     try {
       const newTask = await taskService.createTask(req.body);
 
-      const updateItemServices = new UpdateItemServices();
+      const updateItemService = new UpdateItemService();
 
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const newUpdateItem = await updateItemService.addUpdateItem(
         UpdateItemTypes.TASK,
         newTask.id,
-        UpdateItemActions.CREATE
+        UpdateItemActions.CREATE,
+        req.userId
       );
 
       const updateItemResponse = {
@@ -70,6 +72,16 @@ const tasksController = (router: Router): void => {
       };
 
       req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
+      if (newTask.assigned_to) {
+        const subscriptionService = new SubscriptionService();
+
+        subscriptionService.createSubscription(
+          newTask.id,
+          newTask.assigned_to,
+          UpdateItemTypes.TASK
+        );
+      }
 
       const taskOrder = await taskService.getTaskOrdering();
       return res.send({ updatedTask: castTask(newTask), ordering: taskOrder });
@@ -88,11 +100,12 @@ const tasksController = (router: Router): void => {
       const updatedTask: ClientTask = req.body;
       const task = await taskService.modifyTask(updatedTask, req.params.id);
 
-      const updateItemServices = new UpdateItemServices();
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const updateItemService = new UpdateItemService();
+      const newUpdateItem = await updateItemService.addUpdateItem(
         UpdateItemTypes.TASK,
         updatedTask.id,
-        UpdateItemActions.UPDATE
+        UpdateItemActions.UPDATE,
+        req.userId
       );
 
       const updateItemResponse = {

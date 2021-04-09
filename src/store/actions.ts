@@ -154,6 +154,7 @@ export const updatePerson = async (
   person: Partial<IPerson> & { id: string }
 ): Promise<IPerson | null> => {
   try {
+    console.log('updating person...', person);
     const res = await api.put(`/personnel/${person.id}`, person);
     handleUpdatePerson(res.data);
     return res.data;

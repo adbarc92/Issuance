@@ -1,0 +1,62 @@
+Notification Design
+
+* How long do Update Items last? Administrator set date
+* Subscription Model
+
+* Remaining Questions:
+	* Where should UpdateItems and Subscriptions be cross-referenced to create Notifications?
+	* Where should Notifications be sent?
+	* How should Notifications be sent?
+		* A: When a new notification is created, a hash map of pairs (with the userId and the number of notifications belonging to that user) is emitted by a socket. On the client side, the notification number is retrieved and displayed
+			* When the notification icon is clicked, the request goes out for notifications based on that userId, which is then filtered by `viewed` on the client-side;
+		* Sockets
+		* Attached as a response to requests
+			* 
+		* As part of middleware
+		
+	* Where should the filtering of the Notifications be done?
+	* 
+
+* General Model:
+	* 1. A change (create, update, delete) is made to a project, task, or comment.
+	* 2. An UPDATE_ITEM is created and added to the database; these represent the history of changes.
+		* Question: should the actual content change also be tracked?
+		* An Update Item consists of: its UUID, when it was created, the type of item which was changed, the type of change, the UUID of the item which was changed, and the UUID of the User who made the change.
+	* 3. The next step varies depending on the type of item updated.
+		* A. If changes were made to a comment, notifications should be created for the Task Assignee and other commenters.
+		* B. If changes were made to a task, notifications should be created for the Assignee and the Reporter
+	
+
+=== Brainstorm ===
+
+* Ticket History should keep track of which fields were changed
+	* Comments attached to the change for Priority, Deadline, 
+
+* It is important to know which items have been seen, specifically, so as to mark them; it is not enough to know simply which items have been altered since the User last accessed the App.
+* It is also important to know which Users have seen which Recent Changes.
+* It is important to know which User made which change; this information should be included in the socket emission
+* It would be beneficial to have a User view history, so that it can be used for Navigation
+* Any time an Item assigned to a User changes, that User receives a notification
+* A User's notifications should be controllable to some degree--they should be able to subscribe to those related to particular projects
+* The Notification Bubble should persist until the Notification Icon is clicked, and list all relevant changes which have occurred since it was last clicked.
+* When the Notification Icon is clicked, all Fresh Notifications should be marked as viewed
+* A user should have a list of Notifications, which includes links to the items, as well as whether they have been viewed or not
+* When a change is made, first check if it was made by the current User. If not, check if the User is associated with any Tasks which have been altered
+* Notification Bubbles should update in real time
+	* If not real time, any request to the server could be responded to with the size of the Notifications array...
+	
+
+* The Record of changes exists on a massive stack that is filtered on the basis of User-relevance
+
+* Notifications:
+	* Tasks: 
+		* Users should be notified when tasks assigned to them are altered
+		* Users should be notified when new tasks are assigned to them
+	* Comments:
+		* Users should be notified if new comments are made on tasks assigned to them.
+		* Users should be notified if comments on relevant tasks changed
+	* Projects:
+		* Users should be notified when Projects containing tasks assigned to them are changed
+* Progression:
+	* When changes are made and are pushed to the Database...
+		* If the item is a Task and the assignee ID differs from the ID of the one making changes, 

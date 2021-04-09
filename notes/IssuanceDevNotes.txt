@@ -34,6 +34,14 @@ Issuance Dev Notes
 	* CDN?
 	* Cookie-Usage
 
+=== 07Apr2021 ===
+
+	* Fixes:
+		* Bugs: Person Modification fails
+	* Features:
+		* User Privileges
+		* User Table
+
 === 04Apr2021 ===
 
 * Dashboard

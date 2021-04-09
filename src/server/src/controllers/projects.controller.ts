@@ -12,7 +12,7 @@ import { IoRequest } from 'utils';
 
 import { castProject, castUpdateItem } from 'cast';
 
-import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 const projectsController = (router: Router): void => {
@@ -48,12 +48,13 @@ const projectsController = (router: Router): void => {
 
       req.io.emit(SocketMessages.PROJECTS, response);
 
-      const updateItemServices = new UpdateItemServices();
+      const updateItemService = new UpdateItemService();
 
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const newUpdateItem = await updateItemService.addUpdateItem(
         UpdateItemTypes.PROJECT,
         project.id,
-        UpdateItemActions.CREATE
+        UpdateItemActions.CREATE,
+        req.userId
       );
 
       const updateItemResponse = {
@@ -82,12 +83,13 @@ const projectsController = (router: Router): void => {
       );
       req.io.emit(SocketMessages.PROJECTS, updatedProject);
 
-      const updateItemServices = new UpdateItemServices();
+      const updateItemService = new UpdateItemService();
 
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const newUpdateItem = await updateItemService.addUpdateItem(
         UpdateItemTypes.PROJECT,
         updatedProject.id,
-        UpdateItemActions.UPDATE
+        UpdateItemActions.UPDATE,
+        req.userId
       );
 
       const updateItemResponse = {

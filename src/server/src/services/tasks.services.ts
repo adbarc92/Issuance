@@ -4,7 +4,8 @@ import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 import { CommentsService } from 'services/comments.services';
 import { castCommentTask } from 'cast';
-import { UpdateItemServices } from 'services/updateItems.services';
+import { Person as PersonEntity } from 'entity/Person';
+import { PersonService } from './personnel.services';
 
 export class TaskService {
   taskRepository: Repository<TaskEntity>;
@@ -20,6 +21,12 @@ export class TaskService {
     const commentedTask = castCommentTask(task);
     commentedTask.comments = comments;
     return commentedTask;
+  }
+
+  async getTaskAssigneeById(taskId: string): Promise<PersonEntity> {
+    const task = await this.taskRepository.findOne({ id: taskId });
+    const personService = new PersonService();
+    return await personService.getPersonById(task.assigned_to);
   }
 
   async getTaskOrdering(): Promise<{ id: string }[]> {

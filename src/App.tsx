@@ -85,6 +85,8 @@ export const reRenderApp = (): void => {
 const App = (): JSX.Element => {
   const userId = getUserToken() ?? '';
 
+  console.log('userId:', userId);
+
   const {
     loading: personLoading,
     data: personData,
