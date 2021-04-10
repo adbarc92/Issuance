@@ -40,10 +40,10 @@ export class Task {
   status!: TaskStatus;
 
   @CreateDateColumn()
-  created_at?: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at?: Date;
+  updated_at!: Date;
 
   @Column('uuid', { nullable: true })
   assigned_to!: string;

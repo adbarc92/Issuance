@@ -26,6 +26,7 @@ export enum CacheKey {
   PROJECTS = 'PROJECTS',
   COMMENTS = 'COMMENTS',
   UPDATE_ITEMS = 'UPDATE_ITEMS',
+  NOTIFICATION_SUBSCRIPTIONS = 'NOTIFICATION_SUBSCRIPTIONS',
 }
 
 type LoaderFunction = () => Promise<any>;

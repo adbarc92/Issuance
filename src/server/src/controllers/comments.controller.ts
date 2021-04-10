@@ -13,8 +13,6 @@ import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 import { TaskService } from 'services/tasks.services';
-import { UserService } from 'services/users.services';
-import { NotificationService } from 'services/notifications.services';
 import { SubscriptionService } from 'services/subscriptions.services';
 
 const commentsController = (router: Router): void => {
@@ -45,11 +43,13 @@ const commentsController = (router: Router): void => {
 
       const subscriptionService = new SubscriptionService();
 
-      subscriptionService.createSubscription(
+      const commmenterSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
         req.userId,
         UpdateItemTypes.COMMENT
       );
+
+      console.log('commmenterSubscription:', commmenterSubscription);
 
       const taskService = new TaskService();
 
@@ -57,7 +57,7 @@ const commentsController = (router: Router): void => {
         personedComment.task_id
       );
 
-      subscriptionService.createSubscription(
+      const newSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
         assignedPerson.id,
         UpdateItemTypes.COMMENT

@@ -17,16 +17,16 @@ export class SubscriptionService {
     subscriber_id: string,
     subscription_type: UpdateItemTypes
   ): Promise<SubscriptionEntity> {
-    try {
-      const existingSubscription = this.subscriptionRepository.findOne({
-        subscribed_item_id,
-        subscriber_id,
-        subscription_type,
-      });
+    const existingSubscription = await this.subscriptionRepository.findOne({
+      subscribed_item_id,
+      subscriber_id,
+      subscription_type,
+    });
 
+    if (existingSubscription) {
+      console.log('Subscription exists.');
       return existingSubscription;
-    } catch (e) {
-      console.log(e);
+    } else {
       const newSubscription = this.subscriptionRepository.create({
         subscribed_item_id,
         subscriber_id,
@@ -46,9 +46,15 @@ export class SubscriptionService {
     subscribed_item_id: string
   ): Promise<SubscriptionEntity[]> {
     return await this.subscriptionRepository
-      .createQueryBuilder('task')
+      .createQueryBuilder('subscription')
       .select('*')
       .where('subscribed_item_id = :subscribed_item_id', { subscribed_item_id })
       .execute();
+  }
+
+  async getUserSubscriptions(
+    subscriber_id: string
+  ): Promise<SubscriptionEntity[]> {
+    return await this.subscriptionRepository.find({ subscriber_id });
   }
 }

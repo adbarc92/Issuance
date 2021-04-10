@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { TaskService } from 'services/tasks.services';
 import { Request, Response } from 'express';
-import { castTask, castCommentedTask, castUpdateItem } from 'cast';
+import { castTask, castCommentedTask } from 'cast';
 import { createErrorResponse } from 'utils';
 import { ClientTask } from '../../../types/task';
 import { SocketMessages } from '../../../types/socket';
@@ -21,7 +21,6 @@ const tasksController = (router: Router): void => {
     try {
       const task = await taskService.getTaskById(req.params.id);
       const commentedTask = castCommentedTask(task);
-      console.log('commentedTask:', commentedTask);
       return res.send(commentedTask);
     } catch (e) {
       res.status(500);
@@ -66,12 +65,12 @@ const tasksController = (router: Router): void => {
         req.userId
       );
 
-      const updateItemResponse = {
-        updateItem: castUpdateItem(newUpdateItem),
-        userId: req.userId,
-      };
+      // const updateItemResponse = {
+      //   updateItem: castUpdateItem(newUpdateItem),
+      //   userId: req.userId,
+      // };
 
-      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
 
       if (newTask.assigned_to) {
         const subscriptionService = new SubscriptionService();
@@ -108,12 +107,12 @@ const tasksController = (router: Router): void => {
         req.userId
       );
 
-      const updateItemResponse = {
-        updateItem: castUpdateItem(newUpdateItem),
-        userId: req.userId,
-      };
+      // const updateItemResponse = {
+      //   updateItem: castUpdateItem(newUpdateItem),
+      //   userId: req.userId,
+      // };
 
-      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
 
       const taskOrder = await taskService.getTaskOrdering();
       const response = {

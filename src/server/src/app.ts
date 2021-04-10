@@ -78,11 +78,9 @@ const start = async () => {
         const session = await tokenRepository.findOne(token).catch(() => {
           return;
         });
-        console.log('session:', session);
+        // console.log('session:', session);
         if (session) {
           req.userId = session.user_id;
-          // const userService = new UserService();
-          // userService.updateLogin(session.user_id);
           next();
         } else {
           res.status(403);

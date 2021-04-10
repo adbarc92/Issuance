@@ -4,7 +4,7 @@ export enum UserRole {
   GRUNT = 'GRUNT',
 }
 
-export interface User {
+export interface ClientUser {
   id: string;
   loginEmail: string;
   personId: string;

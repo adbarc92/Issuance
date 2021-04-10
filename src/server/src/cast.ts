@@ -8,7 +8,7 @@ import { Person as IPerson } from '../../types/person';
 import { Project as EProject } from 'entity/Project';
 import { ClientProject as IProject } from '../../types/project';
 import { User as EUser } from 'entity/User';
-import { User as IUser } from '../../types/user';
+import { ClientUser } from '../../types/user';
 import { Comment as CommentEntity } from 'entity/Comment';
 import { ClientComment, personedComment } from '../../types/comment';
 import { UpdateItem as UpdateItemEntity } from 'entity/UpdateItem';
@@ -26,83 +26,11 @@ export const castCommentedTask = (task: CommentedTask): ClientTask => {
 
   const camelTask: ClientTask = camelCasify(task);
 
-  // return {...camelTask, typeName: 'Task', comments} // Todo: test this
-
-  const {
-    id,
-    name,
-    description,
-    type,
-    priority,
-    status,
-    createdAt,
-    updatedAt,
-    assignedTo,
-    rowIndex,
-    deadline,
-    projectId,
-    reportedBy,
-    storyPoints,
-    hidden,
-  } = camelTask;
-
-  return {
-    id,
-    name,
-    description,
-    type,
-    priority,
-    status,
-    createdAt,
-    updatedAt,
-    assignedTo,
-    rowIndex,
-    deadline,
-    projectId,
-    reportedBy,
-    storyPoints,
-    hidden,
-    comments,
-    typeName: 'Task',
-  };
+  return { ...camelTask, typeName: 'Task', comments };
 };
 
 export const castCommentTask = (task: TaskEntity): CommentedTask => {
-  const {
-    id,
-    name,
-    description,
-    type,
-    priority,
-    status,
-    created_at,
-    updated_at,
-    assigned_to,
-    row_index,
-    deadline,
-    project_id,
-    reported_by,
-    story_points,
-    hidden,
-  } = task;
-  return {
-    id,
-    name,
-    description,
-    type,
-    priority,
-    status,
-    created_at,
-    updated_at,
-    assigned_to,
-    row_index,
-    deadline,
-    project_id,
-    reported_by,
-    story_points,
-    comments: [],
-    hidden,
-  };
+  return { ...task, comments: [] };
 };
 
 export const castPersonedComment = (
@@ -116,32 +44,14 @@ export const castPersonedComment = (
 };
 
 export const castPersonComment = (comment: CommentEntity): personedComment => {
-  const {
-    id,
-    index,
-    task_id,
-    header_comment_id,
-    content,
-    created_at,
-    updated_at,
-  } = comment;
-  return {
-    id,
-    index,
-    task_id,
-    commenter: {},
-    header_comment_id,
-    content,
-    created_at,
-    updated_at,
-  };
+  return { ...comment, commenter: {} };
 };
 
 export const castPerson = (person: PersonEntity): IPerson => {
   return camelCasify({ ...person });
 };
 
-export const castUser = (user: EUser): IUser => {
+export const castUser = (user: EUser): ClientUser => {
   return camelCasify({ ...user });
 };
 
@@ -151,9 +61,9 @@ export const fixProject = (
   people: PersonEntity[]
 ): IProject => {
   return camelCasify({
+    ...project,
     tasks,
     people,
-    ...project,
   });
 };
 

@@ -33,6 +33,7 @@ const TaskTablePage = (): JSX.Element => {
     clearCache: clearTasksCache,
   } = useGetTasks();
 
+  // * useSocketEvents will replace this
   useEffect(() => {
     socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
       console.log('updating task');

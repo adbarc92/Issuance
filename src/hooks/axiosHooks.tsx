@@ -2,7 +2,7 @@
 
 import { Person } from 'types/person';
 import { ClientTask } from 'types/task';
-import { User } from 'types/user';
+import { ClientUser } from 'types/user';
 import { ClientProject } from 'types/project';
 import { ClientUpdateItem } from 'types/updateItem';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
@@ -87,7 +87,7 @@ export const useGetTasks = (): IDataLoader<ClientTask[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
 
-export const getUsers = async (): Promise<User[] | null> => {
+export const getUsers = async (): Promise<ClientUser[] | null> => {
   try {
     const res = await api.get('/users');
     return res.data;
@@ -97,7 +97,7 @@ export const getUsers = async (): Promise<User[] | null> => {
   }
 };
 
-export const useGetUsers = (): IDataLoader<User[] | null> => {
+export const useGetUsers = (): IDataLoader<ClientUser[] | null> => {
   return useGetData(getUsers, CacheKey.USERS);
 };
 
@@ -139,7 +139,9 @@ export const useGetProjectById = (
   );
 };
 
-export const getUserById = async (userId: string): Promise<User | null> => {
+export const getUserById = async (
+  userId: string
+): Promise<ClientUser | null> => {
   try {
     const res = await api.get(`/users/${userId}`);
     return res.data;
@@ -149,7 +151,9 @@ export const getUserById = async (userId: string): Promise<User | null> => {
   }
 };
 
-export const useGetUserById = (userId: string): IDataLoader<User | null> => {
+export const useGetUserById = (
+  userId: string
+): IDataLoader<ClientUser | null> => {
   return useGetData(
     () => {
       return getUserById(userId);

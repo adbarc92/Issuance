@@ -4,7 +4,7 @@ import { api } from 'store/api';
 import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
 import { NewProject as IProject, ClientProject } from 'types/project';
-import { User, UserInput } from 'types/user';
+import { ClientUser, UserInput } from 'types/user';
 import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { ClientComment } from 'types/comment';
@@ -136,7 +136,7 @@ export const checkLogin = async (): Promise<LoginResponse | null> => {
 
 export const createUser = async (
   user: UserInput
-): Promise<{ user: User | null; statusCode: number }> => {
+): Promise<{ user: ClientUser | null; statusCode: number }> => {
   try {
     const response = await api.post('/users', {
       loginEmail: user.loginEmail,

@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListItem,
+  styled,
 } from '@material-ui/core';
 import {
   ChevronLeft as ChevronLeftIcon,
@@ -23,6 +24,7 @@ import {
   People as PersonnelIcon,
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
+  NotificationsActive as NotificationsActiveIcon,
 } from '@material-ui/icons';
 import {
   createStyles,
@@ -104,6 +106,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export interface NotificationPanelProps {
+  hidden: boolean;
+}
+
+const NotificationPanel = styled('div')((props: any) => {
+  return {
+    position: 'absolute',
+    minWidth: '3rem',
+    minHeight: '3rem',
+    hidden: props.hidden,
+  };
+});
+
+const NotificationIconContainer = styled('div')(() => {
+  return {
+    marginRight: '2rem',
+  };
+});
+
 interface NavigationProps {
   person: Person;
 }
@@ -118,6 +139,13 @@ const Navigation = (props: NavigationProps): JSX.Element => {
 
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
+
+  const [showNotifications, setShowNotifications] = React.useState(false);
+
+  const onBellClick = () => {
+    console.log('notify');
+    setShowNotifications(!showNotifications);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -157,6 +185,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                 : 'User'
             }!`}
           </Typography>
+          <NotificationIconContainer>
+            <NotificationsActiveIcon onClick={() => onBellClick()} />
+          </NotificationIconContainer>
+          {showNotifications ? (
+            <NotificationPanel hidden={showNotifications}>
+              This is where notifications will be shown
+            </NotificationPanel>
+          ) : null}
           <div className={classes.searchfieldContainer}>
             <SearchInput
               placeholder={'Search...'}

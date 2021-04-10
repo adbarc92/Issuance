@@ -1,5 +1,14 @@
 Notification Design
 
+1. Make the change
+2. Create UpdateItem
+3. Create Subscriptions (if necessary)
+4. Create Notifications for Subscribers
+5. Publish Notifications
+
+// The Bell should be subscribed to one EventEmitter
+// 
+
 * How long do Update Items last? Administrator set date
 * Subscription Model
 
