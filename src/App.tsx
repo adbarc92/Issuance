@@ -26,7 +26,10 @@ import './io';
 
 import { getUserToken, setUserToken } from 'store/auth';
 
-import { useGetUserPersonById } from 'hooks/axiosHooks';
+import {
+  useGetUserPersonById,
+  useGetUserSubscriptionsById,
+} from 'hooks/axiosHooks';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
 import { Person } from 'types/person';
@@ -88,6 +91,12 @@ const App = (): JSX.Element => {
   console.log('userId:', userId);
 
   const {
+    loading: subscriptionLoading,
+    data: subscriptionData,
+    error: subscriptionError,
+  } = useGetUserSubscriptionsById(userId);
+
+  const {
     loading: personLoading,
     data: personData,
     error: personError,
@@ -104,13 +113,15 @@ const App = (): JSX.Element => {
     return <div>{personError}</div>;
   }
 
-  if (personLoading) {
+  if (personLoading || subscriptionLoading) {
     return (
       <Center>
         <LoadingSpinner />
       </Center>
     );
   }
+
+  console.log('subscriptionData:', subscriptionData);
 
   return (
     <Router>

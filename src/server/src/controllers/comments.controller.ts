@@ -1,7 +1,7 @@
 // Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
 
 import { Router } from 'express';
-import { CommentsService } from 'services/comments.services';
+import { CommentService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 import { castPersonedComment, castPersonComment, castUpdateItem } from 'cast';
@@ -16,14 +16,14 @@ import { TaskService } from 'services/tasks.services';
 import { SubscriptionService } from 'services/subscriptions.services';
 
 const commentsController = (router: Router): void => {
-  const commentsService = new CommentsService();
+  const commentService = new CommentService();
 
   router.post('/comments', async function (
     req: Request & { io: any; userId: string },
     res: Response
   ) {
     try {
-      const personedComment = await commentsService.createComment(req.body);
+      const personedComment = await commentService.createComment(req.body);
 
       const response = {
         userId: req.userId,
@@ -100,7 +100,7 @@ const commentsController = (router: Router): void => {
     res: Response
   ) {
     try {
-      const personedComments = await commentsService.getCommentsByTaskId(
+      const personedComments = await commentService.getCommentsByTaskId(
         req.params.id
       );
       return res.send(
@@ -114,7 +114,7 @@ const commentsController = (router: Router): void => {
 
   router.get('/comments/:id', async function (req: Request, res: Response) {
     try {
-      const comment = await commentsService.getCommentById(req.params.id);
+      const comment = await commentService.getCommentById(req.params.id);
       return res.send(castPersonedComment(comment));
     } catch (e) {
       res.status(500);
@@ -124,7 +124,7 @@ const commentsController = (router: Router): void => {
 
   router.delete('/comments/:id', async function (req: Request, res: Response) {
     try {
-      await commentsService.removeComment(req.params.id);
+      await commentService.removeComment(req.params.id);
       res.send(JSON.stringify({}));
     } catch (e) {
       res.status(500);
@@ -138,7 +138,7 @@ const commentsController = (router: Router): void => {
   ) {
     try {
       const updatedComment = req.body;
-      const fixedComment = await commentsService.modifyComment(
+      const fixedComment = await commentService.modifyComment(
         req.params.id,
         updatedComment
       );

@@ -11,7 +11,7 @@ import { castPersonComment } from 'cast';
 
 import { PersonService } from 'services/personnel.services';
 
-export class CommentsService {
+export class CommentService {
   commentRepository: Repository<CommentEntity>;
 
   constructor() {

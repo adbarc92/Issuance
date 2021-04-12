@@ -1,6 +1,6 @@
 // Todo: modify castTask to include comments
 
-import { camelCasify } from 'utils';
+import { camelCasify, getSubscriptionItemName } from 'utils';
 import { Task as TaskEntity } from 'entity/Task';
 import { ClientTask, CommentedTask } from '../../types/task';
 import { Person as PersonEntity } from 'entity/Person';
@@ -13,6 +13,8 @@ import { Comment as CommentEntity } from 'entity/Comment';
 import { ClientComment, personedComment } from '../../types/comment';
 import { UpdateItem as UpdateItemEntity } from 'entity/UpdateItem';
 import { ClientUpdateItem } from '../../types/updateItem';
+import { SubscriptionEntity } from 'entity/Subscription';
+import { ClientSubscription } from '../../types/subscription';
 
 // *** Object copying: Spread first, then overwrite
 
@@ -78,3 +80,12 @@ export const castUpdateItem = (
 };
 
 // Todo: UpdateItem Bundler
+
+export const castSubscription = (
+  subscription: SubscriptionEntity
+): ClientSubscription => {
+  return camelCasify({
+    ...subscription,
+    subscribedItemName: getSubscriptionItemName(subscription),
+  });
+};

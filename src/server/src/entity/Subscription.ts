@@ -8,7 +8,7 @@ import {
 import { UpdateItemTypes } from '../../../types/updateItem';
 
 @Entity()
-export class Subscription {
+export class SubscriptionEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -19,8 +19,10 @@ export class Subscription {
   subscriber_id!: string;
 
   @Column()
-  subscription_type: UpdateItemTypes;
+  subscription_item_type: UpdateItemTypes;
 
   @CreateDateColumn()
   created_at: Date;
+
+  // Active?
 }

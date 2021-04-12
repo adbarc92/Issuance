@@ -33,6 +33,11 @@ Issuance Dev Notes
 	* Timeline/Burndown
 	* CDN?
 	* Cookie-Usage
+	* Epic Tasks: one level between 
+
+=== 11Apr2021 ===
+
+* TypeORM Database Queries
 
 === 07Apr2021 ===
 

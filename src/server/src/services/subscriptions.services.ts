@@ -1,5 +1,5 @@
 import { getConnection, Repository } from 'typeorm';
-import { Subscription as SubscriptionEntity } from 'entity/Subscription';
+import { SubscriptionEntity } from 'entity/Subscription';
 
 import { UpdateItemTypes } from '../../../types/updateItem';
 
@@ -15,12 +15,12 @@ export class SubscriptionService {
   async createSubscription(
     subscribed_item_id: string,
     subscriber_id: string,
-    subscription_type: UpdateItemTypes
+    subscription_item_type: UpdateItemTypes
   ): Promise<SubscriptionEntity> {
     const existingSubscription = await this.subscriptionRepository.findOne({
       subscribed_item_id,
       subscriber_id,
-      subscription_type,
+      subscription_item_type,
     });
 
     if (existingSubscription) {
@@ -30,7 +30,7 @@ export class SubscriptionService {
       const newSubscription = this.subscriptionRepository.create({
         subscribed_item_id,
         subscriber_id,
-        subscription_type,
+        subscription_item_type,
       });
 
       const repoSubscription = await this.subscriptionRepository.save(
@@ -55,6 +55,10 @@ export class SubscriptionService {
   async getUserSubscriptions(
     subscriber_id: string
   ): Promise<SubscriptionEntity[]> {
-    return await this.subscriptionRepository.find({ subscriber_id });
+    const subscriptions = await this.subscriptionRepository.find({
+      subscriber_id,
+    });
+    console.log('subscriptions:', subscriptions);
+    return subscriptions;
   }
 }

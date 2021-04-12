@@ -7,6 +7,13 @@ import { Person } from '../../types/person';
 import { v4 as uuid } from 'uuid';
 import { ImgurToken } from 'entity/ImgurToken';
 
+import { SubscriptionEntity } from 'entity/Subscription';
+
+import { UpdateItemTypes } from '../../types/updateItem';
+import { CommentService } from 'services/comments.services';
+import { ProjectService } from 'services/projects.services';
+import { TaskService } from 'services/tasks.services';
+
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
   return JSON.stringify({ errors });
@@ -133,4 +140,25 @@ export const tokenIsExpired = (token: ImgurToken): boolean => {
     return false;
   }
   return true;
+};
+
+export const getSubscriptionItemName = async (
+  subscription: SubscriptionEntity
+): Promise<string> => {
+  const { subscription_item_type, subscribed_item_id } = subscription;
+
+  switch (subscription_item_type) {
+    case UpdateItemTypes.COMMENT:
+      const commentService = new CommentService();
+      const comment = await commentService.getCommentById(subscribed_item_id);
+      return comment.content;
+    case UpdateItemTypes.PROJECT:
+      const projectService = new ProjectService();
+      const project = await projectService.getProjectById(subscribed_item_id);
+      return project.title;
+    case UpdateItemTypes.TASK:
+      const taskService = new TaskService();
+      const task = await taskService.getTaskById(subscribed_item_id);
+      return task.name;
+  }
 };

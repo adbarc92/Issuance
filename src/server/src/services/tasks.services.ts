@@ -2,7 +2,7 @@ import { getConnection, Repository } from 'typeorm';
 import { Task as TaskEntity } from 'entity/Task';
 import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
-import { CommentsService } from 'services/comments.services';
+import { CommentService } from 'services/comments.services';
 import { castCommentTask } from 'cast';
 import { Person as PersonEntity } from 'entity/Person';
 import { PersonService } from './personnel.services';
@@ -15,8 +15,8 @@ export class TaskService {
   }
 
   async getTaskById(taskId: string): Promise<CommentedTask> {
-    const commentsService = new CommentsService();
-    const comments = await commentsService.getCommentsByTaskId(taskId);
+    const commentService = new CommentService();
+    const comments = await commentService.getCommentsByTaskId(taskId);
     const task = await this.taskRepository.findOne({ id: taskId });
     const commentedTask = castCommentTask(task);
     commentedTask.comments = comments;

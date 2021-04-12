@@ -7,6 +7,7 @@ import { ClientProject } from 'types/project';
 import { ClientUpdateItem } from 'types/updateItem';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
+import { ClientSubscription } from 'types/subscription';
 
 export const getPersonByUsername = async (
   username: string
@@ -212,4 +213,29 @@ export const getUpdateItems = async (): Promise<ClientUpdateItem[] | null> => {
 
 export const useGetUpdateItems = (): IDataLoader<ClientUpdateItem[] | null> => {
   return useGetData(getUpdateItems, CacheKey.UPDATE_ITEMS);
+};
+
+export const getUserSubscriptionsById = async (
+  userId: string
+): Promise<ClientSubscription[] | null> => {
+  try {
+    const res = await api.get(`/subscriptions/${userId}`);
+    console.log('subscriptionRes:', res.data);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const useGetUserSubscriptionsById = (
+  userId: string
+): IDataLoader<ClientSubscription[] | null> => {
+  return useGetData(
+    () => {
+      return getUserSubscriptionsById(userId);
+    },
+    CacheKey.SUBSCRIPTIONS,
+    userId
+  );
 };
