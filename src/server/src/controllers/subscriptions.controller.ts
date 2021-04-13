@@ -18,9 +18,14 @@ const subscriptionsController = (router: Router): void => {
       const subscriptions = await subscriptionsService.getUserSubscriptions(
         req.params.id
       );
-      return res.send(
-        subscriptions.map(subscription => castSubscription(subscription))
-      );
+      const promisedSubscriptions = async () => {
+        return Promise.all(
+          subscriptions.map(subscription => castSubscription(subscription))
+        );
+      };
+      return promisedSubscriptions().then(resolvedSubs => {
+        res.send(resolvedSubs);
+      });
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

@@ -81,11 +81,12 @@ export const castUpdateItem = (
 
 // Todo: UpdateItem Bundler
 
-export const castSubscription = (
+export const castSubscription = async (
   subscription: SubscriptionEntity
-): ClientSubscription => {
+): Promise<ClientSubscription> => {
+  const subItemName = await getSubscriptionItemName(subscription);
   return camelCasify({
     ...subscription,
-    subscribedItemName: getSubscriptionItemName(subscription),
+    subscribedItemName: subItemName,
   });
 };

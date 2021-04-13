@@ -111,24 +111,9 @@ export const fixOutputComment = (
   comment: ServerComment,
   commenter: Person
 ): ClientComment => {
-  const {
-    id,
-    index,
-    taskId,
-    headerCommentId,
-    content,
-    createdAt,
-    updatedAt,
-  } = comment;
   return {
-    id,
-    index,
-    taskId,
+    ...comment,
     commenter,
-    headerCommentId,
-    content,
-    createdAt,
-    updatedAt,
   };
 };
 
@@ -145,20 +130,18 @@ export const tokenIsExpired = (token: ImgurToken): boolean => {
 export const getSubscriptionItemName = async (
   subscription: SubscriptionEntity
 ): Promise<string> => {
-  const { subscription_item_type, subscribed_item_id } = subscription;
+  const { subscribed_item_type, subscribed_item_id } = subscription;
 
-  switch (subscription_item_type) {
+  switch (subscribed_item_type) {
     case UpdateItemTypes.COMMENT:
-      const commentService = new CommentService();
-      const comment = await commentService.getCommentById(subscribed_item_id);
-      return comment.content;
+    case UpdateItemTypes.TASK:
+      const taskService = new TaskService();
+      const task = await taskService.getTaskById(subscribed_item_id);
+      console.log('taskName:', task.name);
+      return task.name;
     case UpdateItemTypes.PROJECT:
       const projectService = new ProjectService();
       const project = await projectService.getProjectById(subscribed_item_id);
       return project.title;
-    case UpdateItemTypes.TASK:
-      const taskService = new TaskService();
-      const task = await taskService.getTaskById(subscribed_item_id);
-      return task.name;
   }
 };

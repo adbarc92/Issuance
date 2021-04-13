@@ -14,6 +14,7 @@ import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 import { TaskService } from 'services/tasks.services';
 import { SubscriptionService } from 'services/subscriptions.services';
+import { NotificationService } from 'services/notifications.services';
 
 const commentsController = (router: Router): void => {
   const commentService = new CommentService();
@@ -61,6 +62,18 @@ const commentsController = (router: Router): void => {
         personedComment.task_id,
         assignedPerson.id,
         UpdateItemTypes.COMMENT
+      );
+
+      const notificationService = new NotificationService();
+
+      const newNotification = await notificationService.createNotification(
+        assignedPerson.id,
+        newUpdateItem.id
+      );
+
+      req.io.emit(
+        `notification_${UpdateItemTypes.COMMENT}_${personedComment.task_id}`,
+        newNotification
       );
 
       // const userService = new UserService();

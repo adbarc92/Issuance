@@ -15,12 +15,12 @@ export class SubscriptionService {
   async createSubscription(
     subscribed_item_id: string,
     subscriber_id: string,
-    subscription_item_type: UpdateItemTypes
+    subscribed_item_type: UpdateItemTypes
   ): Promise<SubscriptionEntity> {
     const existingSubscription = await this.subscriptionRepository.findOne({
       subscribed_item_id,
       subscriber_id,
-      subscription_item_type,
+      subscribed_item_type,
     });
 
     if (existingSubscription) {
@@ -30,7 +30,7 @@ export class SubscriptionService {
       const newSubscription = this.subscriptionRepository.create({
         subscribed_item_id,
         subscriber_id,
-        subscription_item_type,
+        subscribed_item_type,
       });
 
       const repoSubscription = await this.subscriptionRepository.save(

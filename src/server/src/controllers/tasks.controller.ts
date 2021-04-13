@@ -100,6 +100,7 @@ const tasksController = (router: Router): void => {
       const task = await taskService.modifyTask(updatedTask, req.params.id);
 
       const updateItemService = new UpdateItemService();
+
       const newUpdateItem = await updateItemService.addUpdateItem(
         UpdateItemTypes.TASK,
         updatedTask.id,

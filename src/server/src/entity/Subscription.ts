@@ -19,7 +19,7 @@ export class SubscriptionEntity {
   subscriber_id!: string;
 
   @Column()
-  subscription_item_type: UpdateItemTypes;
+  subscribed_item_type: UpdateItemTypes;
 
   @CreateDateColumn()
   created_at: Date;
