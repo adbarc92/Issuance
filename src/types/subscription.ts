@@ -8,3 +8,8 @@ export interface ClientSubscription {
   subscriberId: string;
   createdAt: Date | string;
 }
+
+export enum SocketEventType {
+  SUBSCRIPTION = 'SUBSCRIPTION_',
+  NOTIFICATION = 'NOTIFICATION_',
+}

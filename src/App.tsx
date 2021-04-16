@@ -1,6 +1,6 @@
 // Todo: Refactor ReactCookies and PageWrapper.person into React.Context? Implement React-Cookie?
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navigation from 'components/Navigation';
 import Dashboard from 'components/Dashboard';
 import PersonnelTablePage from 'components/PersonnelTablePage';
@@ -26,13 +26,12 @@ import './io';
 
 import { getUserToken, setUserToken } from 'store/auth';
 
-import {
-  useGetUserPersonById,
-  useGetUserSubscriptionsById,
-} from 'hooks/axiosHooks';
-import LoadingSpinner from 'elements/LoadingSpinner';
-
 import { Person } from 'types/person';
+import { socket } from './io';
+import { useSocketEvents, SocketEvent } from 'hooks/socketEvents';
+import { ClientSubscription } from 'types/subscription';
+// import { NightsStayOutlined } from '@material-ui/icons';
+import { ClientNotification } from 'types/notification';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,17 +54,6 @@ const ChildrenWrapper = styled('div')(() => {
   };
 });
 
-const Center = styled('div')(() => {
-  return {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    width: '100%',
-    height: '100%',
-  };
-});
-
 const PageWrapper = (props: any): JSX.Element => {
   const classes = useStyles(props);
   return (
@@ -85,50 +73,50 @@ export const reRenderApp = (): void => {
   render();
 };
 
-const App = (): JSX.Element => {
+export interface AppProps {
+  person: Person;
+  subscriptions: ClientSubscription[];
+}
+
+const App = (props: AppProps): JSX.Element => {
   const userId = getUserToken() ?? '';
 
-  console.log('userId:', userId);
-
-  const {
-    loading: subscriptionLoading,
-    data: subscriptionData,
-    error: subscriptionError,
-  } = useGetUserSubscriptionsById(userId);
-
-  const {
-    loading: personLoading,
-    data: personData,
-    error: personError,
-  } = useGetUserPersonById(userId);
+  const { person, subscriptions } = props;
 
   const rerender = useForceUpdate();
 
   render = rerender;
 
+  useEffect(() => {
+    socket.on(`SUBSCRIPTION_${userId}`, notification => {
+      console.log('FOR TESTING PURPOSES');
+      console.log('A NEW NOTIFICATION HAS ARRIVED');
+      console.log('notification:', notification);
+    });
+  });
+
+  // Todo: prepend socket
+  const socketEvents: SocketEvent<ClientNotification>[] = subscriptions.map(
+    subscription => {
+      const callback = function (notification: ClientNotification) {
+        console.log('notification:', notification);
+      };
+      const eventName = `NOTIFICATION_${subscription.subscribedItemId}`;
+      return { eventName, callback };
+    }
+  );
+
+  useSocketEvents(socketEvents);
+
   // Todo: renders should be counted here
   console.log('Rendering!');
-
-  if (personError) {
-    return <div>{personError}</div>;
-  }
-
-  if (personLoading || subscriptionLoading) {
-    return (
-      <Center>
-        <LoadingSpinner />
-      </Center>
-    );
-  }
-
-  console.log('subscriptionData:', subscriptionData);
 
   return (
     <Router>
       <PageContainer>
         <Switch>
           <Route exact path="/">
-            <PageWrapper person={personData}>
+            <PageWrapper person={person}>
               <Dashboard />
             </PageWrapper>
           </Route>
@@ -144,22 +132,22 @@ const App = (): JSX.Element => {
             }}
           />
           <Route exact path="/personnel">
-            <PageWrapper person={personData}>
+            <PageWrapper person={person}>
               <PersonnelTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/projects">
-            <PageWrapper person={personData}>
+            <PageWrapper person={person}>
               <ProjectsPage />
             </PageWrapper>
           </Route>
           <Route exact path="/tasks">
-            <PageWrapper person={personData}>
+            <PageWrapper person={person}>
               <TaskTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/notifications">
-            <PageWrapper person={personData}>
+            <PageWrapper person={person}>
               <NotificationPage />
             </PageWrapper>
           </Route>
@@ -170,11 +158,8 @@ const App = (): JSX.Element => {
             path="/tasks/:taskId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={personData}>
-                  <TaskPage
-                    personId={(personData as Person).id}
-                    taskId={match.params.taskId}
-                  />
+                <PageWrapper person={person}>
+                  <TaskPage personId={person.id} taskId={match.params.taskId} />
                 </PageWrapper>
               );
             }}
@@ -183,7 +168,7 @@ const App = (): JSX.Element => {
             path="/personnel/:personId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={personData}>
+                <PageWrapper person={person}>
                   <PersonPage personId={match.params.personId} />
                 </PageWrapper>
               );
@@ -193,7 +178,7 @@ const App = (): JSX.Element => {
             path="/projects/:projectId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={personData}>
+                <PageWrapper person={person}>
                   <ProjectPage projectId={match.params.projectId} />
                 </PageWrapper>
               );

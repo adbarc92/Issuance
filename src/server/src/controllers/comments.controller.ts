@@ -24,16 +24,21 @@ const commentsController = (router: Router): void => {
     res: Response
   ) {
     try {
+      const updateItemServices = new UpdateItemService();
+      const subscriptionService = new SubscriptionService();
+      const taskService = new TaskService();
+      const notificationService = new NotificationService();
+
       const personedComment = await commentService.createComment(req.body);
 
-      const response = {
+      const clientComment = castPersonedComment(personedComment);
+
+      const socketResponse = {
         userId: req.userId,
-        comment: castPersonedComment(personedComment),
+        comment: clientComment,
       };
 
-      req.io.emit(SocketMessages.COMMENTS, response);
-
-      const updateItemServices = new UpdateItemService();
+      req.io.emit(SocketMessages.COMMENTS, socketResponse);
 
       const newUpdateItem = await updateItemServices.addUpdateItem(
         UpdateItemTypes.COMMENT,
@@ -42,66 +47,68 @@ const commentsController = (router: Router): void => {
         req.userId
       );
 
-      const subscriptionService = new SubscriptionService();
+      const assignedPerson = await taskService.getTaskAssigneeById(
+        personedComment.task_id
+      );
 
-      const commmenterSubscription = await subscriptionService.createSubscription(
+      const assigneeSubscription = await subscriptionService.createSubscription(
+        personedComment.task_id,
+        assignedPerson.id, // Todo: major issue - PersonId vs. UserId; FB's shadow profile?
+        UpdateItemTypes.COMMENT
+      );
+
+      // Todo: undo redundant subscription emission
+      req.io.emit(
+        `SUBSCRIPTION_${assigneeSubscription.subscriber_id}`,
+        assigneeSubscription
+      );
+
+      const commenterSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
         req.userId,
         UpdateItemTypes.COMMENT
       );
 
-      console.log('commmenterSubscription:', commmenterSubscription);
-
-      const taskService = new TaskService();
-
-      const assignedPerson = await taskService.getTaskAssigneeById(
-        personedComment.task_id
-      );
-
-      const newSubscription = await subscriptionService.createSubscription(
-        personedComment.task_id,
-        assignedPerson.id,
-        UpdateItemTypes.COMMENT
-      );
-
-      const notificationService = new NotificationService();
-
-      const newNotification = await notificationService.createNotification(
-        assignedPerson.id,
-        newUpdateItem.id
-      );
-
       req.io.emit(
-        `notification_${UpdateItemTypes.COMMENT}_${personedComment.task_id}`,
-        newNotification
+        `SUBSCRIPTION_${commenterSubscription.subscriber_id}`,
+        commenterSubscription
       );
 
-      // const userService = new UserService();
-
-      // const assignedUser = await userService.getUserByPersonId(
-      //   assignedPerson.id
+      // const newNotification = await notificationService.createNotification(
+      //   assignedPerson.id,
+      //   newUpdateItem.id
       // );
 
-      // if (assignedUser.id !== req.userId) {
-      //   const notificationService = new NotificationService();
+      const subscriptions = await subscriptionService.getSubscriptionsByItemId(
+        personedComment.id
+      );
 
-      //   const newNotification = notificationService.createNotification(
-      //     assignedUser.id,
-      //     newUpdateItem.id
-      //   );
+      subscriptions.forEach(async subscription => {
+        const newNotification = await notificationService.createNotification(
+          subscription.subscriber_id,
+          newUpdateItem.id
+        );
+        console.log('newNotification:', newNotification);
+        const notificationSocketEvent = `NOTIFICATION_${subscription.subscribed_item_id}`;
+        console.log('posting to socketEvent:', notificationSocketEvent);
+        req.io.emit(notificationSocketEvent, newNotification);
+      });
 
-      //   console.log('newNotification:', newNotification);
-      // }
-
-      // const updateItemResponse = {
-      //   updateItem: castUpdateItem(newUpdateItem),
+      // const socketNotification = {
       //   userId: req.userId,
+      //   newNotification,
       // };
 
-      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      // const notificationMessage = `notification_${UpdateItemTypes.COMMENT}_${personedComment.task_id}`;
 
-      console.log('comment post response:', response);
-      return res.send(response.comment);
+      // req.io.emit(commenterSubscription.subscribed_item_id, socketNotification);
+
+      const serverResponse = {
+        comment: clientComment,
+        userId: req.userId,
+      };
+
+      return res.send(serverResponse.comment);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

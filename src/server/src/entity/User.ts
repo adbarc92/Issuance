@@ -39,5 +39,5 @@ export class User {
   updated_at?: Date;
 
   @Column({ nullable: true })
-  last_login: Date;
+  latest_activity: Date;
 }

@@ -1,15 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { isLoggedIn } from 'store/auth';
+import { setUserToken } from 'store/auth';
+import { checkLogin } from 'store/actions';
+
+import WithAppData from 'components/WithAppData';
+
+// * Do you have a working session token?
+export const isLoggedIn = async (): Promise<boolean> => {
+  const loginResponse = await checkLogin();
+  if (loginResponse?.loggedIn) {
+    setUserToken(loginResponse.userId || '');
+  }
+  return !!loginResponse?.loggedIn;
+  // * Make a request to login endpoint to check if it is valid
+};
 
 const main = async () => {
   if (window.location.pathname === '/login') {
-    ReactDOM.render(<App />, document.getElementById('root'));
+    ReactDOM.render(<WithAppData />, document.getElementById('root'));
   } else {
     if (await isLoggedIn()) {
-      ReactDOM.render(<App />, document.getElementById('root'));
+      ReactDOM.render(<WithAppData />, document.getElementById('root'));
     } else {
       window.location.href = '/login';
     }

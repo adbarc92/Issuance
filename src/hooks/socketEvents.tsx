@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import { socket } from 'io';
 import { ClientNotification } from 'types/notification';
-
-export interface SocketEvent {
-  event: any;
-  callback: () => void;
-  notifications: ClientNotification;
-}
+import { ClientSubscription } from 'types/subscription';
 
 // * useSocketEvents will replace this
 // useEffect(() => {
@@ -23,13 +18,29 @@ export interface SocketEvent {
 // 	};
 // });
 
-export function useSocketEvents(socketEvents: SocketEvent[]): void {
+export interface SocketEvent<T> {
+  eventName: string;
+  callback: (payload: T) => void;
+}
+
+function removeSocketEvents<T>(socketEvents: SocketEvent<T>[]) {
+  socketEvents.forEach(socketEvent => {
+    const { eventName } = socketEvent;
+    console.log('Disabling socket:', eventName);
+    socket.off(eventName);
+  });
+}
+
+export function useSocketEvents<T>(socketEvents: SocketEvent<T>[]): void {
   useEffect(() => {
     socketEvents.forEach(socketEvent => {
-      console.log('socketEvent:', socketEvent);
-      const { event, callback } = socketEvent;
-      socket.on(event, (notification: ClientNotification) => callback);
-      return socket.off(event);
+      const { eventName, callback } = socketEvent;
+      console.log('Enabling socket:', eventName);
+      socket.on(eventName, callback);
     });
-  });
+
+    return () => {
+      removeSocketEvents(socketEvents);
+    };
+  }, [socketEvents]);
 }
