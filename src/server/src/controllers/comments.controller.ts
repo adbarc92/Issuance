@@ -16,6 +16,10 @@ import { TaskService } from 'services/tasks.services';
 import { SubscriptionService } from 'services/subscriptions.services';
 import { NotificationService } from 'services/notifications.services';
 
+import { SocketEventType } from '../../../types/subscription';
+
+import { createSocketEventName } from '../../../utils';
+
 const commentsController = (router: Router): void => {
   const commentService = new CommentService();
 
@@ -58,10 +62,11 @@ const commentsController = (router: Router): void => {
       );
 
       // Todo: undo redundant subscription emission
-      req.io.emit(
-        `SUBSCRIPTION_${assigneeSubscription.subscriber_id}`,
-        assigneeSubscription
+      const assigneeSocketEventName = createSocketEventName(
+        SocketEventType.SUBSCRIPTION,
+        assigneeSubscription.subscriber_id
       );
+      req.io.emit(assigneeSocketEventName, assigneeSubscription);
 
       const commenterSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
@@ -69,10 +74,11 @@ const commentsController = (router: Router): void => {
         UpdateItemTypes.COMMENT
       );
 
-      req.io.emit(
-        `SUBSCRIPTION_${commenterSubscription.subscriber_id}`,
-        commenterSubscription
+      const commenterSocketEventName = createSocketEventName(
+        SocketEventType.SUBSCRIPTION,
+        assigneeSubscription.subscriber_id
       );
+      req.io.emit(commenterSocketEventName, commenterSubscription);
 
       // const newNotification = await notificationService.createNotification(
       //   assignedPerson.id,
@@ -83,32 +89,38 @@ const commentsController = (router: Router): void => {
         personedComment.id
       );
 
-      subscriptions.forEach(async subscription => {
+      // Todo: refactor to separate function?
+      for (const subscription of subscriptions) {
         const newNotification = await notificationService.createNotification(
           subscription.subscriber_id,
           newUpdateItem.id
         );
         console.log('newNotification:', newNotification);
-        const notificationSocketEvent = `NOTIFICATION_${subscription.subscribed_item_id}`;
-        console.log('posting to socketEvent:', notificationSocketEvent);
+
+        const notificationSocketEvent = createSocketEventName(
+          SocketEventType.NOTIFICATION,
+          subscription.subscribed_item_id
+        );
+        console.log('notificationSocketEvent:', notificationSocketEvent);
+
         req.io.emit(notificationSocketEvent, newNotification);
-      });
+      }
 
-      // const socketNotification = {
-      //   userId: req.userId,
-      //   newNotification,
-      // };
+      // subscriptions.forEach(async subscription => {
+      //   const newNotification = await notificationService.createNotification(
+      //     subscription.subscriber_id,
+      //     newUpdateItem.id
+      //   );
+      //   console.log('newNotification:', newNotification);
+      //   const notificationSocketEvent = createSocketEventName(
+      //     SocketEventType.NOTIFICATION,
+      //     subscription.subscribed_item_id
+      //   );
+      //   console.log('posting to socketEvent:', notificationSocketEvent);
+      //   req.io.emit(notificationSocketEvent, newNotification);
+      // });
 
-      // const notificationMessage = `notification_${UpdateItemTypes.COMMENT}_${personedComment.task_id}`;
-
-      // req.io.emit(commenterSubscription.subscribed_item_id, socketNotification);
-
-      const serverResponse = {
-        comment: clientComment,
-        userId: req.userId,
-      };
-
-      return res.send(serverResponse.comment);
+      return res.send(clientComment);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));

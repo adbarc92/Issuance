@@ -29,9 +29,11 @@ import { getUserToken, setUserToken } from 'store/auth';
 import { Person } from 'types/person';
 import { socket } from './io';
 import { useSocketEvents, SocketEvent } from 'hooks/socketEvents';
-import { ClientSubscription } from 'types/subscription';
+import { ClientSubscription, SocketEventType } from 'types/subscription';
 // import { NightsStayOutlined } from '@material-ui/icons';
 import { ClientNotification } from 'types/notification';
+
+import { createSocketEventName } from 'utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,10 +90,12 @@ const App = (props: AppProps): JSX.Element => {
   render = rerender;
 
   useEffect(() => {
-    socket.on(`SUBSCRIPTION_${userId}`, notification => {
-      console.log('FOR TESTING PURPOSES');
-      console.log('A NEW NOTIFICATION HAS ARRIVED');
-      console.log('notification:', notification);
+    const socketEventName = createSocketEventName(
+      SocketEventType.SUBSCRIPTION,
+      userId
+    );
+    socket.on(socketEventName, subscription => {
+      console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
     });
   });
 
@@ -101,7 +105,10 @@ const App = (props: AppProps): JSX.Element => {
       const callback = function (notification: ClientNotification) {
         console.log('notification:', notification);
       };
-      const eventName = `NOTIFICATION_${subscription.subscribedItemId}`;
+      const eventName = createSocketEventName(
+        SocketEventType.NOTIFICATION,
+        subscription.subscribedItemId
+      );
       return { eventName, callback };
     }
   );
@@ -109,7 +116,7 @@ const App = (props: AppProps): JSX.Element => {
   useSocketEvents(socketEvents);
 
   // Todo: renders should be counted here
-  console.log('Rendering!');
+  // console.log('Rendering!');
 
   return (
     <Router>

@@ -36,6 +36,7 @@ import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';
 import { Person } from 'types/person';
+import { getPersonName } from 'utils/index';
 
 const drawerWidth = 240;
 
@@ -177,13 +178,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            {`Hello, ${
-              person
-                ? person.firstName
-                  ? person.firstName
-                  : person.userEmail
-                : 'User'
-            }!`}
+            {getPersonName(person)}
           </Typography>
           <NotificationIconContainer>
             <NotificationsActiveIcon onClick={() => onBellClick()} />

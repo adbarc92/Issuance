@@ -1,5 +1,5 @@
 import { TaskPriority, TaskType, TaskStatus } from 'types/task';
-import { PersonJob } from 'types/person';
+import { PersonJob, Person } from 'types/person';
 import { UserRole } from 'types/user';
 import { SelectItem } from 'elements/Select';
 import { SocketEventType } from 'types/subscription';
@@ -44,4 +44,15 @@ export const createSocketEventName = (
   socketEventNumber: string
 ): string => {
   return socketEventType + socketEventNumber;
+};
+
+export const getPersonName = (person: Person): string => {
+  const { firstName, lastName, userEmail } = person;
+  const name =
+    firstName && lastName
+      ? `${firstName} ${lastName}`
+      : firstName
+      ? firstName
+      : userEmail;
+  return name;
 };

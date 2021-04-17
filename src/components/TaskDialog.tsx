@@ -24,7 +24,12 @@ import { createTask, updateTask } from 'store/actions';
 
 import { reRenderApp } from 'App';
 
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+import {
+  isNotFilledOut,
+  isTooLong,
+  trimState,
+  getPersonName,
+} from 'utils/index';
 
 import {
   useNotificationSnackbar,
@@ -468,7 +473,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   title={'Assigned Person'}
                   items={(personData as Person[]).map(person => {
                     return {
-                      label: person.firstName + person.lastName,
+                      label: getPersonName(person),
                       value: person.id,
                     };
                   })}
@@ -491,7 +496,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   title={'Reported By'}
                   items={(personData as Person[]).map(person => {
                     return {
-                      label: person.firstName + person.lastName,
+                      label: getPersonName(person),
                       value: person.id,
                     };
                   })}
