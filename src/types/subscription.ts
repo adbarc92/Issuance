@@ -1,4 +1,4 @@
-import { UpdateItemTypes } from 'types/updateItem';
+import { UpdateItemTypes } from './updateItem';
 
 export interface ClientSubscription {
   id: string;
