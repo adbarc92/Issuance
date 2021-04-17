@@ -1,4 +1,4 @@
-import { UpdateItemActions } from 'types/updateItem';
+import { UpdateItemActions } from './updateItem';
 
 export enum NotificationTypes {
   TASKS = 'TASKS',

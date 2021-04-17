@@ -18,7 +18,7 @@ import { NotificationService } from 'services/notifications.services';
 
 import { SocketEventType } from '../../../types/subscription';
 
-import { createSocketEventName } from '../../../utils';
+import { createSocketEventName } from '../utils';
 
 const commentsController = (router: Router): void => {
   const commentService = new CommentService();

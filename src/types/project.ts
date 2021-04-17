@@ -1,4 +1,4 @@
-import { ClientTask } from 'types/task';
+import { ClientTask } from './task';
 
 export interface ClientProject {
   id: string;

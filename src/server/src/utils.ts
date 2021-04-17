@@ -13,6 +13,7 @@ import { UpdateItemTypes } from '../../types/updateItem';
 import { CommentService } from 'services/comments.services';
 import { ProjectService } from 'services/projects.services';
 import { TaskService } from 'services/tasks.services';
+import { SocketEventType } from '../../types/subscription';
 
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
@@ -144,4 +145,11 @@ export const getSubscriptionItemName = async (
       const project = await projectService.getProjectById(subscribed_item_id);
       return project.title;
   }
+};
+
+export const createSocketEventName = (
+  socketEventType: SocketEventType,
+  socketEventNumber: string
+): string => {
+  return socketEventType + socketEventNumber;
 };

@@ -1,6 +1,6 @@
 // Todo: add reactions to comments
 
-import { Person } from 'types/person';
+import { Person } from './person';
 
 // * Server-side property naming, except with a person
 export interface personedComment {
