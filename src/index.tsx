@@ -4,6 +4,7 @@ import * as serviceWorker from './serviceWorker';
 import { setUserToken } from 'store/auth';
 import { checkLogin } from 'store/actions';
 
+import App from 'App';
 import WithAppData from 'components/WithAppData';
 
 // * Do you have a working session token?
@@ -18,7 +19,7 @@ export const isLoggedIn = async (): Promise<boolean> => {
 
 const main = async () => {
   if (window.location.pathname === '/login') {
-    ReactDOM.render(<WithAppData />, document.getElementById('root'));
+    ReactDOM.render(<App />, document.getElementById('root'));
   } else {
     if (await isLoggedIn()) {
       ReactDOM.render(<WithAppData />, document.getElementById('root'));

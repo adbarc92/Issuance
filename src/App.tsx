@@ -75,8 +75,8 @@ export const reRenderApp = (): void => {
 };
 
 export interface AppProps {
-  person: Person;
-  subscriptions: ClientSubscription[];
+  person?: Person;
+  subscriptions?: ClientSubscription[];
 }
 
 const App = (props: AppProps): JSX.Element => {
@@ -89,28 +89,32 @@ const App = (props: AppProps): JSX.Element => {
   render = rerender;
 
   useEffect(() => {
-    const socketEventName = createSocketEventName(
-      SocketEventType.SUBSCRIPTION,
-      userId
-    );
-    socket.on(socketEventName, subscription => {
-      console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
-    });
+    if (window.location.pathname !== '/login') {
+      const socketEventName = createSocketEventName(
+        SocketEventType.SUBSCRIPTION,
+        userId
+      );
+      socket.on(socketEventName, subscription => {
+        console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
+      });
+    }
   });
 
   // Todo: prepend socket
-  const socketEvents: SocketEvent<ClientNotification>[] = subscriptions.map(
-    subscription => {
-      const callback = function (notification: ClientNotification) {
-        console.log('notification:', notification);
-      };
-      const eventName = createSocketEventName(
-        SocketEventType.NOTIFICATION,
-        subscription.subscribedItemId
-      );
-      return { eventName, callback };
-    }
-  );
+
+  const socketEvents: SocketEvent<ClientNotification>[] | [] =
+    window.location.pathname !== '/login'
+      ? (subscriptions as ClientSubscription[]).map(subscription => {
+          const callback = function (notification: ClientNotification) {
+            console.log('notification:', notification);
+          };
+          const eventName = createSocketEventName(
+            SocketEventType.NOTIFICATION,
+            subscription.subscribedItemId
+          );
+          return { eventName, callback };
+        })
+      : [];
 
   useSocketEvents(socketEvents);
 
@@ -165,7 +169,10 @@ const App = (props: AppProps): JSX.Element => {
             render={({ match, history }) => {
               return (
                 <PageWrapper person={person}>
-                  <TaskPage personId={person.id} taskId={match.params.taskId} />
+                  <TaskPage
+                    personId={(person as Person).id}
+                    taskId={match.params.taskId}
+                  />
                 </PageWrapper>
               );
             }}
