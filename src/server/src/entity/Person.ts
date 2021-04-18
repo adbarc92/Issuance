@@ -13,16 +13,16 @@ export class PersonEntity {
   id!: string;
 
   @Column()
-  user_email: string;
+  user_email!: string;
 
   @Column({ nullable: true })
-  profile_picture: string;
+  profile_picture!: string;
 
   @Column({ nullable: true })
-  first_name: string;
+  first_name!: string;
 
   @Column({ nullable: true })
-  last_name: string;
+  last_name!: string;
 
   @Column()
   job!: PersonJob;
@@ -34,5 +34,5 @@ export class PersonEntity {
   updated_at?: Date;
 
   @Column({ default: (): boolean => false })
-  hidden: boolean;
+  hidden!: boolean;
 }
