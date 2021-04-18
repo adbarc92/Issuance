@@ -1,20 +1,24 @@
 // Todo: modify castTask to include comments
 
-import { camelCasify, getSubscriptionItemName } from 'utils';
-import { Task as TaskEntity } from 'entity/Task';
-import { ClientTask, CommentedTask } from '../../types/task';
-import { Person as PersonEntity } from 'entity/Person';
-import { Person as IPerson } from '../../types/person';
-import { Project as EProject } from 'entity/Project';
-import { ClientProject as IProject } from '../../types/project';
-import { User as EUser } from 'entity/User';
-import { ClientUser } from '../../types/user';
-import { Comment as CommentEntity } from 'entity/Comment';
-import { ClientComment, personedComment } from '../../types/comment';
-import { UpdateItem as UpdateItemEntity } from 'entity/UpdateItem';
-import { ClientUpdateItem } from '../../types/updateItem';
+import { PersonEntity } from 'entity/Person';
+import { TaskEntity } from 'entity/Task';
+import { ProjectEntity } from 'entity/Project';
+import { UserEntity } from 'entity/User';
+import { UpdateItemEntity } from 'entity/UpdateItem';
 import { SubscriptionEntity } from 'entity/Subscription';
+
+import {
+  ClientComment,
+  commentEntityWithPersonEntity,
+} from '../../types/comment';
+import { Person as IPerson } from '../../types/person';
+import { ClientProject as IProject } from '../../types/project';
 import { ClientSubscription } from '../../types/subscription';
+import { ClientTask, CommentedTask } from '../../types/task';
+import { ClientUpdateItem } from '../../types/updateItem';
+import { ClientUser } from '../../types/user';
+
+import { camelCasify, getSubscriptionItemName } from 'utils';
 
 // *** Object copying: Spread first, then overwrite
 
@@ -36,29 +40,32 @@ export const castCommentTask = (task: TaskEntity): CommentedTask => {
 };
 
 export const castPersonedComment = (
-  comment: personedComment
+  comment: commentEntityWithPersonEntity
 ): ClientComment => {
-  const commenter = castPerson(comment.commenter);
-  const clientComment = camelCasify(comment);
-  clientComment.commenter = commenter;
+  // const commenter = castPerson(comment.commenter);
+  const clientComment: ClientComment = camelCasify(comment);
+  // clientComment.commenter = commenter;
 
   return clientComment;
 };
 
-export const castPersonComment = (comment: CommentEntity): personedComment => {
-  return { ...comment, commenter: {} };
-};
+// export const castPersonComment = (
+//   comment: CommentEntity,
+//   commenter: PersonEntity
+// ): commentEntityWithPersonEntity => {
+//   return { ...comment, commenter: castPerson(commenter) };
+// };
 
 export const castPerson = (person: PersonEntity): IPerson => {
   return camelCasify({ ...person });
 };
 
-export const castUser = (user: EUser): ClientUser => {
+export const castUser = (user: UserEntity): ClientUser => {
   return camelCasify({ ...user });
 };
 
 export const fixProject = (
-  project: EProject,
+  project: ProjectEntity,
   tasks: TaskEntity[],
   people: PersonEntity[]
 ): IProject => {
@@ -69,7 +76,7 @@ export const fixProject = (
   });
 };
 
-export const castProject = (project: EProject): IProject => {
+export const castProject = (project: ProjectEntity): IProject => {
   return camelCasify({ ...project });
 };
 

@@ -1,6 +1,6 @@
 // Todo: ReportedBy and AssignedTo should be Persons, not strings
 
-import { personedComment, ClientComment } from './comment';
+import { commentEntityWithPersonEntity, ClientComment } from './comment';
 
 // import { Person } from 'types/person';
 
@@ -67,6 +67,6 @@ export interface CommentedTask {
   project_id: string;
   reported_by: string;
   story_points: number;
-  comments: personedComment[];
+  comments: commentEntityWithPersonEntity[];
   hidden: boolean;
 }

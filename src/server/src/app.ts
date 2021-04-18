@@ -1,8 +1,8 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
-import { User } from 'entity/User';
-import { Token } from 'entity/Token';
+import { UserEntity } from 'entity/User';
+import { TokenEntity } from 'entity/Token';
 // import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
 // import * as winston from 'winston';
@@ -24,7 +24,6 @@ import upload from 'express-fileupload';
 
 import socketIo from 'socket.io';
 import http from 'http';
-import { UserService } from 'services/users.services';
 
 const port = 4000;
 
@@ -43,8 +42,8 @@ const start = async () => {
     ...ormconfig,
   } as any);
   try {
-    const tokenRepository = connection.getRepository(Token);
-    const userRepository = connection.getRepository(User);
+    const tokenRepository = connection.getRepository(TokenEntity);
+    const userRepository = connection.getRepository(UserEntity);
 
     const socketMiddleware = async function (req, res, next) {
       req.io = io;

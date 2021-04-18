@@ -30,7 +30,6 @@ import { Person } from 'types/person';
 import { socket } from './io';
 import { useSocketEvents, SocketEvent } from 'hooks/socketEvents';
 import { ClientSubscription, SocketEventType } from 'types/subscription';
-// import { NightsStayOutlined } from '@material-ui/icons';
 import { ClientNotification } from 'types/notification';
 
 import { createSocketEventName } from 'utils';

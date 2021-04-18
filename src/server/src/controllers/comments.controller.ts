@@ -4,10 +4,7 @@ import { Router } from 'express';
 import { CommentService } from 'services/comments.services';
 import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
-import { castPersonedComment, castPersonComment, castUpdateItem } from 'cast';
-
-import { IoRequest } from 'utils';
-import { SocketMessages } from '../../../types/socket';
+import { castPersonedComment, castUpdateItem } from 'cast';
 
 import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
@@ -16,9 +13,14 @@ import { TaskService } from 'services/tasks.services';
 import { SubscriptionService } from 'services/subscriptions.services';
 import { NotificationService } from 'services/notifications.services';
 
+import { SocketMessages } from '../../../types/socket';
 import { SocketEventType } from '../../../types/subscription';
 
-import { createSocketEventName } from '../utils';
+import {
+  createSocketEventName,
+  affixPersonToComment,
+  IoRequest,
+} from '../utils';
 
 const commentsController = (router: Router): void => {
   const commentService = new CommentService();
@@ -174,8 +176,9 @@ const commentsController = (router: Router): void => {
         req.params.id,
         updatedComment
       );
+      const commentEntityWithPerson = await affixPersonToComment(fixedComment);
       const response = {
-        comment: castPersonedComment(castPersonComment(fixedComment)),
+        comment: commentEntityWithPerson,
         userId: req.userId,
       };
       req.io.emit('comments', response);

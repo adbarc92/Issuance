@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Comment {
+export class CommentEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

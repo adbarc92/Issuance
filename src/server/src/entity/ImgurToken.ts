@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ImgurToken {
+export class ImgurTokenEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

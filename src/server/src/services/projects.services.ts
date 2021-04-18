@@ -1,6 +1,6 @@
 import { getConnection, Repository } from 'typeorm';
 import { PersonService } from 'services/personnel.services';
-import { Project as ProjectEntity } from 'entity/Project';
+import { ProjectEntity } from 'entity/Project';
 import { NewProject, ClientProject as IProject } from '../../../types/project';
 import { snakeCasify, toCamelCase } from 'utils';
 import { fixProject } from 'cast';

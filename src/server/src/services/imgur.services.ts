@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 import dotenv from 'dotenv';
 import FormData from 'form-data';
 
-import { ImgurToken } from 'entity/ImgurToken';
+import { ImgurTokenEntity } from 'entity/ImgurToken';
 
 import { PersonService } from 'services/personnel.services';
 import { tokenIsExpired } from 'utils';
@@ -112,14 +112,14 @@ export interface ImgurImageDownloadResponse {
 }
 
 export class ImgurService {
-  imgurRepository: Repository<ImgurToken>;
+  imgurRepository: Repository<ImgurTokenEntity>;
 
   constructor() {
-    this.imgurRepository = getConnection().getRepository(ImgurToken);
+    this.imgurRepository = getConnection().getRepository(ImgurTokenEntity);
     configureDotEnv();
   }
 
-  async getAccessToken(): Promise<ImgurToken> {
+  async getAccessToken(): Promise<ImgurTokenEntity> {
     let token = await this.imgurRepository.findOne();
 
     if (!token || tokenIsExpired(token)) {

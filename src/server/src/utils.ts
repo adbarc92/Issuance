@@ -1,19 +1,23 @@
 import { randomBytes, createHmac } from 'crypto';
+import { v4 as uuid } from 'uuid';
 
 import { ClientTask } from '../../types/task';
-
-import { ServerComment, ClientComment } from '../../types/comment';
+import {
+  ServerComment,
+  ClientComment,
+  commentEntityWithPersonEntity,
+} from '../../types/comment';
 import { Person } from '../../types/person';
-import { v4 as uuid } from 'uuid';
-import { ImgurToken } from 'entity/ImgurToken';
-
-import { SubscriptionEntity } from 'entity/Subscription';
-
 import { UpdateItemTypes } from '../../types/updateItem';
-import { CommentService } from 'services/comments.services';
+import { SocketEventType } from '../../types/subscription';
+
+import { ImgurTokenEntity } from 'entity/ImgurToken';
+import { SubscriptionEntity } from 'entity/Subscription';
+import { CommentEntity } from 'entity/Comment';
+
 import { ProjectService } from 'services/projects.services';
 import { TaskService } from 'services/tasks.services';
-import { SocketEventType } from '../../types/subscription';
+import { PersonService } from 'services/personnel.services';
 
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
@@ -120,7 +124,7 @@ export const fixOutputComment = (
 
 export type IoRequest = Request & { io: any };
 
-export const tokenIsExpired = (token: ImgurToken): boolean => {
+export const tokenIsExpired = (token: ImgurTokenEntity): boolean => {
   const currentDate = new Date();
   if (token.expires_at > currentDate) {
     return false;
@@ -152,4 +156,23 @@ export const createSocketEventName = (
   socketEventNumber: string
 ): string => {
   return socketEventType + socketEventNumber;
+};
+
+export const affixPersonToComment = async (
+  comment: CommentEntity
+): Promise<commentEntityWithPersonEntity> => {
+  const personService = new PersonService();
+
+  const commenter = await personService.getPersonById(comment.commenter_id);
+
+  return {
+    id: comment.id,
+    index: comment.index,
+    task_id: comment.task_id,
+    commenter,
+    header_comment_id: comment.header_comment_id,
+    content: comment.content,
+    created_at: comment.created_at,
+    updated_at: comment.updated_at,
+  };
 };

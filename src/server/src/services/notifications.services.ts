@@ -1,5 +1,5 @@
 import { getConnection, Repository } from 'typeorm';
-import { Notification as NotificationEntity } from 'entity/Notification';
+import { NotificationEntity } from 'entity/Notification';
 
 export class NotificationService {
   notificationRepository: Repository<NotificationEntity>;

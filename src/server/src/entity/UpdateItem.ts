@@ -8,7 +8,7 @@ import {
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
 
 @Entity()
-export class UpdateItem {
+export class UpdateItemEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

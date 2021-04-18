@@ -1,10 +1,10 @@
 import { getConnection, Repository } from 'typeorm';
-import { Task as TaskEntity } from 'entity/Task';
+import { TaskEntity } from 'entity/Task';
 import { ClientTask, CommentedTask } from '../../../types/task';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
 import { CommentService } from 'services/comments.services';
 import { castCommentTask } from 'cast';
-import { Person as PersonEntity } from 'entity/Person';
+import { PersonEntity } from 'entity/Person';
 import { PersonService } from './personnel.services';
 
 export class TaskService {

@@ -1,13 +1,11 @@
 import { getConnection, Repository } from 'typeorm';
-import { Comment as CommentEntity } from 'entity/Comment';
+import { CommentEntity } from 'entity/Comment';
 import {
   ClientComment,
   NewComment,
-  personedComment,
+  commentEntityWithPersonEntity,
 } from '../../../types/comment';
-import { snakeCasify, toCamelCase } from 'utils';
-
-import { castPersonComment } from 'cast';
+import { snakeCasify, toCamelCase, affixPersonToComment } from 'utils';
 
 import { PersonService } from 'services/personnel.services';
 
@@ -18,7 +16,9 @@ export class CommentService {
     this.commentRepository = getConnection().getRepository(CommentEntity);
   }
 
-  async createComment(comment: NewComment): Promise<personedComment> {
+  async createComment(
+    comment: NewComment
+  ): Promise<commentEntityWithPersonEntity> {
     const snakeComment: NewComment = snakeCasify(comment);
     const newComment: CommentEntity = this.commentRepository.create(
       snakeComment
@@ -31,15 +31,15 @@ export class CommentService {
       .execute();
 
     const repoComment = await this.commentRepository.save(newComment);
-    const personService = new PersonService();
-    const fixedComment = castPersonComment(repoComment);
-    fixedComment.commenter = await personService.getPersonById(
-      repoComment.commenter_id
-    );
+
+    const fixedComment = await affixPersonToComment(repoComment);
+
     return fixedComment;
   }
 
-  async getCommentsByTaskId(taskId: string): Promise<personedComment[]> {
+  async getCommentsByTaskId(
+    taskId: string
+  ): Promise<commentEntityWithPersonEntity[]> {
     const personService = new PersonService();
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
@@ -47,28 +47,24 @@ export class CommentService {
       .where('task_id = :id', { id: taskId })
       .execute();
 
-    const personedComments: personedComment[] = comments.map(comment =>
-      castPersonComment(comment)
-    );
+    const personedComments: commentEntityWithPersonEntity[] = [];
 
-    for (let i = 0; i < personedComments.length; i++) {
+    for (let i = 0; i < comments.length; i++) {
       const person = await personService.getPersonById(
         comments[i].commenter_id
       );
-      personedComments[i].commenter = person;
+      const personedComment = await affixPersonToComment(comments[i]);
+      personedComments.push(personedComment);
     }
     return personedComments;
   }
 
-  async getCommentById(commentId: string): Promise<personedComment> {
+  async getCommentById(
+    commentId: string
+  ): Promise<commentEntityWithPersonEntity> {
     const comment = await this.commentRepository.findOne({ id: commentId });
-    const personedComment = castPersonComment(comment);
 
-    const personService = new PersonService();
-
-    personedComment.commenter = await personService.getPersonById(
-      comment.commenter_id
-    );
+    const personedComment = await affixPersonToComment(comment);
 
     return personedComment;
   }
