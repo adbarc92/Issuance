@@ -1,4 +1,5 @@
 // Todo: Refactor ReactCookies and PageWrapper.person into React.Context? Implement React-Cookie?
+// Todo: better separate of concerns between Login and the Application, itself
 
 import React, { useEffect } from 'react';
 import Navigation from 'components/Navigation';
