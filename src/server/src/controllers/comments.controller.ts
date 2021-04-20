@@ -80,12 +80,8 @@ const commentsController = (router: Router): void => {
         SocketEventType.SUBSCRIPTION,
         assigneeSubscription.subscriber_id
       );
-      req.io.emit(commenterSocketEventName, commenterSubscription);
 
-      // const newNotification = await notificationService.createNotification(
-      //   assignedPerson.id,
-      //   newUpdateItem.id
-      // );
+      req.io.emit(commenterSocketEventName, commenterSubscription);
 
       const subscriptions = await subscriptionService.getSubscriptionsByItemId(
         personedComment.id
@@ -93,6 +89,7 @@ const commentsController = (router: Router): void => {
 
       // Todo: refactor to separate function?
       for (const subscription of subscriptions) {
+        console.log('subscription:', subscription);
         const newNotification = await notificationService.createNotification(
           subscription.subscriber_id,
           newUpdateItem.id
@@ -107,20 +104,6 @@ const commentsController = (router: Router): void => {
 
         req.io.emit(notificationSocketEvent, newNotification);
       }
-
-      // subscriptions.forEach(async subscription => {
-      //   const newNotification = await notificationService.createNotification(
-      //     subscription.subscriber_id,
-      //     newUpdateItem.id
-      //   );
-      //   console.log('newNotification:', newNotification);
-      //   const notificationSocketEvent = createSocketEventName(
-      //     SocketEventType.NOTIFICATION,
-      //     subscription.subscribed_item_id
-      //   );
-      //   console.log('posting to socketEvent:', notificationSocketEvent);
-      //   req.io.emit(notificationSocketEvent, newNotification);
-      // });
 
       return res.send(clientComment);
     } catch (e) {

@@ -22,11 +22,15 @@ export class UpdateItemService {
     action_type: UpdateItemActions,
     user_id: string
   ): Promise<UpdateItemEntity> {
-    return this.updateItemRepository.create({
+    const newUpdateItem = this.updateItemRepository.create({
       item_type,
       item_id,
       action_type,
       user_id,
     });
+
+    const repoUpdateItem = await this.updateItemRepository.save(newUpdateItem);
+
+    return repoUpdateItem;
   }
 }

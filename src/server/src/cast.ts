@@ -45,9 +45,6 @@ export const castPersonedComment = (
   const commenter = castPerson(comment.commenter);
   const clientComment: ClientComment = camelCasify(comment);
   clientComment.commenter = commenter;
-
-  console.log('clientComment:', clientComment);
-
   return clientComment;
 };
 

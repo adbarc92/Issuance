@@ -165,8 +165,6 @@ export const affixPersonToComment = async (
 
   const commenter = await personService.getPersonById(comment.commenter_id);
 
-  console.log('commenter:', commenter);
-
   const fixedComment = {
     id: comment.id,
     index: comment.index,
@@ -177,8 +175,6 @@ export const affixPersonToComment = async (
     created_at: comment.created_at,
     updated_at: comment.updated_at,
   };
-
-  console.log('fixedComment:', fixedComment);
 
   return fixedComment;
 };

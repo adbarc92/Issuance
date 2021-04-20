@@ -72,6 +72,7 @@ const PageWrapper = (props: any): JSX.Element => {
 let render: any = null;
 
 export const reRenderApp = (): void => {
+  console.log('Rerendering app');
   render();
 };
 

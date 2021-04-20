@@ -46,7 +46,6 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
     socket.on(
       SocketMessages.COMMENTS,
       (commentPayload: updateCommentResponse) => {
-        console.log('commentPayload:', commentPayload);
         if (commentPayload.userId !== getUserToken()) {
           handleUpdateComment(commentPayload.comment);
           reRenderApp();

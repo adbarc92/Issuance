@@ -24,24 +24,16 @@ export class CommentService {
       snakeComment
     );
 
-    // Gets this far
-
-    const updateResult = await this.commentRepository
+    await this.commentRepository
       .createQueryBuilder()
       .update('comment_entity')
       .set({ index: () => 'index + 1' })
       .where('index >= 1')
       .execute();
 
-    console.log('updateResult:', updateResult);
-
     const repoComment = await this.commentRepository.save(newComment);
 
-    console.log('repoComment:', repoComment);
-
     const fixedComment = await affixPersonToComment(repoComment);
-
-    console.log('fixedComment:', fixedComment);
 
     return fixedComment;
   }
