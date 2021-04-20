@@ -4,6 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ClientComment } from 'types/comment';
 import { styled } from '@material-ui/core';
+import { getPersonName } from 'utils';
 
 export interface CommentProps {
   comment: ClientComment;
@@ -19,16 +20,16 @@ const CommentContainer = styled('div')(() => {
 const Comment = (props: CommentProps): JSX.Element => {
   const { commenter, content, createdAt } = props.comment;
 
-  const { firstName, lastName, id, userEmail } = commenter;
+  const { id } = commenter;
 
-  const displayName = firstName && lastName ? `/personnel/${id}` : userEmail;
+  const displayName = getPersonName(commenter);
 
   return (
     <CommentContainer>
       <div>
         <div>
           <Link to={`/personnel/${id}`}>
-            <div>{displayName}</div>
+            <div>{displayName ?? `User ${id}`}</div>
           </Link>
           <div>{createdAt}</div>
         </div>

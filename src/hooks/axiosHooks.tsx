@@ -54,7 +54,9 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const getTask = async (taskId: string): Promise<ClientTask | null> => {
+export const getTaskById = async (
+  taskId: string
+): Promise<ClientTask | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
     return res.data;
@@ -64,10 +66,10 @@ export const getTask = async (taskId: string): Promise<ClientTask | null> => {
   }
 };
 
-export const useGetTask = (id: string): IDataLoader<ClientTask | null> => {
+export const useGetTaskById = (id: string): IDataLoader<ClientTask | null> => {
   return useGetData(
     () => {
-      return getTask(id);
+      return getTaskById(id);
     },
     CacheKey.TASKS,
     String(id)

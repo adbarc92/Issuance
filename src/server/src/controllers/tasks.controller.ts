@@ -21,6 +21,7 @@ const tasksController = (router: Router): void => {
     try {
       const task = await taskService.getTaskById(req.params.id);
       const commentedTask = castCommentedTask(task);
+      console.log('commentedTask:', commentedTask);
       return res.send(commentedTask);
     } catch (e) {
       res.status(500);

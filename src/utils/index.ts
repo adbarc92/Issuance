@@ -48,12 +48,11 @@ export const createSocketEventName = (
 };
 
 export const getPersonName = (person: Person): string => {
-  const { firstName, lastName, userEmail } = person;
-  const name =
-    firstName && lastName
-      ? `${firstName} ${lastName}`
-      : firstName
-      ? firstName
-      : userEmail;
-  return name;
+  if (person.firstName && person.lastName) {
+    return `${person.firstName} ${person.lastName}`;
+  } else if (person.firstName) {
+    return person.firstName;
+  } else {
+    return person.userEmail;
+  }
 };

@@ -178,7 +178,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            {getPersonName(person)}
+            {`Hello, ${getPersonName(person)}!`}
           </Typography>
           <NotificationIconContainer>
             <NotificationsActiveIcon onClick={() => onBellClick()} />

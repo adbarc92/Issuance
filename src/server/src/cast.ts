@@ -6,6 +6,7 @@ import { ProjectEntity } from 'entity/Project';
 import { UserEntity } from 'entity/User';
 import { UpdateItemEntity } from 'entity/UpdateItem';
 import { SubscriptionEntity } from 'entity/Subscription';
+import { CommentEntity } from 'entity/Comment';
 
 import {
   ClientComment,
@@ -26,7 +27,6 @@ export const castTask = (task: TaskEntity): ClientTask => {
   return camelCasify({ ...task, typeName: 'Task' });
 };
 
-// Todo: refactor to shorten
 export const castCommentedTask = (task: CommentedTask): ClientTask => {
   const comments = task.comments.map(comment => castPersonedComment(comment));
 
@@ -42,19 +42,21 @@ export const castCommentTask = (task: TaskEntity): CommentedTask => {
 export const castPersonedComment = (
   comment: commentEntityWithPersonEntity
 ): ClientComment => {
-  // const commenter = castPerson(comment.commenter);
+  const commenter = castPerson(comment.commenter);
   const clientComment: ClientComment = camelCasify(comment);
-  // clientComment.commenter = commenter;
+  clientComment.commenter = commenter;
+
+  console.log('clientComment:', clientComment);
 
   return clientComment;
 };
 
-// export const castPersonComment = (
-//   comment: CommentEntity,
-//   commenter: PersonEntity
-// ): commentEntityWithPersonEntity => {
-//   return { ...comment, commenter: castPerson(commenter) };
-// };
+export const castPersonComment = (
+  comment: CommentEntity,
+  commenter: PersonEntity
+): commentEntityWithPersonEntity => {
+  return { ...comment, commenter };
+};
 
 export const castPerson = (person: PersonEntity): IPerson => {
   return camelCasify({ ...person });
