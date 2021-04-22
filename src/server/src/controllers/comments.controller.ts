@@ -22,6 +22,7 @@ import {
   IoRequest,
   logThenEmit,
 } from '../utils';
+import { UserService } from 'services/users.services';
 
 const commentsController = (router: Router): void => {
   const commentService = new CommentService();
@@ -35,6 +36,7 @@ const commentsController = (router: Router): void => {
       const subscriptionService = new SubscriptionService();
       const taskService = new TaskService();
       const notificationService = new NotificationService();
+      const userService = new UserService();
 
       const personedComment = await commentService.createComment(req.body);
 
@@ -59,19 +61,25 @@ const commentsController = (router: Router): void => {
         personedComment.task_id
       );
 
-      const assigneeSubscription = await subscriptionService.createSubscription(
-        personedComment.task_id,
-        assignedPerson.id, // Todo: major issue - PersonId vs. UserId; FB's shadow profile?
-        UpdateItemTypes.COMMENT
+      const assignedUser = await userService.getUserByPersonId(
+        assignedPerson.id
       );
 
-      // Todo: undo redundant subscription emission
-      const assigneeSocketEventName = createSocketEventName(
-        SocketEventType.SUBSCRIPTION,
-        assigneeSubscription.subscriber_id
-      );
-      // req.io.emit(assigneeSocketEventName, assigneeSubscription);
-      logThenEmit(req, assigneeSocketEventName, assigneeSubscription);
+      if (assignedUser) {
+        const assigneeSubscription = await subscriptionService.createSubscription(
+          personedComment.task_id,
+          assignedUser.id,
+          UpdateItemTypes.COMMENT
+        );
+
+        // Todo: undo redundant subscription emission
+        const assigneeSocketEventName = createSocketEventName(
+          SocketEventType.SUBSCRIPTION,
+          assigneeSubscription.subscriber_id
+        );
+        // req.io.emit(assigneeSocketEventName, assigneeSubscription);
+        logThenEmit(req, assigneeSocketEventName, assigneeSubscription);
+      }
 
       const commenterSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
@@ -81,7 +89,7 @@ const commentsController = (router: Router): void => {
 
       const commenterSocketEventName = createSocketEventName(
         SocketEventType.SUBSCRIPTION,
-        assigneeSubscription.subscriber_id
+        commenterSubscription.subscriber_id
       );
 
       // req.io.emit(commenterSocketEventName, commenterSubscription);
