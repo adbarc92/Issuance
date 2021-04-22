@@ -36,7 +36,6 @@ const TaskTablePage = (): JSX.Element => {
   // * useSocketEvents will replace this
   useEffect(() => {
     socket.on(SocketMessages.TASKS, (taskPayload: UpdateTaskResponse) => {
-      console.log('updating task');
       if (taskPayload.userId !== getUserToken()) {
         handleUpdateTask(taskPayload);
         reRenderApp();

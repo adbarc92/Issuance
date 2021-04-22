@@ -70,7 +70,6 @@ export const handleUpdateTask = (data: UpdateTaskResponse): void => {
 };
 
 export const handleUpdateComment = (comment: ClientComment): void => {
-  console.log('updating cache');
   const baseCacheKey = CacheKey.TASKS;
   const { taskId: id } = comment;
   const cacheKey = baseCacheKey + (id ?? '');
@@ -155,7 +154,6 @@ export const updatePerson = async (
   person: Partial<IPerson> & { id: string }
 ): Promise<IPerson | null> => {
   try {
-    console.log('updating person...', person);
     const res = await api.put(`/personnel/${person.id}`, person);
     handleUpdatePerson(res.data);
     return res.data;
