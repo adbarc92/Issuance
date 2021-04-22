@@ -21,4 +21,7 @@ export class NotificationEntity {
 
   @CreateDateColumn()
   created_at?: Date;
+
+  // @Column('uuid')
+  // subscription_id: string;
 }

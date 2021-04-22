@@ -7,6 +7,7 @@ import { UserEntity } from 'entity/User';
 import { UpdateItemEntity } from 'entity/UpdateItem';
 import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
+import { NotificationEntity } from 'entity/Notification';
 
 import {
   ClientComment,
@@ -18,6 +19,10 @@ import { ClientSubscription } from '../../types/subscription';
 import { ClientTask, CommentedTask } from '../../types/task';
 import { ClientUpdateItem } from '../../types/updateItem';
 import { ClientUser } from '../../types/user';
+import {
+  ClientNotification,
+  ServerNotification,
+} from '../../types/notification';
 
 import { camelCasify, getSubscriptionItemName } from 'utils';
 
@@ -95,4 +100,10 @@ export const castSubscription = async (
     ...subscription,
     subscribedItemName: subItemName,
   });
+};
+
+export const castNotification = async (
+  notification: ServerNotification
+): Promise<ClientNotification> => {
+  return camelCasify({ ...notification });
 };

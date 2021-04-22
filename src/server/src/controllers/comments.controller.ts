@@ -3,8 +3,8 @@
 import { Router } from 'express';
 import { CommentService } from 'services/comments.services';
 import { Request, Response } from 'express';
-import { createErrorResponse } from 'utils';
-import { castPersonedComment, castUpdateItem } from 'cast';
+import { createErrorResponse, affixUpdateItemToNotification } from 'utils';
+import { castPersonedComment, castUpdateItem, castNotification } from 'cast';
 
 import { UpdateItemService } from 'services/updateItems.services';
 import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
@@ -88,17 +88,21 @@ const commentsController = (router: Router): void => {
       logThenEmit(req, commenterSocketEventName, commenterSubscription);
 
       const subscriptions = await subscriptionService.getSubscriptionsByItemId(
-        personedComment.id
+        personedComment.task_id
       );
+
+      console.log('subscriptions:', subscriptions);
 
       // Todo: refactor to separate function?
       for (const subscription of subscriptions) {
-        console.log('subscription:', subscription);
         const newNotification = await notificationService.createNotification(
           subscription.subscriber_id,
           newUpdateItem.id
         );
-        console.log('newNotification:', newNotification);
+
+        const fixedNotification = await affixUpdateItemToNotification(
+          newNotification
+        );
 
         const notificationSocketEvent = createSocketEventName(
           SocketEventType.NOTIFICATION,
@@ -106,8 +110,12 @@ const commentsController = (router: Router): void => {
         );
         console.log('notificationSocketEvent:', notificationSocketEvent);
 
+        const clientNotification = await castNotification(fixedNotification);
+
+        console.log('clientNotification:', clientNotification);
+
         // req.io.emit(notificationSocketEvent, newNotification);
-        logThenEmit(req, notificationSocketEvent, newNotification);
+        logThenEmit(req, notificationSocketEvent, clientNotification);
       }
 
       return res.send(clientComment);

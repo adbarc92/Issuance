@@ -10,14 +10,19 @@ import {
 import { Person } from '../../types/person';
 import { UpdateItemTypes } from '../../types/updateItem';
 import { SocketEventType } from '../../types/subscription';
+import { ServerNotification } from '../../types/notification';
 
 import { ImgurTokenEntity } from 'entity/ImgurToken';
 import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
+import { NotificationEntity } from 'entity/Notification';
+import { PersonEntity } from 'entity/Person';
 
 import { ProjectService } from 'services/projects.services';
 import { TaskService } from 'services/tasks.services';
+import { UserService } from 'services/users.services';
 import { PersonService } from 'services/personnel.services';
+import { UpdateItemService } from 'services/updateItems.services';
 
 import { Request } from 'express';
 
@@ -191,4 +196,72 @@ export const logThenEmit = (
   console.log('res:', res);
 
   req.io.emit(socketEventName, res);
+};
+
+export const getPersonName = (person: PersonEntity): string => {
+  if (person.first_name && person.last_name) {
+    return `${person.first_name} ${person.last_name}`;
+  } else if (person.first_name) {
+    return person.first_name;
+  } else {
+    return person.user_email;
+  }
+};
+
+export const affixUpdateItemToNotification = async (
+  notification: NotificationEntity
+): Promise<ServerNotification | null> => {
+  try {
+    const {
+      id,
+      viewed,
+      user_id: owner_id,
+      update_item_id,
+      created_at,
+    } = notification;
+
+    const updateItemService = new UpdateItemService();
+
+    const updateItem = await updateItemService.getUpdateItemById(
+      update_item_id
+    );
+
+    console.log('updateItem:', updateItem);
+
+    const {
+      created_at: change_made_at,
+      action_type,
+      user_id: changer_id,
+      item_id,
+    } = updateItem;
+
+    const userService = new UserService();
+    const personService = new PersonService();
+
+    const user = await userService.getUserById(changer_id);
+
+    console.log('user:', user);
+
+    const person = await personService.getPersonById(user.person_id);
+
+    console.log('person:', person);
+
+    const changer_name = getPersonName(person);
+
+    return {
+      id,
+      viewed,
+      owner_id,
+      created_at,
+      changer_id,
+      changer_name,
+      action_type,
+      change_made_at,
+      item_id,
+    };
+  } catch (e) {
+    console.error(e);
+    console.log('Failed to affix UpdateItem to Notification');
+    return null;
+  }
 };

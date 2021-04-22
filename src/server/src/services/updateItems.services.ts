@@ -33,4 +33,10 @@ export class UpdateItemService {
 
     return repoUpdateItem;
   }
+
+  async getUpdateItemById(update_item_id: string): Promise<UpdateItemEntity> {
+    return await this.updateItemRepository.findOne({
+      id: update_item_id,
+    });
+  }
 }
