@@ -42,10 +42,13 @@ const TaskPage = (props: TaskPageProps): JSX.Element => {
   );
   const [editingTask, setEditingTask] = React.useState(false);
 
+  console.log('taskData:', data);
+
   useEffect(() => {
     socket.on(
       SocketMessages.COMMENTS,
       (commentPayload: updateCommentResponse) => {
+        console.log('RECEIVING EMISSION:', commentPayload);
         if (commentPayload.userId !== getUserToken()) {
           handleUpdateComment(commentPayload.comment);
           reRenderApp();

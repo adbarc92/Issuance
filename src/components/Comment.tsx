@@ -46,11 +46,9 @@ export interface CommentsProps {
 const Comments = (props: CommentsProps): JSX.Element => {
   const { comments } = props;
 
-  const [commentState] = React.useState(comments);
-
   return (
     <>
-      {commentState.map((comment, index) => {
+      {comments.map((comment, index) => {
         return <Comment key={index} comment={comment} />;
       })}
     </>

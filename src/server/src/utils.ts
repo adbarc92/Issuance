@@ -19,6 +19,8 @@ import { ProjectService } from 'services/projects.services';
 import { TaskService } from 'services/tasks.services';
 import { PersonService } from 'services/personnel.services';
 
+import { Request } from 'express';
+
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
   return JSON.stringify({ errors });
@@ -177,4 +179,16 @@ export const affixPersonToComment = async (
   };
 
   return fixedComment;
+};
+
+export const logThenEmit = (
+  req: Request & { io: any; userId: string },
+  socketEventName: string,
+  res: any
+) => {
+  console.log('LOG THEN EMIT');
+  console.log('socketEventName:', socketEventName);
+  console.log('res:', res);
+
+  req.io.emit(socketEventName, res);
 };

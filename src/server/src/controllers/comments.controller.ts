@@ -20,6 +20,7 @@ import {
   createSocketEventName,
   affixPersonToComment,
   IoRequest,
+  logThenEmit,
 } from '../utils';
 
 const commentsController = (router: Router): void => {
@@ -44,7 +45,8 @@ const commentsController = (router: Router): void => {
         comment: clientComment,
       };
 
-      req.io.emit(SocketMessages.COMMENTS, socketResponse);
+      // req.io.emit(SocketMessages.COMMENTS, socketResponse);
+      logThenEmit(req, SocketMessages.COMMENTS, socketResponse);
 
       const newUpdateItem = await updateItemServices.addUpdateItem(
         UpdateItemTypes.COMMENT,
@@ -68,7 +70,8 @@ const commentsController = (router: Router): void => {
         SocketEventType.SUBSCRIPTION,
         assigneeSubscription.subscriber_id
       );
-      req.io.emit(assigneeSocketEventName, assigneeSubscription);
+      // req.io.emit(assigneeSocketEventName, assigneeSubscription);
+      logThenEmit(req, assigneeSocketEventName, assigneeSubscription);
 
       const commenterSubscription = await subscriptionService.createSubscription(
         personedComment.task_id,
@@ -81,7 +84,8 @@ const commentsController = (router: Router): void => {
         assigneeSubscription.subscriber_id
       );
 
-      req.io.emit(commenterSocketEventName, commenterSubscription);
+      // req.io.emit(commenterSocketEventName, commenterSubscription);
+      logThenEmit(req, commenterSocketEventName, commenterSubscription);
 
       const subscriptions = await subscriptionService.getSubscriptionsByItemId(
         personedComment.id
@@ -102,7 +106,8 @@ const commentsController = (router: Router): void => {
         );
         console.log('notificationSocketEvent:', notificationSocketEvent);
 
-        req.io.emit(notificationSocketEvent, newNotification);
+        // req.io.emit(notificationSocketEvent, newNotification);
+        logThenEmit(req, notificationSocketEvent, newNotification);
       }
 
       return res.send(clientComment);
@@ -164,7 +169,8 @@ const commentsController = (router: Router): void => {
         comment: commentEntityWithPerson,
         userId: req.userId,
       };
-      req.io.emit('comments', response);
+      // req.io.emit(SocketMessages.COMMENTS, response);
+      logThenEmit(req, SocketMessages.COMMENTS, response);
 
       const updateItemServices = new UpdateItemService();
       const newUpdateItem = await updateItemServices.addUpdateItem(
@@ -179,7 +185,8 @@ const commentsController = (router: Router): void => {
         userId: req.userId,
       };
 
-      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      logThenEmit(req, SocketMessages.UPDATE_ITEMS, updateItemResponse);
 
       res.send(response);
     } catch (e) {

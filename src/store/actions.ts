@@ -70,10 +70,11 @@ export const handleUpdateTask = (data: UpdateTaskResponse): void => {
 };
 
 export const handleUpdateComment = (comment: ClientComment): void => {
+  console.log('updating cache');
   const baseCacheKey = CacheKey.TASKS;
   const { taskId: id } = comment;
   const cacheKey = baseCacheKey + (id ?? '');
-  requestCache[cacheKey].comments.push(comment);
+  requestCache[cacheKey].comments.push(comment); // Todo: add catching for cache miss
 };
 
 export const createTask = async (
