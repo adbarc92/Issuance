@@ -99,8 +99,6 @@ const commentsController = (router: Router): void => {
         personedComment.task_id
       );
 
-      console.log('subscriptions:', subscriptions);
-
       // Todo: refactor to separate function?
       for (const subscription of subscriptions) {
         const newNotification = await notificationService.createNotification(

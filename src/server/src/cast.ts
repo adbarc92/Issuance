@@ -3,12 +3,9 @@
 import { PersonEntity } from 'entity/Person';
 import { TaskEntity } from 'entity/Task';
 import { ProjectEntity } from 'entity/Project';
-import { UserEntity } from 'entity/User';
 import { UpdateItemEntity } from 'entity/UpdateItem';
 import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
-import { NotificationEntity } from 'entity/Notification';
-
 import {
   ClientComment,
   commentEntityWithPersonEntity,
@@ -18,7 +15,7 @@ import { ClientProject as IProject } from '../../types/project';
 import { ClientSubscription } from '../../types/subscription';
 import { ClientTask, CommentedTask } from '../../types/task';
 import { ClientUpdateItem } from '../../types/updateItem';
-import { ClientUser } from '../../types/user';
+import { ClientUser, ServerUser } from '../../types/user';
 import {
   ClientNotification,
   ServerNotification,
@@ -64,8 +61,14 @@ export const castPerson = (person: PersonEntity): IPerson => {
   return camelCasify({ ...person });
 };
 
-export const castUser = (user: UserEntity): ClientUser => {
-  return camelCasify({ ...user });
+export const castUser = (user: ServerUser): ClientUser => {
+  const { notifications: serverNotifications } = user;
+  const notifications = serverNotifications.length
+    ? (serverNotifications as ServerNotification[]).map(serverNotification =>
+        castNotification(serverNotification)
+      )
+    : [];
+  return camelCasify({ ...user, notifications });
 };
 
 export const fixProject = (
@@ -102,8 +105,8 @@ export const castSubscription = async (
   });
 };
 
-export const castNotification = async (
+export const castNotification = (
   notification: ServerNotification
-): Promise<ClientNotification> => {
+): ClientNotification => {
   return camelCasify({ ...notification });
 };

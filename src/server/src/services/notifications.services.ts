@@ -27,4 +27,16 @@ export class NotificationService {
 
     return repoNotification;
   }
+
+  async getNotificationsByUserId(
+    user_id: string
+  ): Promise<NotificationEntity[]> {
+    // return await this.notificationRepository
+    //   .createQueryBuilder('notification_entity')
+    //   .select('*')
+    //   .where('user_id = :user_id', { user_id })
+    //   .execute();
+
+    return await this.notificationRepository.find({ user_id });
+  }
 }

@@ -35,8 +35,10 @@ import {
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';
-import { Person } from 'types/person';
 import { getPersonName } from 'utils/index';
+import { Person } from 'types/person';
+import { ClientUser } from 'types/user';
+import { ClientNotification } from 'types/notification';
 
 const drawerWidth = 240;
 
@@ -116,7 +118,7 @@ const NotificationPanel = styled('div')((props: any) => {
     position: 'absolute',
     minWidth: '3rem',
     minHeight: '3rem',
-    hidden: props.hidden,
+    // hidden: props.hidden,
   };
 });
 
@@ -128,10 +130,15 @@ const NotificationIconContainer = styled('div')(() => {
 
 interface NavigationProps {
   person: Person;
+  user: ClientUser;
 }
 
 const Navigation = (props: NavigationProps): JSX.Element => {
-  const { person } = props;
+  const { person, user } = props;
+
+  const { notifications } = user;
+
+  console.log('userNotifications:', notifications);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -182,8 +189,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <NotificationsActiveIcon onClick={() => onBellClick()} />
           </NotificationIconContainer>
           {showNotifications ? (
-            <NotificationPanel hidden={showNotifications}>
-              This is where notifications will be shown
+            <NotificationPanel hidden={!showNotifications}>
+              {notifications.length
+                ? null
+                : (notifications as ClientNotification[]).map(
+                    (notification, key) => {
+                      return <div key={key}>JSON.stringify(notification)</div>;
+                    }
+                  )}
             </NotificationPanel>
           ) : null}
           <div className={classes.searchfieldContainer}>

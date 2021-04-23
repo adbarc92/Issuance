@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UserService } from 'services/users.services';
-import { createErrorResponse } from 'utils';
+import { createErrorResponse, affixNotificationsToUser } from 'utils';
 import { castUser, castPerson } from 'cast';
 
 // * The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
@@ -13,8 +13,13 @@ const usersController = (router: Router): void => {
 
   router.get('/users', async function (req: Request, res: Response) {
     try {
-      const users = await userService.getUsers();
-      res.json(users.map(user => castUser(user)));
+      const userEntities = await userService.getUsers();
+      const usersWithNotifications = await Promise.all(
+        userEntities.map(async userEntity =>
+          affixNotificationsToUser(userEntity)
+        )
+      );
+      res.json(usersWithNotifications.map(user => castUser(user)));
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -24,7 +29,11 @@ const usersController = (router: Router): void => {
   router.get('/users/:id', async function (req: Request, res: Response) {
     try {
       const user = await userService.getUserById(req.params.id);
-      res.json(castUser(user));
+      const userWithNotifications = await affixNotificationsToUser(user);
+
+      const clientUser = castUser(userWithNotifications);
+
+      res.send(clientUser);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -47,7 +56,9 @@ const usersController = (router: Router): void => {
         return res.send(createErrorResponse(['User already exists.']));
       }
 
-      return res.send(castUser(user));
+      const fixedUser = await affixNotificationsToUser(user);
+
+      return res.send(castUser(fixedUser));
     } catch (e) {
       console.error('Error occurred:', e);
       res.status(403);

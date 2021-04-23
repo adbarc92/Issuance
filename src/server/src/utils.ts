@@ -11,12 +11,14 @@ import { Person } from '../../types/person';
 import { UpdateItemTypes } from '../../types/updateItem';
 import { SocketEventType } from '../../types/subscription';
 import { ServerNotification } from '../../types/notification';
+import { ServerUser } from '../../types/user';
 
 import { ImgurTokenEntity } from 'entity/ImgurToken';
 import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
 import { NotificationEntity } from 'entity/Notification';
 import { PersonEntity } from 'entity/Person';
+import { UserEntity } from 'entity/User';
 
 import { ProjectService } from 'services/projects.services';
 import { TaskService } from 'services/tasks.services';
@@ -26,6 +28,7 @@ import { UpdateItemService } from 'services/updateItems.services';
 
 import { Request } from 'express';
 import { SubscriptionService } from 'services/subscriptions.services';
+import { NotificationService } from 'services/notifications.services';
 
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
@@ -150,7 +153,6 @@ export const getSubscriptionItemName = async (
     case UpdateItemTypes.TASK:
       const taskService = new TaskService();
       const task = await taskService.getTaskById(subscribed_item_id);
-      console.log('taskName:', task.name);
       return task.name;
     case UpdateItemTypes.PROJECT:
       const projectService = new ProjectService();
@@ -228,8 +230,6 @@ export const affixUpdateItemToNotification = async (
       update_item_id
     );
 
-    console.log('updateItem:', updateItem);
-
     const {
       created_at: change_made_at,
       action_type,
@@ -249,11 +249,7 @@ export const affixUpdateItemToNotification = async (
 
     const user = await userService.getUserById(changer_id);
 
-    console.log('user:', user);
-
     const person = await personService.getPersonById(user.person_id);
-
-    console.log('person:', person);
 
     const changer_name = getPersonName(person);
 
@@ -274,4 +270,43 @@ export const affixUpdateItemToNotification = async (
     console.log('Failed to affix UpdateItem to Notification');
     return null;
   }
+};
+
+export const affixNotificationsToUser = async (
+  user: UserEntity
+): Promise<ServerUser> => {
+  const notificationService = new NotificationService();
+
+  const notificationEntities = await notificationService.getNotificationsByUserId(
+    user.id
+  );
+
+  const notifications = notificationEntities
+    ? await Promise.all(
+        notificationEntities.map(async notificationEntity => {
+          return await affixUpdateItemToNotification(notificationEntity);
+        })
+      )
+    : [];
+
+  const {
+    id,
+    email,
+    person_id,
+    role,
+    created_at,
+    updated_at,
+    latest_activity,
+  } = user;
+
+  return {
+    id,
+    email,
+    person_id,
+    role,
+    created_at,
+    updated_at,
+    latest_activity,
+    notifications,
+  };
 };

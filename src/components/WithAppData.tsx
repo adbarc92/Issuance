@@ -7,6 +7,7 @@ import { getUserToken } from 'store/auth';
 import {
   useGetUserPersonById,
   useGetUserSubscriptionsById,
+  useGetUserById,
 } from 'hooks/axiosHooks';
 
 import { Person } from 'types/person';
@@ -16,6 +17,7 @@ import App from 'App';
 import Center from 'elements/Center';
 import LoadingSpinner from 'elements/LoadingSpinner';
 import { ClientSubscription } from 'types/subscription';
+import { ClientUser } from 'types/user';
 
 const WithAppData = (): JSX.Element => {
   const userId = getUserToken() ?? '';
@@ -32,9 +34,15 @@ const WithAppData = (): JSX.Element => {
     error: personError,
   } = useGetUserPersonById(userId);
 
-  const isLoading = subscriptionLoading || personLoading;
+  const {
+    loading: userLoading,
+    data: userData,
+    error: userError,
+  } = useGetUserById(userId);
 
-  const isError = subscriptionError || personError;
+  const isLoading = subscriptionLoading || personLoading || userLoading;
+
+  const isError = subscriptionError || personError || userError;
 
   if (isLoading || isError) {
     return (
@@ -48,6 +56,7 @@ const WithAppData = (): JSX.Element => {
     <App
       person={personData as Person}
       subscriptions={subscriptionData as ClientSubscription[]}
+      user={userData as ClientUser}
     />
   );
 };

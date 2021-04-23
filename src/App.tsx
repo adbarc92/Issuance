@@ -28,6 +28,7 @@ import './io';
 import { getUserToken, setUserToken } from 'store/auth';
 
 import { Person } from 'types/person';
+import { ClientUser } from 'types/user';
 import { socket } from './io';
 import { useSocketEvents, SocketEvent } from 'hooks/socketEvents';
 import { ClientSubscription, SocketEventType } from 'types/subscription';
@@ -61,7 +62,7 @@ const PageWrapper = (props: any): JSX.Element => {
   return (
     <div>
       <div className={classes.toolbar} />
-      <Navigation person={props.person} />
+      <Navigation person={props.person} user={props.user} />
       <PageContent>
         <ChildrenWrapper>{props.children}</ChildrenWrapper>
       </PageContent>
@@ -79,12 +80,15 @@ export const reRenderApp = (): void => {
 export interface AppProps {
   person?: Person;
   subscriptions?: ClientSubscription[];
+  user?: ClientUser;
 }
 
 const App = (props: AppProps): JSX.Element => {
   const userId = getUserToken() ?? '';
 
-  const { person, subscriptions } = props;
+  const { person, subscriptions, user } = props;
+
+  console.log('user:', user);
 
   const rerender = useForceUpdate();
 
@@ -128,7 +132,7 @@ const App = (props: AppProps): JSX.Element => {
       <PageContainer>
         <Switch>
           <Route exact path="/">
-            <PageWrapper person={person}>
+            <PageWrapper user={user} person={person}>
               <Dashboard />
             </PageWrapper>
           </Route>
@@ -144,22 +148,22 @@ const App = (props: AppProps): JSX.Element => {
             }}
           />
           <Route exact path="/personnel">
-            <PageWrapper person={person}>
+            <PageWrapper user={user} person={person}>
               <PersonnelTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/projects">
-            <PageWrapper person={person}>
+            <PageWrapper user={user} person={person}>
               <ProjectsPage />
             </PageWrapper>
           </Route>
           <Route exact path="/tasks">
-            <PageWrapper person={person}>
+            <PageWrapper user={user} person={person}>
               <TaskTablePage />
             </PageWrapper>
           </Route>
           <Route exact path="/notifications">
-            <PageWrapper person={person}>
+            <PageWrapper user={user} person={person}>
               <NotificationPage />
             </PageWrapper>
           </Route>
@@ -170,7 +174,7 @@ const App = (props: AppProps): JSX.Element => {
             path="/tasks/:taskId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={person}>
+                <PageWrapper user={user} person={person}>
                   <TaskPage
                     personId={(person as Person).id}
                     taskId={match.params.taskId}
@@ -183,7 +187,7 @@ const App = (props: AppProps): JSX.Element => {
             path="/personnel/:personId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={person}>
+                <PageWrapper user={user} person={person}>
                   <PersonPage personId={match.params.personId} />
                 </PageWrapper>
               );
@@ -193,7 +197,7 @@ const App = (props: AppProps): JSX.Element => {
             path="/projects/:projectId"
             render={({ match, history }) => {
               return (
-                <PageWrapper person={person}>
+                <PageWrapper user={user} person={person}>
                   <ProjectPage projectId={match.params.projectId} />
                 </PageWrapper>
               );
