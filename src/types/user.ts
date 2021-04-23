@@ -1,3 +1,5 @@
+import { ClientNotification } from './notification';
+
 export enum UserRole {
   BOSS = 'BOSS',
   MIDDLER = 'MIDDLER',
@@ -11,6 +13,7 @@ export interface ClientUser {
   password: string;
   role: UserRole;
   createdAt: Date | string;
+  // notifications?: ClientNotification[];
 }
 
 export interface UserInput {

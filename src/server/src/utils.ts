@@ -25,6 +25,7 @@ import { PersonService } from 'services/personnel.services';
 import { UpdateItemService } from 'services/updateItems.services';
 
 import { Request } from 'express';
+import { SubscriptionService } from 'services/subscriptions.services';
 
 // * Standardizes error messages for later handling, client-side
 export const createErrorResponse = (errors: string[]): string => {
@@ -218,6 +219,7 @@ export const affixUpdateItemToNotification = async (
       user_id: owner_id,
       update_item_id,
       created_at,
+      subscription_id,
     } = notification;
 
     const updateItemService = new UpdateItemService();
@@ -237,6 +239,13 @@ export const affixUpdateItemToNotification = async (
 
     const userService = new UserService();
     const personService = new PersonService();
+    const subscriptionService = new SubscriptionService();
+
+    const subscription = await subscriptionService.getSubscriptionById(
+      subscription_id
+    );
+
+    const item_name = await getSubscriptionItemName(subscription);
 
     const user = await userService.getUserById(changer_id);
 
@@ -258,6 +267,7 @@ export const affixUpdateItemToNotification = async (
       action_type,
       change_made_at,
       item_id,
+      item_name,
     };
   } catch (e) {
     console.error(e);

@@ -61,4 +61,12 @@ export class SubscriptionService {
     console.log('subscriptions:', subscriptions);
     return subscriptions;
   }
+
+  async getSubscriptionById(
+    subscription_id: string
+  ): Promise<SubscriptionEntity> {
+    return await this.subscriptionRepository.findOne({
+      id: subscription_id,
+    });
+  }
 }

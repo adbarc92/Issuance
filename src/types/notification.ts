@@ -27,5 +27,5 @@ export interface ServerNotification {
   action_type: UpdateItemActions;
   change_made_at: Date | string;
   item_id: string;
-  // item_name: string;
+  item_name: string;
 }

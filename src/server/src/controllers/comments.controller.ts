@@ -104,7 +104,7 @@ const commentsController = (router: Router): void => {
       // Todo: refactor to separate function?
       for (const subscription of subscriptions) {
         const newNotification = await notificationService.createNotification(
-          subscription.subscriber_id,
+          subscription,
           newUpdateItem.id
         );
 

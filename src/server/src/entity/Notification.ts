@@ -20,8 +20,8 @@ export class NotificationEntity {
   update_item_id: string;
 
   @CreateDateColumn()
-  created_at?: Date;
+  created_at!: Date;
 
-  // @Column('uuid')
-  // subscription_id: string;
+  @Column('uuid')
+  subscription_id!: string;
 }

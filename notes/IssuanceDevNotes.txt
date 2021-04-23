@@ -34,6 +34,7 @@ Issuance Dev Notes
 	* CDN?
 	* Cookie-Usage
 	* Epic Tasks: one level between 
+	* Notifications and UpdateItems track changed fields for tasks and projects, and content for comments
 
 === 11Apr2021 ===
 

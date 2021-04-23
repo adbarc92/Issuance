@@ -1,5 +1,6 @@
 import { getConnection, Repository } from 'typeorm';
 import { NotificationEntity } from 'entity/Notification';
+import { SubscriptionEntity } from 'entity/Subscription';
 
 export class NotificationService {
   notificationRepository: Repository<NotificationEntity>;
@@ -11,12 +12,13 @@ export class NotificationService {
   }
 
   async createNotification(
-    user_id: string,
+    subscription: SubscriptionEntity,
     update_item_id: string
   ): Promise<NotificationEntity> {
     const newNotification = this.notificationRepository.create({
-      user_id,
+      user_id: subscription.subscriber_id,
       update_item_id,
+      subscription_id: subscription.id,
     });
 
     const repoNotification = await this.notificationRepository.save(
