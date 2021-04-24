@@ -3,7 +3,10 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UserService } from 'services/users.services';
-import { createErrorResponse, affixNotificationsToUser } from 'utils';
+import {
+  createErrorResponse,
+  affixNotificationsAndSubscriptionsToUser,
+} from 'utils';
 import { castUser, castPerson } from 'cast';
 
 // * The Controller defines the endpoints, receives the requests, and passes them along to services. Logic resides in the services.
@@ -16,7 +19,7 @@ const usersController = (router: Router): void => {
       const userEntities = await userService.getUsers();
       const usersWithNotifications = await Promise.all(
         userEntities.map(async userEntity =>
-          affixNotificationsToUser(userEntity)
+          affixNotificationsAndSubscriptionsToUser(userEntity)
         )
       );
       res.json(usersWithNotifications.map(user => castUser(user)));
@@ -29,7 +32,9 @@ const usersController = (router: Router): void => {
   router.get('/users/:id', async function (req: Request, res: Response) {
     try {
       const user = await userService.getUserById(req.params.id);
-      const userWithNotifications = await affixNotificationsToUser(user);
+      const userWithNotifications = await affixNotificationsAndSubscriptionsToUser(
+        user
+      );
 
       const clientUser = castUser(userWithNotifications);
 
@@ -56,7 +61,7 @@ const usersController = (router: Router): void => {
         return res.send(createErrorResponse(['User already exists.']));
       }
 
-      const fixedUser = await affixNotificationsToUser(user);
+      const fixedUser = await affixNotificationsAndSubscriptionsToUser(user);
 
       return res.send(castUser(fixedUser));
     } catch (e) {

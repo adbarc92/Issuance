@@ -1,6 +1,7 @@
 // Todo: implement proper user roles: administrator, guest, agent,
 
 import { ClientNotification, ServerNotification } from './notification';
+import { ClientSubscription, ServerSubscription } from './subscription';
 // import { NotificationEntity } from '../server/src/entity/Notification';
 
 export enum UserRole {
@@ -18,6 +19,7 @@ export interface ClientUser {
   updatedAt: Date | string;
   latestActivity: Date | string;
   notifications: ClientNotification[] | [];
+  subscriptions: ClientSubscription[] | [];
 }
 
 export interface ServerUser {
@@ -29,6 +31,7 @@ export interface ServerUser {
   updated_at: Date | string;
   latest_activity: Date | string;
   notifications: ServerNotification[] | [];
+  subscriptions: ServerSubscription[] | [];
 }
 
 export interface UserInput {

@@ -4,7 +4,7 @@ import { PersonEntity } from 'entity/Person';
 import { TaskEntity } from 'entity/Task';
 import { ProjectEntity } from 'entity/Project';
 import { UpdateItemEntity } from 'entity/UpdateItem';
-import { SubscriptionEntity } from 'entity/Subscription';
+// import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
 import {
   ClientComment,
@@ -12,7 +12,10 @@ import {
 } from '../../types/comment';
 import { Person as IPerson } from '../../types/person';
 import { ClientProject as IProject } from '../../types/project';
-import { ClientSubscription } from '../../types/subscription';
+import {
+  ClientSubscription,
+  ServerSubscription,
+} from '../../types/subscription';
 import { ClientTask, CommentedTask } from '../../types/task';
 import { ClientUpdateItem } from '../../types/updateItem';
 import { ClientUser, ServerUser } from '../../types/user';
@@ -21,7 +24,7 @@ import {
   ServerNotification,
 } from '../../types/notification';
 
-import { camelCasify, getSubscriptionItemName } from 'utils';
+import { camelCasify } from 'utils';
 
 // *** Object copying: Spread first, then overwrite
 
@@ -95,13 +98,11 @@ export const castUpdateItem = (
 
 // Todo: UpdateItem Bundler
 
-export const castSubscription = async (
-  subscription: SubscriptionEntity
-): Promise<ClientSubscription> => {
-  const subItemName = await getSubscriptionItemName(subscription);
+export const castSubscription = (
+  subscription: ServerSubscription
+): ClientSubscription => {
   return camelCasify({
     ...subscription,
-    subscribedItemName: subItemName,
   });
 };
 

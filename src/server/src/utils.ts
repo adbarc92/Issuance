@@ -9,7 +9,7 @@ import {
 } from '../../types/comment';
 import { Person } from '../../types/person';
 import { UpdateItemTypes } from '../../types/updateItem';
-import { SocketEventType } from '../../types/subscription';
+import { SocketEventType, ServerSubscription } from '../../types/subscription';
 import { ServerNotification } from '../../types/notification';
 import { ServerUser } from '../../types/user';
 
@@ -143,22 +143,39 @@ export const tokenIsExpired = (token: ImgurTokenEntity): boolean => {
   return true;
 };
 
-export const getSubscriptionItemName = async (
+export const affixItemNameToSubscription = async (
   subscription: SubscriptionEntity
-): Promise<string> => {
-  const { subscribed_item_type, subscribed_item_id } = subscription;
+): Promise<ServerSubscription> => {
+  const {
+    id,
+    subscribed_item_id,
+    subscriber_id,
+    subscribed_item_type,
+    created_at,
+  } = subscription;
+
+  let subscribed_item_name = '';
 
   switch (subscribed_item_type) {
     case UpdateItemTypes.COMMENT:
     case UpdateItemTypes.TASK:
       const taskService = new TaskService();
       const task = await taskService.getTaskById(subscribed_item_id);
-      return task.name;
+      subscribed_item_name = task.name;
     case UpdateItemTypes.PROJECT:
       const projectService = new ProjectService();
       const project = await projectService.getProjectById(subscribed_item_id);
-      return project.title;
+      subscribed_item_name = project.title;
   }
+
+  return {
+    id,
+    subscribed_item_id,
+    subscriber_id,
+    subscribed_item_type,
+    created_at,
+    subscribed_item_name,
+  };
 };
 
 export const createSocketEventName = (
@@ -245,7 +262,9 @@ export const affixUpdateItemToNotification = async (
       subscription_id
     );
 
-    const item_name = await getSubscriptionItemName(subscription);
+    const {
+      subscribed_item_name: item_name,
+    } = await affixItemNameToSubscription(subscription);
 
     const user = await userService.getUserById(changer_id);
 
@@ -272,7 +291,7 @@ export const affixUpdateItemToNotification = async (
   }
 };
 
-export const affixNotificationsToUser = async (
+export const affixNotificationsAndSubscriptionsToUser = async (
   user: UserEntity
 ): Promise<ServerUser> => {
   const notificationService = new NotificationService();
@@ -285,6 +304,20 @@ export const affixNotificationsToUser = async (
     ? await Promise.all(
         notificationEntities.map(async notificationEntity => {
           return await affixUpdateItemToNotification(notificationEntity);
+        })
+      )
+    : [];
+
+  const subscriptionService = new SubscriptionService();
+
+  const subscriptionEntities = await subscriptionService.getSubscriptionsByUserId(
+    user.id
+  );
+
+  const subscriptions = subscriptionEntities
+    ? await Promise.all(
+        subscriptionEntities.map(async subscriptionEntity => {
+          return await affixItemNameToSubscription(subscriptionEntity);
         })
       )
     : [];
@@ -308,5 +341,6 @@ export const affixNotificationsToUser = async (
     updated_at,
     latest_activity,
     notifications,
+    subscriptions,
   };
 };

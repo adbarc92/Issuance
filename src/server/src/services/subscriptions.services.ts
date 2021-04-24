@@ -52,7 +52,7 @@ export class SubscriptionService {
       .execute();
   }
 
-  async getUserSubscriptions(
+  async getSubscriptionsByUserId(
     subscriber_id: string
   ): Promise<SubscriptionEntity[]> {
     const subscriptions = await this.subscriptionRepository.find({

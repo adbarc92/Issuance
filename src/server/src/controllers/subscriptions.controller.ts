@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { SubscriptionService } from 'services/subscriptions.services';
 
 import { castSubscription } from 'cast';
-import { createErrorResponse } from 'utils';
+import { createErrorResponse, affixItemNameToSubscription } from 'utils';
 
 const subscriptionsController = (router: Router): void => {
   const subscriptionsService = new SubscriptionService();
@@ -15,17 +15,23 @@ const subscriptionsController = (router: Router): void => {
     res: Response
   ) {
     try {
-      const subscriptions = await subscriptionsService.getUserSubscriptions(
+      const subscriptionEntities = await subscriptionsService.getSubscriptionsByUserId(
         req.params.id
       );
-      const promisedSubscriptions = async () => {
-        return Promise.all(
-          subscriptions.map(subscription => castSubscription(subscription))
-        );
-      };
-      return promisedSubscriptions().then(resolvedSubs => {
-        res.send(resolvedSubs);
-      });
+
+      const serverSubscriptions = await Promise.all(
+        subscriptionEntities.map(async subscriptionEntity => {
+          return await affixItemNameToSubscription(subscriptionEntity);
+        })
+      );
+
+      const clientSubscriptions = serverSubscriptions.map(
+        serverSubscription => {
+          return castSubscription(serverSubscription);
+        }
+      );
+
+      res.send(clientSubscriptions);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
