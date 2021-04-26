@@ -4,6 +4,7 @@ import { PersonJob, Person } from 'types/person';
 import { UserRole } from 'types/user';
 import { SelectItem } from 'elements/Select';
 import { SocketEventType } from 'types/subscription';
+import { ClientNotification } from 'types/notification';
 
 export const isEmailValid = (email: string): boolean => {
   const EMAIL_REGEX = /^(([^<>()[\]\\,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -55,4 +56,10 @@ export const getPersonName = (person: Person): string => {
   } else {
     return person.userEmail;
   }
+};
+
+export const createNotificationMessage = (
+  notification: ClientNotification
+): string => {
+  return JSON.stringify(notification);
 };

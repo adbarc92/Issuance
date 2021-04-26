@@ -40,6 +40,8 @@ import { Person } from 'types/person';
 import { ClientUser } from 'types/user';
 import { ClientNotification } from 'types/notification';
 
+import NotificationPopover from 'components/NotificationPopover';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -113,15 +115,6 @@ export interface NotificationPanelProps {
   hidden: boolean;
 }
 
-const NotificationPanel = styled('div')((props: any) => {
-  return {
-    position: 'absolute',
-    minWidth: '3rem',
-    minHeight: '3rem',
-    // hidden: props.hidden,
-  };
-});
-
 const NotificationIconContainer = styled('div')(() => {
   return {
     marginRight: '2rem',
@@ -146,11 +139,17 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
 
-  const [showNotifications, setShowNotifications] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
 
-  const onBellClick = () => {
-    console.log('notify');
-    setShowNotifications(!showNotifications);
+  const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('click');
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
   };
 
   const handleDrawerOpen = () => {
@@ -186,19 +185,16 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             {`Hello, ${getPersonName(person)}!`}
           </Typography>
           <NotificationIconContainer>
-            <NotificationsActiveIcon onClick={() => onBellClick()} />
+            <IconButton color="default" onClick={handleShowPopover}>
+              <NotificationsActiveIcon />
+            </IconButton>
+            <NotificationPopover
+              notifications={notifications}
+              anchorEl={anchorEl}
+              handleClosePopover={handleClosePopover}
+            />
           </NotificationIconContainer>
-          {showNotifications ? (
-            <NotificationPanel hidden={!showNotifications}>
-              {notifications.length
-                ? null
-                : (notifications as ClientNotification[]).map(
-                    (notification, key) => {
-                      return <div key={key}>JSON.stringify(notification)</div>;
-                    }
-                  )}
-            </NotificationPanel>
-          ) : null}
+
           <div className={classes.searchfieldContainer}>
             <SearchInput
               placeholder={'Search...'}

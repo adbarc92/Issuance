@@ -15,6 +15,8 @@ export interface ClientNotification {
   changerName: string;
   actionType: UpdateItemActions;
   changeMadeAt: Date | string;
+  itemId: string;
+  itemName: string;
 }
 
 export interface ServerNotification {

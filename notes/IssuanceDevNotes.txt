@@ -36,9 +36,13 @@ Issuance Dev Notes
 	* Epic Tasks: one level between 
 	* Notifications and UpdateItems track changed fields for tasks and projects, and content for comments
 
+=== 27Apr2021 ===
+
+* Add ChangedFields to UpdateItems and Notifications
+
 === 11Apr2021 ===
 
-* TypeORM Database Queries
+* TypeORM Database Queries X
 
 === 07Apr2021 ===
 
