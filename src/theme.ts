@@ -1,5 +1,7 @@
 // Todo: add media queries;
 
+import { createMuiTheme, ThemeOptions } from '@material-ui/core';
+
 export const ColorPrimary = '#3f51b5';
 export const ColorSecondary = '#f48fb1';
 export const ColorError = '#d32f2f';
@@ -9,7 +11,12 @@ const ColorHighlight = '#B3D6FF';
 
 const ColorDanger = '#f44336';
 const ColorSuccess = '#04844B';
-const ColorWarning = '#ff9800';
+const ColorWarningMain = '#ff9800';
+const ColorWarningLight = '#ffb74d';
+const ColorWarningDark = '#f57c00';
+const ColorInfoLight = '#64b5f6';
+const ColorInfoMain = '#2196f3';
+const ColorInfoDark = '#1976d2';
 const ColorNeutral = '#f4f6f9';
 const ColorInfo = '#4393f0';
 
@@ -25,7 +32,7 @@ export const colors = {
   black: '#000',
 };
 
-export default {
+const themeOptions: ThemeOptions = {
   palette: {
     primary: {
       main: ColorPrimary,
@@ -33,20 +40,10 @@ export default {
     secondary: {
       main: ColorSecondary,
     },
-    status: {
-      danger: ColorDanger,
-      success: ColorSuccess,
-      warning: ColorWarning,
-      neutral: ColorNeutral,
-      info: ColorInfo,
-    },
-    typography: {
-      link: ColorLink,
-      highlight: ColorHighlight,
-    } as any,
-    background: {
-      highlighted: ColorHighlight,
-      normal: colors.white,
+    info: {
+      light: ColorInfoLight,
+      main: ColorInfoMain,
+      dark: ColorInfoDark,
     },
     text: {
       primary: TextPrimary,
@@ -54,13 +51,22 @@ export default {
       disabled: TextDisabled,
       hint: TextHint,
     },
+    warning: {
+      light: ColorWarningLight,
+      main: ColorWarningMain,
+      dark: ColorWarningDark,
+    },
   },
   mixins: {
     toolbar: {
       minHeight: '56',
     },
   },
-  spacing: function (multiplier: number): string {
-    return String(multiplier * 8) + 'px';
-  },
+  // spacing: function (multiplier: number): string {
+  //   return String(multiplier * 8) + 'px';
+  // },
 };
+
+const theme = createMuiTheme(themeOptions);
+
+export default theme;

@@ -29,7 +29,7 @@ import {
 import {
   createStyles,
   makeStyles,
-  useTheme,
+  // useTheme,
   Theme,
 } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
@@ -38,14 +38,17 @@ import Root from 'elements/Root';
 import { getPersonName } from 'utils/index';
 import { Person } from 'types/person';
 import { ClientUser } from 'types/user';
-import { ClientNotification } from 'types/notification';
+// import { ClientNotification } from 'types/notification';
+
+import theme from 'theme';
 
 import NotificationPopover from 'components/NotificationPopover';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  console.log('makeTheme:', theme);
+  return createStyles({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
       transition: theme.transitions.create(['width', 'margin'], {
@@ -108,8 +111,8 @@ const useStyles = makeStyles((theme: Theme) =>
       // * Necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
-  })
-);
+  });
+});
 
 export interface NotificationPanelProps {
   hidden: boolean;
@@ -118,6 +121,7 @@ export interface NotificationPanelProps {
 const NotificationIconContainer = styled('div')(() => {
   return {
     marginRight: '2rem',
+    color: theme.palette.primary.contrastText,
   };
 });
 
@@ -134,7 +138,6 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   console.log('userNotifications:', notifications);
 
   const classes = useStyles();
-  const theme = useTheme();
 
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
@@ -171,7 +174,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
       >
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="primary"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
@@ -185,7 +188,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             {`Hello, ${getPersonName(person)}!`}
           </Typography>
           <NotificationIconContainer>
-            <IconButton color="default" onClick={handleShowPopover}>
+            <IconButton color="inherit" onClick={handleShowPopover}>
               <NotificationsActiveIcon />
             </IconButton>
             <NotificationPopover

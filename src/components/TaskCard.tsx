@@ -57,9 +57,7 @@ const CardType = styled(Typography)(() => {
 const CardContainer = styled('div')((props: any) => {
   return {
     display: 'flex',
-    backgroundColor: props.highlighted
-      ? theme.palette.background.highlighted
-      : 'unset',
+    backgroundColor: props.highlighted ? theme.palette.info.light : 'unset',
   };
 });
 
