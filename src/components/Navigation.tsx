@@ -13,6 +13,7 @@ import {
   ListItemText,
   ListItem,
   styled,
+  Badge,
 } from '@material-ui/core';
 import {
   ChevronLeft as ChevronLeftIcon,
@@ -189,7 +190,13 @@ const Navigation = (props: NavigationProps): JSX.Element => {
           </Typography>
           <NotificationIconContainer>
             <IconButton color="inherit" onClick={handleShowPopover}>
-              <NotificationsActiveIcon />
+              <Badge
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                badgeContent={notifications.length}
+                color="secondary"
+              >
+                <NotificationsActiveIcon />
+              </Badge>
             </IconButton>
             <NotificationPopover
               notifications={notifications}
