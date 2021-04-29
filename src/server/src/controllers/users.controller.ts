@@ -36,8 +36,6 @@ const usersController = (router: Router): void => {
         user
       );
 
-      console.log('userWithNotifications:', userWithNotifications);
-
       const clientUser = castUser(userWithNotifications);
 
       res.send(clientUser);

@@ -11,6 +11,7 @@ import { ClientComment } from 'types/comment';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
 import { ClientNotification } from 'types/notification';
+import { ClientSubscription } from 'types/subscription';
 
 // * Actions change things
 
@@ -262,4 +263,34 @@ export const handleUpdateNotifications = (
   requestCache[cacheKey].notifications.push(notification);
 };
 
-// export const handleUpdateSubscriptions = async (subscription)
+export const handleUpdateSubscriptions = (
+  subscription: ClientSubscription
+): void => {
+  const baseCacheKey = CacheKey.SUBSCRIPTIONS;
+  const { subscriberId: id } = subscription;
+  const cacheKey = baseCacheKey + (id ?? '');
+  // requestCache[cacheKey].subscriptions.push(subscription);
+  requestCache[cacheKey].push(subscription);
+};
+
+export const markNotificationsAsViewed = async (
+  notifications: ClientNotification[]
+): Promise<ClientNotification[] | null> => {
+  try {
+    const fixedNotifications = notifications.map(notification => {
+      notification.viewed = true;
+      return notification;
+    });
+
+    console.log('fixedNotifications:', fixedNotifications);
+
+    const res = await api.put(`/notifications`, fixedNotifications);
+
+    console.log('res:', res);
+
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};

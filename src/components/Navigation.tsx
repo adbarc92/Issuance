@@ -39,7 +39,7 @@ import Root from 'elements/Root';
 import { getPersonName } from 'utils/index';
 import { Person } from 'types/person';
 import { ClientUser } from 'types/user';
-// import { ClientNotification } from 'types/notification';
+import { markNotificationsAsViewed } from 'store/actions';
 
 import theme from 'theme';
 
@@ -136,6 +136,10 @@ const Navigation = (props: NavigationProps): JSX.Element => {
 
   const { notifications } = user;
 
+  const unviewedNotifications = notifications.filter(notification => {
+    return !notification.viewed;
+  });
+
   // console.log('userNotifications:', notifications);
 
   const classes = useStyles();
@@ -148,12 +152,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   );
 
   const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // console.log('click');
+    // set notifications as viewed
+
     setAnchorEl(event.currentTarget);
   };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
+    markNotificationsAsViewed(unviewedNotifications);
   };
 
   const handleDrawerOpen = () => {
@@ -192,14 +198,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <IconButton color="inherit" onClick={handleShowPopover}>
               <Badge
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={notifications.length}
+                badgeContent={unviewedNotifications.length}
                 color="secondary"
               >
                 <NotificationsActiveIcon />
               </Badge>
             </IconButton>
             <NotificationPopover
-              notifications={notifications}
+              notifications={unviewedNotifications}
               anchorEl={anchorEl}
               handleClosePopover={handleClosePopover}
             />

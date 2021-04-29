@@ -117,6 +117,7 @@ const App = (props: AppProps): JSX.Element => {
             if (notification.ownerId === userId) {
               console.log('notification:', notification);
               handleUpdateNotifications(notification);
+              reRenderApp();
             }
           };
           const eventName = createSocketEventName(

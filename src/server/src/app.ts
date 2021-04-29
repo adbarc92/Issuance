@@ -19,6 +19,7 @@ import projectsController from 'controllers/projects.controller';
 import commentsController from 'controllers/comments.controller';
 import imgurController from 'controllers/imgur.controller';
 import subscriptionsController from 'controllers/subscriptions.controller';
+import notificationsController from 'controllers/notifications.controller';
 
 import upload from 'express-fileupload';
 
@@ -124,6 +125,7 @@ const start = async () => {
     commentsController(router);
     imgurController(router);
     subscriptionsController(router);
+    notificationsController(router);
 
     // * Should take a token, check validity, return loggedIn status
     router.put('/login', async function (
