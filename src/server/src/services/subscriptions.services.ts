@@ -58,7 +58,6 @@ export class SubscriptionService {
     const subscriptions = await this.subscriptionRepository.find({
       subscriber_id,
     });
-    console.log('subscriptions:', subscriptions);
     return subscriptions;
   }
 

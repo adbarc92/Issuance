@@ -63,3 +63,16 @@ export const createNotificationMessage = (
 ): string => {
   return JSON.stringify(notification);
 };
+
+export const formatDate = (date: Date): string => {
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+
+  return `${hour > 12 ? hour - 12 : hour}:${
+    minutes < 10 ? '0' + minutes : minutes
+  } ${hour >= 12 ? 'PM' : 'AM'} ${month}/${day}/${year}`;
+};

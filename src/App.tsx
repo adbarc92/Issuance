@@ -36,6 +36,8 @@ import { ClientNotification } from 'types/notification';
 
 import { createSocketEventName } from 'utils';
 
+import { handleUpdateNotifications } from 'store/actions';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     toolbar: {
@@ -112,7 +114,10 @@ const App = (props: AppProps): JSX.Element => {
     window.location.pathname !== '/login'
       ? (subscriptions as ClientSubscription[]).map(subscription => {
           const callback = function (notification: ClientNotification) {
-            console.log('notification:', notification);
+            if (notification.ownerId === userId) {
+              console.log('notification:', notification);
+              handleUpdateNotifications(notification);
+            }
           };
           const eventName = createSocketEventName(
             SocketEventType.NOTIFICATION,

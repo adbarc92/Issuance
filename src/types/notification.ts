@@ -1,4 +1,4 @@
-import { UpdateItemActions } from './updateItem';
+import { UpdateItemActions, UpdateItemTypes } from './updateItem';
 
 export enum NotificationTypes {
   TASKS = 'TASKS',
@@ -17,6 +17,7 @@ export interface ClientNotification {
   changeMadeAt: Date | string;
   itemId: string;
   itemName: string;
+  itemType: UpdateItemTypes;
 }
 
 export interface ServerNotification {
@@ -30,4 +31,5 @@ export interface ServerNotification {
   change_made_at: Date | string;
   item_id: string;
   item_name: string;
+  item_type: UpdateItemTypes;
 }

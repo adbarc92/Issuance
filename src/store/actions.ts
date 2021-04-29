@@ -10,6 +10,7 @@ import { UpdateTaskResponse } from 'types/task';
 import { ClientComment } from 'types/comment';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
+import { ClientNotification } from 'types/notification';
 
 // * Actions change things
 
@@ -69,6 +70,7 @@ export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
+// Todo: refactor with updateCache
 export const handleUpdateComment = (comment: ClientComment): void => {
   const baseCacheKey = CacheKey.TASKS;
   const { taskId: id } = comment;
@@ -164,7 +166,7 @@ export const updatePerson = async (
 };
 
 export const handleUpdatePerson = (data: IPerson): void => {
-  updateCache(data);
+  updateCache(data); // Todo: updateCache(data, requestCache[CacheKey.PERSONNEL]);
 };
 
 export const createPerson = async (
@@ -248,3 +250,16 @@ export const getProfilePicture = async (
     return null;
   }
 };
+
+export const handleUpdateNotifications = (
+  notification: ClientNotification
+): void => {
+  console.log('requestCache:', requestCache);
+  const baseCacheKey = CacheKey.USERS;
+  const { ownerId: id } = notification;
+  const cacheKey = baseCacheKey + (id ?? '');
+  console.log('cacheKey:', cacheKey);
+  requestCache[cacheKey].notifications.push(notification);
+};
+
+// export const handleUpdateSubscriptions = async (subscription)

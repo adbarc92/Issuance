@@ -136,7 +136,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
 
   const { notifications } = user;
 
-  console.log('userNotifications:', notifications);
+  // console.log('userNotifications:', notifications);
 
   const classes = useStyles();
 
@@ -148,7 +148,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   );
 
   const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('click');
+    // console.log('click');
     setAnchorEl(event.currentTarget);
   };
 
@@ -175,7 +175,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
       >
         <Toolbar>
           <IconButton
-            color="primary"
+            color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"

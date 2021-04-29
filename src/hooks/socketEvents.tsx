@@ -26,7 +26,7 @@ export interface SocketEvent<T> {
 function removeSocketEvents<T>(socketEvents: SocketEvent<T>[]) {
   socketEvents.forEach(socketEvent => {
     const { eventName } = socketEvent;
-    console.log('Disabling socket:', eventName);
+    // console.log('Disabling socket:', eventName);
     socket.off(eventName);
   });
 }
@@ -35,7 +35,7 @@ export function useSocketEvents<T>(socketEvents: SocketEvent<T>[]): void {
   useEffect(() => {
     socketEvents.forEach(socketEvent => {
       const { eventName, callback } = socketEvent;
-      console.log('Enabling socket:', eventName);
+      // console.log('Enabling socket:', eventName);
       socket.on(eventName, callback);
     });
 

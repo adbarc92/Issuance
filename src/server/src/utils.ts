@@ -162,10 +162,12 @@ export const affixItemNameToSubscription = async (
       const taskService = new TaskService();
       const task = await taskService.getTaskById(subscribed_item_id);
       subscribed_item_name = task.name;
+      break;
     case UpdateItemTypes.PROJECT:
       const projectService = new ProjectService();
       const project = await projectService.getProjectById(subscribed_item_id);
       subscribed_item_name = project.title;
+      break;
   }
 
   return {
@@ -252,6 +254,7 @@ export const affixUpdateItemToNotification = async (
       action_type,
       user_id: changer_id,
       item_id,
+      item_type,
     } = updateItem;
 
     const userService = new UserService();
@@ -283,6 +286,7 @@ export const affixUpdateItemToNotification = async (
       change_made_at,
       item_id,
       item_name,
+      item_type,
     };
   } catch (e) {
     console.error(e);

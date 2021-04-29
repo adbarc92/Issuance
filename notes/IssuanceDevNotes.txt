@@ -36,9 +36,21 @@ Issuance Dev Notes
 	* Epic Tasks: one level between 
 	* Notifications and UpdateItems track changed fields for tasks and projects, and content for comments
 
+=== 29Apr2021 ===
+
+* JoinQueries
+* Network Requests
+
 === 27Apr2021 ===
 
+* Todos: fix Theme, 
+
 * Add ChangedFields to UpdateItems and Notifications
+* Notification Strings:
+	* 'Alex Barclay has left a comment on <your> task, <taskName>';
+	* 'Alex Barclay commented: <comment>'
+	* 'Alex Barclay has changed the <field1> and <field2> on task, <taskName>'
+	* 
 
 === 11Apr2021 ===
 
