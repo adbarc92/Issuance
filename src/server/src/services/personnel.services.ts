@@ -40,7 +40,9 @@ export class PersonService {
     console.log('modifying person...', person);
     const snakePerson = snakeCasify(person);
     const curPerson = await this.getPersonById(person.id);
-    const newPerson = this.personRepository.merge(snakePerson, curPerson);
+    console.log('curPerson:', curPerson);
+    const newPerson = this.personRepository.merge(curPerson, snakePerson);
+    console.log('newPerson:', newPerson);
     return await this.personRepository.save(newPerson);
   }
 

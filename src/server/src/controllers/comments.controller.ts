@@ -101,27 +101,29 @@ const commentsController = (router: Router): void => {
 
       // Todo: refactor to separate function?
       for (const subscription of subscriptions) {
-        const newNotification = await notificationService.createNotification(
-          subscription,
-          newUpdateItem.id
-        );
+        if (newUpdateItem.user_id !== subscription.subscriber_id) {
+          const newNotification = await notificationService.createNotification(
+            subscription,
+            newUpdateItem.id
+          );
 
-        const fixedNotification = await affixUpdateItemToNotification(
-          newNotification
-        );
+          const fixedNotification = await affixUpdateItemToNotification(
+            newNotification
+          );
 
-        const notificationSocketEvent = createSocketEventName(
-          SocketEventType.NOTIFICATION,
-          subscription.subscribed_item_id
-        );
-        console.log('notificationSocketEvent:', notificationSocketEvent);
+          const notificationSocketEvent = createSocketEventName(
+            SocketEventType.NOTIFICATION,
+            subscription.subscribed_item_id
+          );
+          console.log('notificationSocketEvent:', notificationSocketEvent);
 
-        const clientNotification = await castNotification(fixedNotification);
+          const clientNotification = await castNotification(fixedNotification);
 
-        console.log('clientNotification:', clientNotification);
+          console.log('clientNotification:', clientNotification);
 
-        // req.io.emit(notificationSocketEvent, newNotification);
-        logThenEmit(req, notificationSocketEvent, clientNotification);
+          // req.io.emit(notificationSocketEvent, newNotification);
+          logThenEmit(req, notificationSocketEvent, clientNotification);
+        }
       }
 
       return res.send(clientComment);

@@ -57,9 +57,20 @@ export class NotificationService {
 
     const snakeNotification = snakeCasify(updatedNotification);
 
+    const {
+      id,
+      viewed,
+      user_id,
+      update_item_id,
+      created_at,
+      subscription_id,
+    } = snakeNotification;
+
     const fixedNotification = this.notificationRepository.merge(
-      snakeNotification,
-      oldNotification
+      oldNotification,
+      {
+        viewed,
+      }
     );
 
     console.log('fixedNotification:', fixedNotification);

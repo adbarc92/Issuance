@@ -19,6 +19,7 @@ export const requestCache: Record<
   any
 > = ((window as any).requestCache = {});
 
+// *** CacheKeys should be modeled after endpoints
 export enum CacheKey {
   PERSONNEL = 'PERSONNEL',
   TASKS = 'TASKS',

@@ -284,7 +284,7 @@ export const markNotificationsAsViewed = async (
 
     console.log('fixedNotifications:', fixedNotifications);
 
-    const res = await api.put(`/notifications`, fixedNotifications);
+    const res = await api.put('/notifications', fixedNotifications);
 
     console.log('res:', res);
 

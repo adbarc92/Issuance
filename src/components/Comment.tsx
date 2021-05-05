@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ClientComment } from 'types/comment';
 import { styled } from '@material-ui/core';
-import { getPersonName } from 'utils';
+import { getPersonName, formatDate } from 'utils';
 
 export interface CommentProps {
   comment: ClientComment;
@@ -24,6 +24,8 @@ const Comment = (props: CommentProps): JSX.Element => {
 
   const displayName = getPersonName(commenter);
 
+  const d = new Date(createdAt);
+
   return (
     <CommentContainer>
       <div>
@@ -31,7 +33,7 @@ const Comment = (props: CommentProps): JSX.Element => {
           <Link to={`/personnel/${id}`}>
             <div>{displayName ?? `User ${id}`}</div>
           </Link>
-          <div>{createdAt}</div>
+          <div>{formatDate(d)}</div>
         </div>
         <div>{content}</div>
       </div>

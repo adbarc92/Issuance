@@ -5,6 +5,7 @@ import { UserRole } from 'types/user';
 import { SelectItem } from 'elements/Select';
 import { SocketEventType } from 'types/subscription';
 import { ClientNotification } from 'types/notification';
+import { Greetings } from 'types/navigation';
 
 export const isEmailValid = (email: string): boolean => {
   const EMAIL_REGEX = /^(([^<>()[\]\\,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -75,4 +76,21 @@ export const formatDate = (date: Date): string => {
   return `${hour > 12 ? hour - 12 : hour}:${
     minutes < 10 ? '0' + minutes : minutes
   } ${hour >= 12 ? 'PM' : 'AM'} ${month}/${day}/${year}`;
+};
+
+export const makeGreeting = (): Greetings => {
+  const d = new Date();
+  const hour = d.getHours();
+
+  if (hour < 6) {
+    return Greetings.EARLY_MORNING;
+  } else if (hour < 12) {
+    return Greetings.MORNING;
+  } else if (hour < 17) {
+    return Greetings.AFTERNOON;
+  } else if (hour < 20) {
+    return Greetings.EVENING;
+  }
+
+  return Greetings.NIGHT;
 };

@@ -36,9 +36,11 @@ import {
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';
-import { getPersonName } from 'utils/index';
+import { getPersonName, makeGreeting } from 'utils/index';
 import { Person } from 'types/person';
 import { ClientUser } from 'types/user';
+import { Greetings } from 'types/navigation';
+
 import { markNotificationsAsViewed } from 'store/actions';
 
 import theme from 'theme';
@@ -140,8 +142,6 @@ const Navigation = (props: NavigationProps): JSX.Element => {
     return !notification.viewed;
   });
 
-  // console.log('userNotifications:', notifications);
-
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -151,9 +151,9 @@ const Navigation = (props: NavigationProps): JSX.Element => {
     null
   );
 
-  const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // set notifications as viewed
+  const [greeting, setGreeting] = React.useState<Greetings>(makeGreeting());
 
+  const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -192,7 +192,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            {`Hello, ${getPersonName(person)}!`}
+            {`${greeting} ${getPersonName(person)}!`}
           </Typography>
           <NotificationIconContainer>
             <IconButton color="inherit" onClick={handleShowPopover}>

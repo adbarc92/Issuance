@@ -80,7 +80,7 @@ export class UserService {
     // console.log('user to be modified:', user);
     const snakeUser = snakeCasify(user);
     const currentUser = await this.getUserById(user.id);
-    const newUser = this.userRepository.merge(snakeUser, currentUser);
+    const newUser = this.userRepository.merge(currentUser, snakeUser);
     return await this.userRepository.save(newUser);
   }
 }

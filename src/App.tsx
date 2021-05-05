@@ -114,7 +114,10 @@ const App = (props: AppProps): JSX.Element => {
     window.location.pathname !== '/login'
       ? (subscriptions as ClientSubscription[]).map(subscription => {
           const callback = function (notification: ClientNotification) {
-            if (notification.ownerId === userId) {
+            if (
+              notification.changerId !== userId &&
+              notification.ownerId === userId
+            ) {
               console.log('notification:', notification);
               handleUpdateNotifications(notification);
               reRenderApp();
