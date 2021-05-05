@@ -96,16 +96,14 @@ const tasksController = (router: Router): void => {
   ) {
     try {
       const updatedTask: ClientTask = req.body;
+
+      console.log('updatedTask:', updatedTask);
+
       const task = await taskService.modifyTask(updatedTask, req.params.id);
 
-      const updateItemService = new UpdateItemService();
+      console.log('task:', task);
 
-      const newUpdateItem = await updateItemService.addUpdateItem(
-        UpdateItemTypes.TASK,
-        updatedTask.id,
-        UpdateItemActions.UPDATE,
-        req.userId
-      );
+      // Todo: create updateItem, subscription, and maybe notification
 
       // const updateItemResponse = {
       //   updateItem: castUpdateItem(newUpdateItem),
@@ -120,6 +118,8 @@ const tasksController = (router: Router): void => {
         ordering: taskOrder,
         userId: req.userId,
       };
+
+      console.log('response:', response);
       req.io.emit(SocketMessages.TASKS, response); // * Emit Publisher signal
       return res.send(response);
     } catch (e) {

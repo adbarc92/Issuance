@@ -1,5 +1,10 @@
 import React from 'react';
-import { Popover as MuiPopover } from '@material-ui/core';
+import {
+  Popover as MuiPopover,
+  Card,
+  CardContent,
+  Typography,
+} from '@material-ui/core';
 import { ClientNotification } from 'types/notification';
 import { createNotificationMessage } from 'utils';
 
@@ -26,8 +31,16 @@ const NotificationPopover = (props: PopoverProps): JSX.Element => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      {notifications.map((notification, key) =>
-        NotificationCard({ notification, key })
+      {notifications.length ? (
+        notifications.map((notification, key) =>
+          NotificationCard({ notification, key })
+        )
+      ) : (
+        <Card key={0}>
+          <CardContent>
+            <Typography>No new notifications!</Typography>
+          </CardContent>
+        </Card>
       )}
     </MuiPopover>
   );

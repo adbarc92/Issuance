@@ -102,8 +102,8 @@ export enum TaskDialogAction {
   SET_TASKTYPE = 'setTaskType',
   SET_TASKPRIORITY = 'setTaskPriority',
   SET_TASKSTATUS = 'setTaskStatus',
-  SET_ASSIGNEDTO = 'setAssignedTo',
-  SET_REPORTEDBY = 'setReportedBy',
+  SET_ASSIGNED_TO = 'setAssignedTo',
+  SET_REPORTED_BY = 'setReportedBy',
   SET_DEADLINE = 'setDeadline',
   SET_PROJECT = 'setProject',
   SET_STORYPOINTS = 'setStoryPoints',
@@ -235,10 +235,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         case TaskDialogAction.SET_TASKSTATUS:
           newState.status = action.payload;
           break;
-        case TaskDialogAction.SET_ASSIGNEDTO:
+        case TaskDialogAction.SET_ASSIGNED_TO:
           newState.assignedTo = action.payload;
           break;
-        case TaskDialogAction.SET_REPORTEDBY:
+        case TaskDialogAction.SET_REPORTED_BY:
           newState.reportedBy = action.payload;
           break;
         case TaskDialogAction.SET_DEADLINE:
@@ -303,6 +303,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         deadline: state.deadline as string,
         projectId: state.projectId,
         storyPoints: state.storyPoints,
+        reportedBy: state.reportedBy,
         rowIndex: 0,
       };
 
@@ -319,7 +320,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         if (addingTask) {
           clearTasksCache();
         } else {
-          reRenderApp();
+          reRenderApp(); // TODO: This isn't triggering properly
         }
       } else {
         showNotification(
@@ -479,7 +480,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   })}
                   onChange={e => {
                     dispatch({
-                      type: TaskDialogAction.SET_ASSIGNEDTO,
+                      type: TaskDialogAction.SET_ASSIGNED_TO,
                       payload: e.target.value,
                     });
                   }}
@@ -501,8 +502,9 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                     };
                   })}
                   onChange={e => {
+                    console.log('e.target.value:', e.target.value);
                     dispatch({
-                      type: TaskDialogAction.SET_REPORTEDBY,
+                      type: TaskDialogAction.SET_REPORTED_BY,
                       payload: e.target.value,
                     });
                   }}

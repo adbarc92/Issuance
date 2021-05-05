@@ -1,6 +1,6 @@
 // ** HigherOrderComponent: withSubscriptionsAndPerson
 // *** Definition: adds props to the app component
-
+// Todo: utilize ReactContext to pass down Person and User
 import React from 'react';
 import { getUserToken } from 'store/auth';
 

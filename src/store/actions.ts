@@ -40,15 +40,17 @@ export const updateCacheOrdering = (
   cacheKey: CacheKey
 ): void => {
   const cache = requestCache[cacheKey];
-  const hashedCache = cache.reduce((prev, current) => {
-    prev[current.id] = current;
-    return prev;
-  }, {});
-  const newArray = orderingArray.map((elem: { id: string }) => {
-    return hashedCache[elem.id];
-  });
-  for (let i = 0; i < newArray.length; i++) {
-    requestCache[cacheKey][i] = newArray[i];
+  if (cache) {
+    const hashedCache = cache.reduce((prev, current) => {
+      prev[current.id] = current;
+      return prev;
+    }, {});
+    const newArray = orderingArray.map((elem: { id: string }) => {
+      return hashedCache[elem.id];
+    });
+    for (let i = 0; i < newArray.length; i++) {
+      requestCache[cacheKey][i] = newArray[i];
+    }
   }
 };
 
@@ -68,6 +70,7 @@ export const updateTask = async (
 
 export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCache(data.task);
+  console.log('data:', data);
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
