@@ -258,11 +258,9 @@ export const getProfilePicture = async (
 export const handleUpdateNotifications = (
   notification: ClientNotification
 ): void => {
-  console.log('requestCache:', requestCache);
   const baseCacheKey = CacheKey.USERS;
   const { ownerId: id } = notification;
   const cacheKey = baseCacheKey + (id ?? '');
-  console.log('cacheKey:', cacheKey);
   requestCache[cacheKey].notifications.push(notification);
 };
 
@@ -272,8 +270,12 @@ export const handleUpdateSubscriptions = (
   const baseCacheKey = CacheKey.SUBSCRIPTIONS;
   const { subscriberId: id } = subscription;
   const cacheKey = baseCacheKey + (id ?? '');
-  // requestCache[cacheKey].subscriptions.push(subscription);
-  requestCache[cacheKey].push(subscription);
+  console.log('requestCache[cacheKey]:', requestCache[cacheKey]);
+  if (requestCache[cacheKey]) {
+    requestCache[cacheKey].push(subscription);
+  } else {
+    requestCache[cacheKey] = [subscription];
+  }
 };
 
 export const markNotificationsAsViewed = async (

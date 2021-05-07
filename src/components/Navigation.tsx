@@ -50,7 +50,6 @@ import NotificationPopover from 'components/NotificationPopover';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) => {
-  console.log('makeTheme:', theme);
   return createStyles({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,

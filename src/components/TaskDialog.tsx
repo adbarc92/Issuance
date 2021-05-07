@@ -503,7 +503,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                     };
                   })}
                   onChange={e => {
-                    console.log('e.target.value:', e.target.value);
                     dispatch({
                       type: TaskDialogAction.SET_REPORTED_BY,
                       payload: e.target.value,

@@ -36,7 +36,10 @@ import { ClientNotification } from 'types/notification';
 
 import { createSocketEventName } from 'utils';
 
-import { handleUpdateNotifications } from 'store/actions';
+import {
+  handleUpdateNotifications,
+  handleUpdateSubscriptions,
+} from 'store/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,36 +93,48 @@ const App = (props: AppProps): JSX.Element => {
 
   const { person, subscriptions, user } = props;
 
-  console.log('user:', user);
+  // console.log('user:', user);
+  console.log('subscriptions:', subscriptions);
 
   const rerender = useForceUpdate();
 
   render = rerender;
 
+  // useEffect(() => {
+  //   if (window.location.pathname !== '/login') {
+  //     const socketEventName = createSocketEventName(
+  //       SocketEventType.SUBSCRIPTION,
+  //       userId
+  //     );
+  //     socket.on(socketEventName, subscription => {
+  //       console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
+  //       // socket.on(subscription, () => {})
+  //       // handleUpdateSubscriptions(subscription);
+  //       // Todo: make something happen here
+  //     });
+  //   }
+  // });
+
   useEffect(() => {
     if (window.location.pathname !== '/login') {
-      const socketEventName = createSocketEventName(
+      const subscriptionEventName = createSocketEventName(
         SocketEventType.SUBSCRIPTION,
         userId
       );
-      socket.on(socketEventName, subscription => {
-        console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
-      });
-    }
-  });
+      const subscriptionCb = (newSubscription: ClientSubscription) => {
+        console.log('newSubscription:', newSubscription);
+        handleUpdateSubscriptions(newSubscription);
+        reRenderApp();
+      };
+      socket.on(subscriptionEventName, subscriptionCb);
 
-  // Todo: prepend socket
-
-  const socketEvents: SocketEvent<ClientNotification>[] | [] =
-    window.location.pathname !== '/login'
-      ? (subscriptions as ClientSubscription[]).map(subscription => {
+      const notificationSocketEvents = (subscriptions as ClientSubscription[]).map(
+        subscription => {
           const callback = function (notification: ClientNotification) {
-            console.log('notification:', notification);
             if (
               notification.changerId !== userId &&
               notification.ownerId === userId
             ) {
-              console.log('notification:', notification);
               handleUpdateNotifications(notification);
               reRenderApp();
             }
@@ -129,10 +144,56 @@ const App = (props: AppProps): JSX.Element => {
             subscription.subscribedItemId
           );
           return { eventName, callback };
-        })
-      : [];
+        }
+      );
 
-  useSocketEvents(socketEvents);
+      notificationSocketEvents.forEach(socketEvent => {
+        const { eventName, callback } = socketEvent;
+        socket.on(eventName, callback);
+      });
+
+      return () => {
+        socket.off(subscriptionEventName);
+        notificationSocketEvents.forEach(socketEvent => {
+          socket.off(socketEvent.eventName);
+        });
+      };
+    }
+  }, [subscriptions, userId]);
+
+  // const notificationSocketEvents: SocketEvent<ClientNotification>[] | [] =
+  //   window.location.pathname !== '/login'
+  //     ? (subscriptions as ClientSubscription[]).map(subscription => {
+  //         const callback = function (notification: ClientNotification) {
+  //           console.log('notification:', notification);
+  //           if (
+  //             notification.changerId !== userId &&
+  //             notification.ownerId === userId
+  //           ) {
+  //             console.log('notification:', notification);
+  //             handleUpdateNotifications(notification);
+  //             reRenderApp();
+  //           }
+  //         };
+  //         const eventName = createSocketEventName(
+  //           SocketEventType.NOTIFICATION,
+  //           subscription.subscribedItemId
+  //         );
+  //         return { eventName, callback };
+  //       })
+  //     : [];
+
+  // useSocketEvents([
+  //   {
+  //     eventName: createSocketEventName(SocketEventType.SUBSCRIPTION, userId),
+  //     callback: (newSubscription: ClientSubscription) => {
+  //       console.log('adding new subscription:', newSubscription);
+  //       handleUpdateSubscriptions(newSubscription);
+  //     },
+  //   },
+  // ]);
+
+  // useSocketEvents(notificationSocketEvents);
 
   // Todo: renders should be counted here
   // console.log('Rendering!');

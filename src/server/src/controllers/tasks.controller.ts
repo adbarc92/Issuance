@@ -4,12 +4,18 @@
 import { Router } from 'express';
 import { TaskService } from 'services/tasks.services';
 import { Request, Response } from 'express';
-import { castTask, castCommentedTask, castNotification } from 'cast';
+import {
+  castTask,
+  castCommentedTask,
+  castNotification,
+  castSubscription,
+} from 'cast';
 import {
   createErrorResponse,
   createSocketEventName,
   logThenEmit,
   affixUpdateItemToNotification,
+  affixItemNameToSubscription,
 } from 'utils';
 import { ClientTask } from '../../../types/task';
 import { SocketMessages } from '../../../types/socket';
@@ -99,16 +105,18 @@ const tasksController = (router: Router): void => {
             UpdateItemTypes.TASK
           );
 
+          const serverSubscription = await affixItemNameToSubscription(
+            assignedUserSubscription
+          );
+
+          const clientSubscription = castSubscription(serverSubscription);
+
           const assignedUserSocketEventName = createSocketEventName(
             SocketEventType.SUBSCRIPTION,
             assignedUserSubscription.subscriber_id
           );
 
-          logThenEmit(
-            req,
-            assignedUserSocketEventName,
-            assignedUserSubscription
-          );
+          logThenEmit(req, assignedUserSocketEventName, clientSubscription);
 
           const newNotification = await notificationService.createNotification(
             assignedUserSubscription,
