@@ -92,11 +92,11 @@ export const createTask = async (
       type: task.type,
       priority: task.priority,
       status: task.status,
-      assignedTo: 0,
+      assignedTo: task.assignedTo ?? '',
       deadline: task.deadline,
       projectId: task.projectId,
       storyPoints: task.storyPoints,
-      reportedBy: 0,
+      reportedBy: task.reportedBy ?? '',
     });
     return response.data;
   } catch (e) {

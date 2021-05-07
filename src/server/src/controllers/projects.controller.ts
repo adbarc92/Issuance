@@ -50,7 +50,7 @@ const projectsController = (router: Router): void => {
 
       const updateItemService = new UpdateItemService();
 
-      const newUpdateItem = await updateItemService.addUpdateItem(
+      const newUpdateItem = await updateItemService.createUpdateItem(
         UpdateItemTypes.PROJECT,
         project.id,
         UpdateItemActions.CREATE,
@@ -85,7 +85,7 @@ const projectsController = (router: Router): void => {
 
       const updateItemService = new UpdateItemService();
 
-      const newUpdateItem = await updateItemService.addUpdateItem(
+      const newUpdateItem = await updateItemService.createUpdateItem(
         UpdateItemTypes.PROJECT,
         updatedProject.id,
         UpdateItemActions.UPDATE,

@@ -16,7 +16,7 @@ export class UpdateItemService {
       : await this.updateItemRepository.find();
   }
 
-  async addUpdateItem(
+  async createUpdateItem(
     item_type: UpdateItemTypes,
     item_id: string,
     action_type: UpdateItemActions,
@@ -34,9 +34,9 @@ export class UpdateItemService {
     return repoUpdateItem;
   }
 
-  async getUpdateItemById(update_item_id: string): Promise<UpdateItemEntity> {
+  async getUpdateItemById(id: string): Promise<UpdateItemEntity> {
     return await this.updateItemRepository.findOne({
-      id: update_item_id,
+      id,
     });
   }
 }

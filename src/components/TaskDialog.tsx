@@ -317,11 +317,12 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           NotificationSeverity.SUCCESS
         );
         handleClose();
-        if (addingTask) {
-          clearTasksCache();
-        } else {
-          reRenderApp(); // TODO: This isn't triggering properly
-        }
+        // if (addingTask) {
+        //   clearTasksCache();
+        // } else {
+        //   reRenderApp(); // TODO: This isn't triggering properly
+        // }
+        clearTasksCache();
       } else {
         showNotification(
           `Task ${addingTask ? 'creation' : 'editing'} failed!`,

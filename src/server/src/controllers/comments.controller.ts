@@ -50,7 +50,7 @@ const commentsController = (router: Router): void => {
       // req.io.emit(SocketMessages.COMMENTS, socketResponse);
       logThenEmit(req, SocketMessages.COMMENTS, socketResponse);
 
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const newUpdateItem = await updateItemServices.createUpdateItem(
         UpdateItemTypes.COMMENT,
         personedComment.id,
         UpdateItemActions.CREATE,
@@ -107,22 +107,19 @@ const commentsController = (router: Router): void => {
             newUpdateItem.id
           );
 
-          const fixedNotification = await affixUpdateItemToNotification(
+          const serverNotification = await affixUpdateItemToNotification(
             newNotification
           );
 
-          const notificationSocketEvent = createSocketEventName(
+          const clientNotification = castNotification(serverNotification);
+
+          const notificationSocketEventName = createSocketEventName(
             SocketEventType.NOTIFICATION,
             subscription.subscribed_item_id
           );
-          console.log('notificationSocketEvent:', notificationSocketEvent);
-
-          const clientNotification = await castNotification(fixedNotification);
-
-          console.log('clientNotification:', clientNotification);
 
           // req.io.emit(notificationSocketEvent, newNotification);
-          logThenEmit(req, notificationSocketEvent, clientNotification);
+          logThenEmit(req, notificationSocketEventName, clientNotification);
         }
       }
 
@@ -189,7 +186,7 @@ const commentsController = (router: Router): void => {
       logThenEmit(req, SocketMessages.COMMENTS, response);
 
       const updateItemServices = new UpdateItemService();
-      const newUpdateItem = await updateItemServices.addUpdateItem(
+      const newUpdateItem = await updateItemServices.createUpdateItem(
         UpdateItemTypes.COMMENT,
         fixedComment.id,
         UpdateItemActions.UPDATE,
