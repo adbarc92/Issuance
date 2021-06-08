@@ -35,6 +35,18 @@ Issuance Dev Notes
 	* Cookie-Usage
 	* Epic Tasks: one level between 
 	* Notifications and UpdateItems track changed fields for tasks and projects, and content for comments
+=== 08Jun2021 ===
+
+* Join Commands
+	* Refactor
+		* From Notification_Entity
+			notification_entity.user_id=>user_entity.email, update_item_id=>update_item_entity.item_id && 
+
+=== 13May2021 ===
+
+* Bug Fixes:
+	* Deleting a task should refresh other users' pages connected to the same database
+	* Creating a task should refresh other users' pages connected to the same database
 
 === 29Apr2021 ===
 

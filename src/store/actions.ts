@@ -258,6 +258,7 @@ export const getProfilePicture = async (
 export const handleUpdateNotifications = (
   notification: ClientNotification
 ): void => {
+  console.log('Updating notifications');
   const baseCacheKey = CacheKey.USERS;
   const { ownerId: id } = notification;
   const cacheKey = baseCacheKey + (id ?? '');
@@ -267,6 +268,7 @@ export const handleUpdateNotifications = (
 export const handleUpdateSubscriptions = (
   subscription: ClientSubscription
 ): void => {
+  console.log('Updating subscriptions');
   const baseCacheKey = CacheKey.SUBSCRIPTIONS;
   const { subscriberId: id } = subscription;
   const cacheKey = baseCacheKey + (id ?? '');
@@ -293,6 +295,19 @@ export const markNotificationsAsViewed = async (
 
     console.log('res:', res);
 
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const getUnviewedNotificationsByUserId = async (
+  userId: string
+): Promise<ClientNotification[] | null> => {
+  try {
+    const res = await api.get(`/notifications/${userId}`);
+    console.log('unviewedNotifications:', res.data);
     return res.data;
   } catch (e) {
     console.error(e);

@@ -7,6 +7,30 @@ import { castNotification } from 'cast';
 const notificationsController = (router: Router): void => {
   const notificationService = new NotificationService();
 
+  router.get(`/notifications/:userId`, async function (
+    req: Request,
+    res: Response
+  ) {
+    try {
+      const notifications = await notificationService.getNotificationsByUserId(
+        req.params.id
+      );
+
+      console.log('notifications:', notifications);
+
+      const unviewedNotifications = notifications.filter(notification => {
+        return notification.viewed === false;
+      });
+
+      console.log('unviewedNotifications:', unviewedNotifications);
+
+      return unviewedNotifications;
+    } catch (e) {
+      res.status(500);
+      return res.send(createErrorResponse(e));
+    }
+  });
+
   router.put('/notifications', async function (req: Request, res: Response) {
     try {
       console.log('req.body:', req.body);

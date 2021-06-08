@@ -116,8 +116,6 @@ const tasksController = (router: Router): void => {
             assignedUserSubscription.subscriber_id
           );
 
-          logThenEmit(req, assignedUserSocketEventName, clientSubscription);
-
           const newNotification = await notificationService.createNotification(
             assignedUserSubscription,
             newUpdateItem.id
@@ -133,6 +131,8 @@ const tasksController = (router: Router): void => {
             SocketEventType.NOTIFICATION,
             assignedUserSubscription.subscribed_item_id
           );
+
+          logThenEmit(req, assignedUserSocketEventName, clientSubscription);
 
           logThenEmit(req, notificationSocketEventName, newClientNotification);
         }

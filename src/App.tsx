@@ -39,6 +39,7 @@ import { createSocketEventName } from 'utils';
 import {
   handleUpdateNotifications,
   handleUpdateSubscriptions,
+  getUnviewedNotificationsByUserId,
 } from 'store/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,7 +79,7 @@ const PageWrapper = (props: any): JSX.Element => {
 let render: any = null;
 
 export const reRenderApp = (): void => {
-  console.log('Rerendering app');
+  // console.log('Rerendering app');
   render();
 };
 
@@ -93,27 +94,9 @@ const App = (props: AppProps): JSX.Element => {
 
   const { person, subscriptions, user } = props;
 
-  // console.log('user:', user);
-  console.log('subscriptions:', subscriptions);
-
   const rerender = useForceUpdate();
 
   render = rerender;
-
-  // useEffect(() => {
-  //   if (window.location.pathname !== '/login') {
-  //     const socketEventName = createSocketEventName(
-  //       SocketEventType.SUBSCRIPTION,
-  //       userId
-  //     );
-  //     socket.on(socketEventName, subscription => {
-  //       console.log('A NEW SUBSCRIPTION HAS ARRIVED:', subscription);
-  //       // socket.on(subscription, () => {})
-  //       // handleUpdateSubscriptions(subscription);
-  //       // Todo: make something happen here
-  //     });
-  //   }
-  // });
 
   useEffect(() => {
     if (window.location.pathname !== '/login') {
@@ -121,10 +104,21 @@ const App = (props: AppProps): JSX.Element => {
         SocketEventType.SUBSCRIPTION,
         userId
       );
-      const subscriptionCb = (newSubscription: ClientSubscription) => {
+      const subscriptionCb = async (newSubscription: ClientSubscription) => {
         console.log('newSubscription:', newSubscription);
         handleUpdateSubscriptions(newSubscription);
-        reRenderApp();
+        const unviewedNotifications = await getUnviewedNotificationsByUserId(
+          userId
+        );
+
+        console.log('unviewedNotifications:', unviewedNotifications);
+
+        if (unviewedNotifications) {
+          unviewedNotifications.forEach(unviewedNotification =>
+            handleUpdateNotifications(unviewedNotification)
+          );
+          reRenderApp();
+        }
       };
       socket.on(subscriptionEventName, subscriptionCb);
 
@@ -159,7 +153,7 @@ const App = (props: AppProps): JSX.Element => {
         });
       };
     }
-  }, [subscriptions, userId]);
+  }, [subscriptions, userId]); // Todo: use effect is not triggering
 
   // const notificationSocketEvents: SocketEvent<ClientNotification>[] | [] =
   //   window.location.pathname !== '/login'

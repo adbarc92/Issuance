@@ -26,6 +26,7 @@ import {
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
   NotificationsActive as NotificationsActiveIcon,
+  ExitToApp as LogoutIcon,
 } from '@material-ui/icons';
 import {
   createStyles,
@@ -308,7 +309,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
           <ListItem button key={'Log Out'}>
             <Link to="/logout">
               <ListItemIcon>
-                <PersonnelIcon />
+                <LogoutIcon />
               </ListItemIcon>
             </Link>
             <Link to="/logout">

@@ -17,7 +17,9 @@ import {
 import { Person } from 'types/person';
 
 import { Link } from 'react-router-dom';
-import ProfilePicture from './ProfilePicture';
+import ProfilePicture from 'components/ProfilePicture';
+
+import { fixWordCasing } from 'utils';
 
 export interface PersonnelTableProps {
   personnelData: Person[];
@@ -112,7 +114,7 @@ const PersonnelTableRow = (props: PersonnelTableRowProps): JSX.Element => {
       </TableCell>
       <TableCell>{person.firstName}</TableCell>
       <TableCell>{person.lastName}</TableCell>
-      <TableCell>{person.job}</TableCell>
+      <TableCell>{fixWordCasing(person.job)}</TableCell>
       <TableCell>
         <VertIconWrapper onClick={handleClick}>
           <MoreVert />

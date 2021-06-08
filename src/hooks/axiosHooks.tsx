@@ -8,6 +8,7 @@ import { ClientUpdateItem } from 'types/updateItem';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
 import { ClientSubscription } from 'types/subscription';
+import { ClientNotification } from 'types/notification';
 
 export const getPersonByUsername = async (
   username: string
@@ -222,7 +223,6 @@ export const getUserSubscriptionsById = async (
 ): Promise<ClientSubscription[] | null> => {
   try {
     const res = await api.get(`/subscriptions/${userId}`);
-    console.log('subscriptionRes:', res.data);
     return res.data;
   } catch (e) {
     console.error(e);
@@ -240,4 +240,16 @@ export const useGetUserSubscriptionsById = (
     CacheKey.SUBSCRIPTIONS,
     userId
   );
+};
+
+export const getNotificationsBySubscriptionId = async (
+  subscriptionId: string
+): Promise<ClientNotification[] | null> => {
+  try {
+    const res = await api.get(`/notifications/${subscriptionId}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
