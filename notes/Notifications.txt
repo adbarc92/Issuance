@@ -6,9 +6,6 @@ Notification Design
 4. Create Notifications for Subscribers
 5. Publish Notifications
 
-// The Bell should be subscribed to one EventEmitter
-// 
-
 * How long do Update Items last? Administrator set date
 * Subscription Model
 
@@ -20,11 +17,11 @@ Notification Design
 			* When the notification icon is clicked, the request goes out for notifications based on that userId, which is then filtered by `viewed` on the client-side;
 		* Sockets
 		* Attached as a response to requests
-			* 
+			*
 		* As part of middleware
-		
+
 	* Where should the filtering of the Notifications be done?
-	* 
+	*
 
 * General Model:
 	* 1. A change (create, update, delete) is made to a project, task, or comment.
@@ -34,12 +31,12 @@ Notification Design
 	* 3. The next step varies depending on the type of item updated.
 		* A. If changes were made to a comment, notifications should be created for the Task Assignee and other commenters.
 		* B. If changes were made to a task, notifications should be created for the Assignee and the Reporter
-	
+
 
 === Brainstorm ===
 
 * Ticket History should keep track of which fields were changed
-	* Comments attached to the change for Priority, Deadline, 
+	* Comments attached to the change for Priority, Deadline,
 
 * It is important to know which items have been seen, specifically, so as to mark them; it is not enough to know simply which items have been altered since the User last accessed the App.
 * It is also important to know which Users have seen which Recent Changes.
@@ -53,12 +50,12 @@ Notification Design
 * When a change is made, first check if it was made by the current User. If not, check if the User is associated with any Tasks which have been altered
 * Notification Bubbles should update in real time
 	* If not real time, any request to the server could be responded to with the size of the Notifications array...
-	
+
 
 * The Record of changes exists on a massive stack that is filtered on the basis of User-relevance
 
 * Notifications:
-	* Tasks: 
+	* Tasks:
 		* Users should be notified when tasks assigned to them are altered
 		* Users should be notified when new tasks are assigned to them
 	* Comments:
@@ -68,4 +65,4 @@ Notification Design
 		* Users should be notified when Projects containing tasks assigned to them are changed
 * Progression:
 	* When changes are made and are pushed to the Database...
-		* If the item is a Task and the assignee ID differs from the ID of the one making changes, 
+		* If the item is a Task and the assignee ID differs from the ID of the one making changes,

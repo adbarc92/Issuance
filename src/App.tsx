@@ -79,7 +79,6 @@ const PageWrapper = (props: any): JSX.Element => {
 let render: any = null;
 
 export const reRenderApp = (): void => {
-  // console.log('Rerendering app');
   render();
 };
 
@@ -104,93 +103,53 @@ const App = (props: AppProps): JSX.Element => {
         SocketEventType.SUBSCRIPTION,
         userId
       );
-      const subscriptionCb = async (newSubscription: ClientSubscription) => {
-        console.log('newSubscription:', newSubscription);
-        handleUpdateSubscriptions(newSubscription);
-        const unviewedNotifications = await getUnviewedNotificationsByUserId(
-          userId
-        );
 
-        console.log('unviewedNotifications:', unviewedNotifications);
+      socket.on(
+        subscriptionEventName,
+        async (newSubscription: ClientSubscription) => {
+          handleUpdateSubscriptions(newSubscription);
 
-        if (unviewedNotifications) {
-          unviewedNotifications.forEach(unviewedNotification =>
-            handleUpdateNotifications(unviewedNotification)
+          const unviewedNotifications = await getUnviewedNotificationsByUserId(
+            userId
           );
-          reRenderApp();
-        }
-      };
-      socket.on(subscriptionEventName, subscriptionCb);
 
-      const notificationSocketEvents = (subscriptions as ClientSubscription[]).map(
-        subscription => {
-          const callback = function (notification: ClientNotification) {
-            if (
-              notification.changerId !== userId &&
-              notification.ownerId === userId
-            ) {
-              handleUpdateNotifications(notification);
-              reRenderApp();
-            }
-          };
-          const eventName = createSocketEventName(
-            SocketEventType.NOTIFICATION,
-            subscription.subscribedItemId
-          );
-          return { eventName, callback };
+          console.log('unviewedNotifications:', unviewedNotifications);
+
+          if (unviewedNotifications) {
+            unviewedNotifications.forEach(unviewedNotification =>
+              handleUpdateNotifications(unviewedNotification)
+            );
+            reRenderApp();
+          }
         }
       );
 
-      notificationSocketEvents.forEach(socketEvent => {
-        const { eventName, callback } = socketEvent;
-        socket.on(eventName, callback);
-      });
-
       return () => {
         socket.off(subscriptionEventName);
-        notificationSocketEvents.forEach(socketEvent => {
-          socket.off(socketEvent.eventName);
-        });
       };
     }
   }, [subscriptions, userId]); // Todo: use effect is not triggering
 
-  // const notificationSocketEvents: SocketEvent<ClientNotification>[] | [] =
-  //   window.location.pathname !== '/login'
-  //     ? (subscriptions as ClientSubscription[]).map(subscription => {
-  //         const callback = function (notification: ClientNotification) {
-  //           console.log('notification:', notification);
-  //           if (
-  //             notification.changerId !== userId &&
-  //             notification.ownerId === userId
-  //           ) {
-  //             console.log('notification:', notification);
-  //             handleUpdateNotifications(notification);
-  //             reRenderApp();
-  //           }
-  //         };
-  //         const eventName = createSocketEventName(
-  //           SocketEventType.NOTIFICATION,
-  //           subscription.subscribedItemId
-  //         );
-  //         return { eventName, callback };
-  //       })
-  //     : [];
+  const notificationSocketEvents = (subscriptions as ClientSubscription[]).map(
+    subscription => {
+      const callback = function (notification: ClientNotification) {
+        if (
+          notification.changerId !== userId &&
+          notification.ownerId === userId
+        ) {
+          handleUpdateNotifications(notification);
+          reRenderApp();
+        }
+      };
+      const eventName = createSocketEventName(
+        SocketEventType.NOTIFICATION,
+        subscription.subscribedItemId
+      );
+      return { eventName, callback };
+    }
+  );
 
-  // useSocketEvents([
-  //   {
-  //     eventName: createSocketEventName(SocketEventType.SUBSCRIPTION, userId),
-  //     callback: (newSubscription: ClientSubscription) => {
-  //       console.log('adding new subscription:', newSubscription);
-  //       handleUpdateSubscriptions(newSubscription);
-  //     },
-  //   },
-  // ]);
-
-  // useSocketEvents(notificationSocketEvents);
-
-  // Todo: renders should be counted here
-  // console.log('Rendering!');
+  useSocketEvents(notificationSocketEvents);
 
   return (
     <Router>

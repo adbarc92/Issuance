@@ -188,7 +188,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     projectId: '',
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
-    ).toISOString(), // defaults to tomorrow
+    ).toISOString(), // * Defaults to tomorrow
     storyPoints: 0,
     rowIndex: 0,
   };
@@ -317,11 +317,6 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           NotificationSeverity.SUCCESS
         );
         handleClose();
-        // if (addingTask) {
-        //   clearTasksCache();
-        // } else {
-        //   reRenderApp(); // TODO: This isn't triggering properly
-        // }
         clearTasksCache();
       } else {
         showNotification(

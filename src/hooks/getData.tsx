@@ -1,4 +1,3 @@
-// useDataLoader Hook
 // * Give it a function that creates a promise that gets data
 // * Given any number of functions like getUsers and a string that distinguishes the requests from each other; it returns an object that contains a boolean, loading, and a data object that
 //   * Alternatively, it could accept an array of functions and return an array of data objects
@@ -28,7 +27,6 @@ export enum CacheKey {
   COMMENTS = 'COMMENTS',
   UPDATE_ITEMS = 'UPDATE_ITEMS',
   SUBSCRIPTIONS = 'SUBSCRIPTIONS',
-  // NOTIFICATIONS = 'NOTIFICATIONS',
 }
 
 type LoaderFunction = () => Promise<any>;

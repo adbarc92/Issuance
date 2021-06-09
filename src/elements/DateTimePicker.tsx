@@ -19,7 +19,6 @@ const DateTimePicker = (props: DateTimeProps): JSX.Element => {
         label="Date picker dialog"
         format="MM/dd/yyyy"
         value={new Date(props.value).toISOString()}
-        // value={new Date('2014-08-18T21:11:54')}
         onChange={props.onChange}
         KeyboardButtonProps={{
           'aria-label': 'change date',

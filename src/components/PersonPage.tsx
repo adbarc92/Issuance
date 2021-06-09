@@ -29,7 +29,7 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
     loading,
     data: personData,
     error,
-    clearCache: clearPersonnelCache, // Might be broken
+    clearCache: clearPersonnelCache,
   } = useGetPersonById(props.personId);
 
   const [addingUser, setAddingUser] = React.useState(false);
@@ -54,7 +54,6 @@ const PersonPage = (props: PersonPageProps): JSX.Element => {
     console.log('typeof form:', typeof form);
     const res = setProfilePicture(form as FormData);
     console.log('imageRes:', res);
-    // reRenderApp();
   };
 
   if (error) {

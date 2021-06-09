@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import { NotificationService } from 'services/notifications.services';
 import { createErrorResponse, affixUpdateItemToNotification } from 'utils';
 import { castNotification } from 'cast';
-// import
 
 const notificationsController = (router: Router): void => {
   const notificationService = new NotificationService();

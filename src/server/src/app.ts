@@ -37,7 +37,7 @@ const init = async () => {
   await connection.close();
 };
 
-// create typeorm connection
+// * Create Typeorm connection
 const start = async () => {
   const connection = await createConnection({
     ...ormconfig,
@@ -55,7 +55,7 @@ const start = async () => {
       console.log('URL:', req.url);
 
       if (!/^(\/api\/)*/.test(req.url)) {
-        // If the request lacks /api, send the file without authorization
+        // * If the request lacks /api, send the file without authorization
         console.log('serve', __dirname + '/' + req.url);
         res.sendFile(__dirname + '/' + req.url);
       } else if (
@@ -89,12 +89,11 @@ const start = async () => {
       }
     };
 
-    // create and setup express app
+    // * Create and setup express app
     const app = express();
     app.use(express.json());
     app.use(authMiddleware);
     app.use(socketMiddleware);
-    // app.use(upload({ createParentPath: true }));
     app.use(upload());
 
     // app.use(
@@ -179,21 +178,18 @@ const start = async () => {
 
     app.use('/api', router);
 
-    // app.listen(port); // start express server
-
     const server = http.createServer(app);
     server.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
 
-    // When someone connects, emit a connection
+    // * When someone connects, emit a connection
     const io = new socketIo.Server(server);
     io.on('connection', socket => {
       console.log('a user connected');
       io.emit('connection', 'connection'); // the event, the event payload
     });
 
-    // console.log(`Mock-server running on port ${port}`);
   } catch (e) {
     console.error(`Error ${e} has occurred`);
   }

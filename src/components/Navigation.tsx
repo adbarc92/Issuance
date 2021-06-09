@@ -28,12 +28,7 @@ import {
   NotificationsActive as NotificationsActiveIcon,
   ExitToApp as LogoutIcon,
 } from '@material-ui/icons';
-import {
-  createStyles,
-  makeStyles,
-  // useTheme,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';

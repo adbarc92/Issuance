@@ -6,8 +6,6 @@ import { Avatar as MuiAvatar, styled } from '@material-ui/core';
 
 // * Should be an Image if it exists, a letter avatar if not and first/last name are declared, and a generic icon if neither
 
-// Large should be 128x128
-
 interface AvatarProps {
   imgSrc: string;
   firstName?: string;
