@@ -1,6 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import {
+  createConnection,
+  getConnectionOptions,
+  ConnectionOptions,
+  getConnection,
+} from 'typeorm';
 import { UserEntity } from 'entity/User';
 import { TokenEntity } from 'entity/Token';
 // import * as expressWinston from 'express-winston';
@@ -21,6 +26,8 @@ import imgurController from 'controllers/imgur.controller';
 import subscriptionsController from 'controllers/subscriptions.controller';
 import notificationsController from 'controllers/notifications.controller';
 
+import dotenv from 'dotenv';
+
 import upload from 'express-fileupload';
 
 import socketIo from 'socket.io';
@@ -28,20 +35,45 @@ import http from 'http';
 
 const port = 4000;
 
-const init = async () => {
-  const connection = await createConnection({
-    ...ormconfig,
+const getOptions = async () => {
+  let connectionOptions: ConnectionOptions;
+
+  connectionOptions = {
+    type: 'postgres',
     synchronize: false,
-  } as any);
+    logging: false,
+    extra: {
+      ssl: true,
+    },
+    entities: ['src/entity/*.ts'],
+  };
+
+  if (process.env.DATABASE_URL) {
+    Object.assign(connectionOptions, { url: process.env.DATABASE_URL });
+  } else {
+    connectionOptions = await getConnectionOptions();
+  }
+
+  return connectionOptions;
+};
+
+const init = async () => {
+  const options = await getOptions();
+  const connection = await createConnection(options);
+
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
   await connection.close();
 };
 
 // * Create Typeorm connection
 const start = async () => {
-  const connection = await createConnection({
-    ...ormconfig,
-  } as any);
+  let connection = await getConnection();
+  if (!connection) {
+    const options = await getOptions();
+    connection = await createConnection(options);
+  }
+
   try {
     const tokenRepository = connection.getRepository(TokenEntity);
     const userRepository = connection.getRepository(UserEntity);
@@ -189,7 +221,6 @@ const start = async () => {
       console.log('a user connected');
       io.emit('connection', 'connection'); // the event, the event payload
     });
-
   } catch (e) {
     console.error(`Error ${e} has occurred`);
   }

@@ -1,1 +1,1 @@
-web: yarn start:ui
+web: yarn start
