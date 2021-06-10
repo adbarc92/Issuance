@@ -5,7 +5,7 @@
   "scripts": {
     "start": "concurrently \"craco start\" \"(cd src/server && yarn start)\"",
     "start:ui": "craco start",
-    "start:server": "cd src/server && yarn start",
+    "start:server": "cd src/server && yarn start:prod",
     "build": "craco build",
     "test": "craco test"
   },
