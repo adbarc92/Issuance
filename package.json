@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"craco start\" \"(cd src/server && yarn start)\"",
+    "start": "concurrently \"craco start\" \"(cd src/server && yarn start:prod)\"",
     "start:ui": "craco start",
     "start:server": "cd src/server && yarn start:prod",
     "build": "craco build",
