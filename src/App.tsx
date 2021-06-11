@@ -130,24 +130,22 @@ const App = (props: AppProps): JSX.Element => {
     }
   }, [subscriptions, userId]); // Todo: use effect is not triggering
 
-  const notificationSocketEvents = (subscriptions as ClientSubscription[]).map(
-    subscription => {
-      const callback = function (notification: ClientNotification) {
-        if (
-          notification.changerId !== userId &&
-          notification.ownerId === userId
-        ) {
-          handleUpdateNotifications(notification);
-          reRenderApp();
-        }
-      };
-      const eventName = createSocketEventName(
-        SocketEventType.NOTIFICATION,
-        subscription.subscribedItemId
-      );
-      return { eventName, callback };
-    }
-  );
+  const notificationSocketEvents = (subscriptions ?? []).map(subscription => {
+    const callback = function (notification: ClientNotification) {
+      if (
+        notification.changerId !== userId &&
+        notification.ownerId === userId
+      ) {
+        handleUpdateNotifications(notification);
+        reRenderApp();
+      }
+    };
+    const eventName = createSocketEventName(
+      SocketEventType.NOTIFICATION,
+      subscription.subscribedItemId
+    );
+    return { eventName, callback };
+  });
 
   useSocketEvents(notificationSocketEvents);
 

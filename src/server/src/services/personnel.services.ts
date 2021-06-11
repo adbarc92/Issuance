@@ -11,15 +11,15 @@ export class PersonService {
   }
 
   async getPersonById(id: string): Promise<PersonEntity> {
-    return await this.personRepository.findOne(id);
+    return this.personRepository.findOne(id);
   }
 
   async getPersonByUserEmail(user_email: string): Promise<PersonEntity> {
-    return await this.personRepository.findOne({ user_email });
+    return this.personRepository.findOne({ user_email });
   }
 
   async getPersonnel(): Promise<PersonEntity[]> {
-    return await this.personRepository.find();
+    return this.personRepository.find(); // * Await will cover promise chains
   }
 
   async createPerson(
