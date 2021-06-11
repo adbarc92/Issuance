@@ -30,7 +30,7 @@ import imgurController from 'controllers/imgur.controller';
 import subscriptionsController from 'controllers/subscriptions.controller';
 import notificationsController from 'controllers/notifications.controller';
 
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
 import upload from 'express-fileupload';
 
