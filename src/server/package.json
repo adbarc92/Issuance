@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start:prod": "ts-node -r tsconfig-paths/register src/app.ts",
-    "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts"
+    "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
+    "build": "tsc --build",
+    "clean": "tsc --clean",
+    "start": "node build/server/src/app.js",
+    "bs": "yarn build && yarn start"
   },
   "keywords": [],
   "author": "",

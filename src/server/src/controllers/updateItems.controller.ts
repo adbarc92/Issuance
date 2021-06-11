@@ -4,10 +4,10 @@ import { Router } from 'express';
 import { Request, Response } from 'express';
 
 import { createErrorResponse } from 'utils';
-import { UpdateItemServices } from 'services/updateItems.services';
+import { UpdateItemService } from 'services/updateItems.services';
 
 const notificationsController = (router: Router): void => {
-  const updateItemService = new UpdateItemServices();
+  const updateItemService = new UpdateItemService();
 
   router.get('/notifications', async function (req: Request, res: Response) {
     try {

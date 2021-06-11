@@ -22,5 +22,6 @@
 			"@types",
 			"./node_modules/@types"
 		],
+		"outDir": "./build"
 	}
 }
