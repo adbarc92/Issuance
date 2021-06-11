@@ -51,7 +51,9 @@ const getOptions = async () => {
     synchronize: true, // * Dangerful, until migrations are implemented
     logging: false,
     extra: {
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
     entities: ['src/entity/*.ts'],
   };
