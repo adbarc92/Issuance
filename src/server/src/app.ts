@@ -21,8 +21,6 @@ import { createErrorResponse, sha256 } from 'utils';
 
 import * as fs from 'fs';
 
-import ormconfig from '../ormconfig.json';
-
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
 import userController from 'controllers/users.controller';
