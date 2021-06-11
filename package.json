@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "(cd src/server && yarn && yarn start:prod)",
+		"postinstall": "(cd src/server && yarn)",
+    "start": "(cd src/server && yarn start:prod)",
     "start:ui": "craco start",
     "start:server": "cd src/server && yarn start:prod",
     "build": "craco build",
