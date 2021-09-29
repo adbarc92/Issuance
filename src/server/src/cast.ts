@@ -4,7 +4,6 @@ import { PersonEntity } from 'entity/Person';
 import { TaskEntity } from 'entity/Task';
 import { ProjectEntity } from 'entity/Project';
 import { UpdateItemEntity } from 'entity/UpdateItem';
-// import { SubscriptionEntity } from 'entity/Subscription';
 import { CommentEntity } from 'entity/Comment';
 import {
   ClientComment,

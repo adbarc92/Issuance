@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { getUser, getUsers } from 'hooks/axiosGet';
+import React from 'react';
+import { getUsers } from 'hooks/axiosGet';
 import { useGetData } from 'hooks/useDataLoader';
 import LoadingSpinner from 'elements/LoadingSpinner';
 
@@ -17,8 +17,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: string; // fix this?
-  description: string; // remove this
+  role: string;
+  description: string;
 }
 
 interface UserProps {
@@ -26,19 +26,6 @@ interface UserProps {
 }
 
 const UsersDisplay = (): JSX.Element => {
-  // const [loading, setLoading] = React.useState(true);
-  // const [users, setUsers] = React.useState<null | User[]>(null);
-
-  // useEffect(() => {
-  //   if (!users) {
-  //     getUsers().then((users: User[]) => {
-  //       console.log(users);
-  //       setUsers(users);
-  //       setLoading(false);
-  //     });
-  //   }
-  // }, [users, setUsers]);
-
   const { loading, data: users, error } = useGetData(getUsers);
 
   if (error) {

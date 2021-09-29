@@ -1,5 +1,4 @@
 // * Authentication runs on only API requests
-// *
 
 import express from 'express';
 import { Request, Response } from 'express';
@@ -8,11 +7,9 @@ import {
   getConnectionOptions,
   ConnectionOptions,
 } from 'typeorm';
-// import path from 'path';
 import { UserEntity } from 'entity/User';
 import { TokenEntity } from 'entity/Token';
 import * as expressWinston from 'express-winston';
-// import { format } from 'winston';
 import * as winston from 'winston';
 
 import { v4 as uuid } from 'uuid';

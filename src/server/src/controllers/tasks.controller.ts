@@ -161,13 +161,6 @@ const tasksController = (router: Router): void => {
 
       // Todo: create updateItem, subscription, and maybe notification
 
-      // const updateItemResponse = {
-      //   updateItem: castUpdateItem(newUpdateItem),
-      //   userId: req.userId,
-      // };
-
-      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
-
       const taskOrder = await taskService.getTaskOrdering();
       const response = {
         task: castTask(task),

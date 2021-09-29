@@ -18,9 +18,6 @@ export class TaskService {
   async getTaskById(taskId: string): Promise<CommentedTask> {
     const commentService = new CommentService();
     const comments = await commentService.getCommentsByTaskId(taskId);
-    // const clientComments: ClientComment[] = comments.map(comment =>
-    //   castPersonedComment(comment)
-    // );
     const task = await this.taskRepository.findOne({ id: taskId });
     const commentedTask = castCommentTask(task);
     commentedTask.comments = comments;

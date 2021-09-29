@@ -2,7 +2,6 @@
 
 import { getConnection, Repository } from 'typeorm';
 import axios, { AxiosResponse } from 'axios';
-// import dotenv from 'dotenv';
 import FormData from 'form-data';
 
 import { ImgurTokenEntity } from 'entity/ImgurToken';
@@ -10,16 +9,6 @@ import { ImgurTokenEntity } from 'entity/ImgurToken';
 import { PersonService } from 'services/personnel.services';
 import { tokenIsExpired } from 'utils';
 import { UploadedFile } from 'express-fileupload';
-
-// const configureDotEnv = () => {
-//   const result = dotenv.config();
-
-//   if (result.error) {
-//     throw result.error;
-//   }
-
-//   return result;
-// };
 
 export interface ImgurTokenResponse {
   access_token: string;
@@ -116,7 +105,6 @@ export class ImgurService {
 
   constructor() {
     this.imgurRepository = getConnection().getRepository(ImgurTokenEntity);
-    // configureDotEnv();
   }
 
   async getAccessToken(): Promise<ImgurTokenEntity> {
@@ -212,13 +200,11 @@ export class ImgurService {
   async getImage(imageId: string): Promise<string | null> {
     try {
       const accessToken = this.getAccessToken();
-      // const form = new FormData();
 
       const url = `https://api.imgur.com/3/image/${imageId}`;
 
       const response: AxiosResponse<ImgurImageDownloadResponse> = await axios.get(
         url,
-        // form,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
