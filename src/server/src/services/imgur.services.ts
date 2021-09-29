@@ -127,9 +127,9 @@ export class ImgurService {
         const url = 'https://api.imgur.com/oauth2/token';
 
         const data = JSON.stringify({
-          refresh_token: process.env.REFRESH_TOKEN,
-          client_id: process.env.CLIENT_ID,
-          client_secret: process.env.CLIENT_SECRET,
+          refresh_token: process.env.IMGUR_REFRESH_TOKEN,
+          client_id: process.env.IMGUR_CLIENT_ID,
+          client_secret: process.env.IMGUR_CLIENT_SECRET,
           grant_type: 'refresh_token',
         });
 

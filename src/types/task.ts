@@ -2,8 +2,6 @@
 
 import { commentEntityWithPersonEntity, ClientComment } from './comment';
 
-// import { Person } from 'types/person';
-
 export enum TaskPriority {
   HIGHEST = 'Highest',
   HIGH = 'High',

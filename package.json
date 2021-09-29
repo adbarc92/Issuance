@@ -11,7 +11,7 @@
     "test": "craco test"
   },
   "engines": {
-    "node": "12.x"
+    "node": "14.x"
   },
   "dependencies": {
     "@craco/craco": "^5.6.4",
