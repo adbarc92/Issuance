@@ -17,8 +17,6 @@ import SimpleMenu from 'elements/SimpleMenu';
 import { MoreVert } from '@material-ui/icons';
 import theme, { colors } from 'theme';
 
-// import Avatar from 'components/Avatar';
-
 const CARD_DESCRIPTION_LENGTH = 140;
 const CARD_NAME_LENGTH = 50;
 

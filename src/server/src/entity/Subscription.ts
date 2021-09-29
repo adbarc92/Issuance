@@ -23,6 +23,4 @@ export class SubscriptionEntity {
 
   @CreateDateColumn()
   created_at: Date;
-
-  // Active?
 }

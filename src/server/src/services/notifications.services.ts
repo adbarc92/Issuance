@@ -33,12 +33,6 @@ export class NotificationService {
   async getNotificationsByUserId(
     user_id: string
   ): Promise<NotificationEntity[]> {
-    // return await this.notificationRepository
-    //   .createQueryBuilder('notification_entity')
-    //   .select('*')
-    //   .where('user_id = :user_id', { user_id })
-    //   .execute();
-
     return await this.notificationRepository.find({ user_id });
   }
 
@@ -57,14 +51,7 @@ export class NotificationService {
 
     const snakeNotification = snakeCasify(updatedNotification);
 
-    const {
-      id,
-      viewed,
-      user_id,
-      update_item_id,
-      created_at,
-      subscription_id,
-    } = snakeNotification;
+    const { viewed } = snakeNotification;
 
     const fixedNotification = this.notificationRepository.merge(
       oldNotification,
@@ -72,8 +59,6 @@ export class NotificationService {
         viewed,
       }
     );
-
-    console.log('fixedNotification:', fixedNotification);
 
     return await this.notificationRepository.save(fixedNotification);
   }

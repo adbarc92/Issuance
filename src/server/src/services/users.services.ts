@@ -77,7 +77,6 @@ export class UserService {
   async modifyUser(
     user: Partial<UserEntity> & { id: string }
   ): Promise<UserEntity> {
-    // console.log('user to be modified:', user);
     const snakeUser = snakeCasify(user);
     const currentUser = await this.getUserById(user.id);
     const newUser = this.userRepository.merge(currentUser, snakeUser);

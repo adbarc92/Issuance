@@ -1,5 +1,4 @@
 // * Authentication runs on only API requests
-// *
 
 import express from 'express';
 import { Request, Response } from 'express';
@@ -8,11 +7,9 @@ import {
   getConnectionOptions,
   ConnectionOptions,
 } from 'typeorm';
-// import path from 'path';
 import { UserEntity } from 'entity/User';
 import { TokenEntity } from 'entity/Token';
 import * as expressWinston from 'express-winston';
-// import { format } from 'winston';
 import * as winston from 'winston';
 
 import { v4 as uuid } from 'uuid';
@@ -34,39 +31,16 @@ import upload from 'express-fileupload';
 import socketIo from 'socket.io';
 import http from 'http';
 
+import { ormConfig } from '../config';
+
 const port = process.env.PORT || 4000;
 
 const getDirname = () => {
   return __dirname.replace(/\\/g, '/');
 };
 
-const getOptions = async () => {
-  let connectionOptions: ConnectionOptions;
-
-  connectionOptions = {
-    type: 'postgres',
-    synchronize: true, // * Dangerful, until migrations are implemented
-    logging: false,
-    extra: {
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    },
-    entities: ['src/entity/*.ts'],
-  };
-
-  if (process.env.DATABASE_URL) {
-    Object.assign(connectionOptions, { url: process.env.DATABASE_URL });
-  } else {
-    connectionOptions = await getConnectionOptions();
-  }
-
-  return connectionOptions;
-};
-
 const init = async () => {
-  const options = await getOptions();
-  const connection = await createConnection(options);
+  const connection = await createConnection({ ...ormConfig });
 
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
@@ -75,8 +49,7 @@ const init = async () => {
 
 // * Create Typeorm connection
 const start = async () => {
-  const options = await getOptions();
-  const connection = await createConnection(options);
+  const connection = await createConnection({ ...ormConfig });
 
   try {
     const tokenRepository = connection.getRepository(TokenEntity);

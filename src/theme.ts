@@ -62,9 +62,6 @@ const themeOptions: ThemeOptions = {
       minHeight: '56',
     },
   },
-  // spacing: function (multiplier: number): string {
-  //   return String(multiplier * 8) + 'px';
-  // },
 };
 
 const theme = createMuiTheme(themeOptions);

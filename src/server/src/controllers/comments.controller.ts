@@ -47,7 +47,6 @@ const commentsController = (router: Router): void => {
         comment: clientComment,
       };
 
-      // req.io.emit(SocketMessages.COMMENTS, socketResponse);
       logThenEmit(req, SocketMessages.COMMENTS, socketResponse);
 
       const newUpdateItem = await updateItemServices.createUpdateItem(
@@ -77,7 +76,7 @@ const commentsController = (router: Router): void => {
           SocketEventType.SUBSCRIPTION,
           assigneeSubscription.subscriber_id
         );
-        // req.io.emit(assigneeSocketEventName, assigneeSubscription);
+
         logThenEmit(req, assigneeSocketEventName, assigneeSubscription);
       }
 
@@ -92,7 +91,6 @@ const commentsController = (router: Router): void => {
         commenterSubscription.subscriber_id
       );
 
-      // req.io.emit(commenterSocketEventName, commenterSubscription);
       logThenEmit(req, commenterSocketEventName, commenterSubscription);
 
       const subscriptions = await subscriptionService.getSubscriptionsByItemId(
@@ -118,7 +116,6 @@ const commentsController = (router: Router): void => {
             subscription.subscribed_item_id
           );
 
-          // req.io.emit(notificationSocketEvent, newNotification);
           logThenEmit(req, notificationSocketEventName, clientNotification);
         }
       }
@@ -182,7 +179,7 @@ const commentsController = (router: Router): void => {
         comment: commentEntityWithPerson,
         userId: req.userId,
       };
-      // req.io.emit(SocketMessages.COMMENTS, response);
+
       logThenEmit(req, SocketMessages.COMMENTS, response);
 
       const updateItemServices = new UpdateItemService();

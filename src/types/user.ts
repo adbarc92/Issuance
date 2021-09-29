@@ -2,7 +2,6 @@
 
 import { ClientNotification, ServerNotification } from './notification';
 import { ClientSubscription, ServerSubscription } from './subscription';
-// import { NotificationEntity } from '../server/src/entity/Notification';
 
 export enum UserRole {
   BOSS = 'BOSS',
