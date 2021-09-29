@@ -1,16 +1,24 @@
+// * Authentication runs on only API requests
+// *
+
 import express from 'express';
 import { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
-import { User } from 'entity/User';
-import { Token } from 'entity/Token';
-// import * as expressWinston from 'express-winston';
+import {
+  createConnection,
+  getConnectionOptions,
+  ConnectionOptions,
+} from 'typeorm';
+// import path from 'path';
+import { UserEntity } from 'entity/User';
+import { TokenEntity } from 'entity/Token';
+import * as expressWinston from 'express-winston';
 // import { format } from 'winston';
-// import * as winston from 'winston';
+import * as winston from 'winston';
 
 import { v4 as uuid } from 'uuid';
 import { createErrorResponse, sha256 } from 'utils';
 
-import ormconfig from '../ormconfig.json';
+import * as fs from 'fs';
 
 import personnelController from 'controllers/personnel.controller';
 import taskController from 'controllers/tasks.controller';
@@ -18,31 +26,61 @@ import userController from 'controllers/users.controller';
 import projectsController from 'controllers/projects.controller';
 import commentsController from 'controllers/comments.controller';
 import imgurController from 'controllers/imgur.controller';
+import subscriptionsController from 'controllers/subscriptions.controller';
+import notificationsController from 'controllers/notifications.controller';
 
 import upload from 'express-fileupload';
 
 import socketIo from 'socket.io';
 import http from 'http';
 
-const port = 4000;
+const port = process.env.PORT || 4000;
+
+const getDirname = () => {
+  return __dirname.replace(/\\/g, '/');
+};
+
+const getOptions = async () => {
+  let connectionOptions: ConnectionOptions;
+
+  connectionOptions = {
+    type: 'postgres',
+    synchronize: true, // * Dangerful, until migrations are implemented
+    logging: false,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
+    entities: ['src/entity/*.ts'],
+  };
+
+  if (process.env.DATABASE_URL) {
+    Object.assign(connectionOptions, { url: process.env.DATABASE_URL });
+  } else {
+    connectionOptions = await getConnectionOptions();
+  }
+
+  return connectionOptions;
+};
 
 const init = async () => {
-  const connection = await createConnection({
-    ...ormconfig,
-    synchronize: false,
-  } as any);
+  const options = await getOptions();
+  const connection = await createConnection(options);
+
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
   await connection.close();
 };
 
-// create typeorm connection
+// * Create Typeorm connection
 const start = async () => {
-  const connection = await createConnection({
-    ...ormconfig,
-  } as any);
+  const options = await getOptions();
+  const connection = await createConnection(options);
+
   try {
-    const tokenRepository = connection.getRepository(Token);
-    const userRepository = connection.getRepository(User);
+    const tokenRepository = connection.getRepository(TokenEntity);
+    const userRepository = connection.getRepository(UserEntity);
 
     const socketMiddleware = async function (req, res, next) {
       req.io = io;
@@ -50,12 +88,14 @@ const start = async () => {
     };
 
     const authMiddleware = async function (req, res, next) {
-      console.log('URL:', req.url);
+      console.log('URL:', req.url, !/^\/api\//.test(req.url));
 
-      if (!/^(\/api\/)*/.test(req.url)) {
-        // If the request lacks /api, send the file without authorization
-        console.log('serve', __dirname + '/' + req.url);
-        res.sendFile(__dirname + '/' + req.url);
+      if (!/^\/api\//.test(req.url)) {
+        // * If the request lacks /api, send the file without authorization
+        const filePath = getDirname() + '/../../../build/index.html';
+        fs.readFile(filePath, (error, data) => {
+          res.send(data.toString());
+        });
       } else if (
         req.url === '/api/login' &&
         req.method.toUpperCase() === 'POST'
@@ -72,12 +112,12 @@ const start = async () => {
         const token = req.headers.session;
         if (!token) {
           res.status(403);
-          return res.send(createErrorResponse(['Not authorized.']));
+          return res.send(createErrorResponse(['Not authorized (no token).']));
         }
-        const session = await tokenRepository.findOne(token).catch(() => {
+        const session = await tokenRepository.findOne(token).catch(e => {
+          console.error('Failed to get session token:', e);
           return;
         });
-        console.log('session:', session);
         if (session) {
           req.userId = session.user_id;
           next();
@@ -91,22 +131,29 @@ const start = async () => {
     // * Create and setup express app
     const app = express();
     app.use(express.json());
+
+    app.use(express.static(__dirname + '/../../../build/'));
+
     app.use(authMiddleware);
     app.use(socketMiddleware);
     app.use(upload());
 
-    // app.use(
-    //   expressWinston.logger({
-    //     transports: [new winston.transports.Console()],
-    //     meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-    //     msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-    //     expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-    //     colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-    //     // ignoreRoute: function (req, res) {
-    //     //   return false;
-    //     // }, // optional: allows to skip some log messages based on request and/or response
-    //   })
-    // );
+    app.use(
+      expressWinston.logger({
+        transports: [new winston.transports.Console()],
+        format: winston.format.combine(
+          winston.format.colorize()
+          // winston.format.json()
+        ),
+        meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+        msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+        expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+        colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+        // ignoreRoute: function (req, res) {
+        //   return false;
+        // }, // optional: allows to skip some log messages based on request and/or response
+      })
+    );
 
     const router = express.Router();
 
@@ -114,13 +161,15 @@ const start = async () => {
     app.use('/api', router);
     /* Socket IO - End */
 
-    // register routes
+    // * Register routes
     personnelController(router);
     taskController(router);
     userController(router);
     projectsController(router);
     commentsController(router);
     imgurController(router);
+    subscriptionsController(router);
+    notificationsController(router);
 
     // * Should take a token, check validity, return loggedIn status
     router.put('/login', async function (
@@ -173,10 +222,6 @@ const start = async () => {
       }
     });
 
-    app.use('/api', router);
-
-    // app.listen(port); // start express server
-
     const server = http.createServer(app);
     server.listen(port, () => {
       console.log(`Server running on port ${port}`);
@@ -188,8 +233,6 @@ const start = async () => {
       console.log('a user connected');
       io.emit('connection', 'connection'); // the event, the event payload
     });
-
-    // console.log(`Mock-server running on port ${port}`);
   } catch (e) {
     console.error(`Error ${e} has occurred`);
   }

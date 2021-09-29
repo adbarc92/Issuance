@@ -12,6 +12,8 @@ import {
   ListItemIcon,
   ListItemText,
   ListItem,
+  styled,
+  Badge,
 } from '@material-ui/core';
 import {
   ChevronLeft as ChevronLeftIcon,
@@ -23,22 +25,28 @@ import {
   People as PersonnelIcon,
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
+  NotificationsActive as NotificationsActiveIcon,
+  ExitToApp as LogoutIcon,
 } from '@material-ui/icons';
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import SearchInput from 'elements/SearchInput';
 import Root from 'elements/Root';
+import { getPersonName, makeGreeting } from 'utils/index';
 import { Person } from 'types/person';
+import { ClientUser } from 'types/user';
+import { Greetings } from 'types/navigation';
+
+import { markNotificationsAsViewed } from 'store/actions';
+
+import theme from 'theme';
+
+import NotificationPopover from 'components/NotificationPopover';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  return createStyles({
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
       transition: theme.transitions.create(['width', 'margin'], {
@@ -101,21 +109,53 @@ const useStyles = makeStyles((theme: Theme) =>
       // * Necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
-  })
-);
+  });
+});
+
+export interface NotificationPanelProps {
+  hidden: boolean;
+}
+
+const NotificationIconContainer = styled('div')(() => {
+  return {
+    marginRight: '2rem',
+    color: theme.palette.primary.contrastText,
+  };
+});
 
 interface NavigationProps {
   person: Person;
+  user: ClientUser;
 }
 
 const Navigation = (props: NavigationProps): JSX.Element => {
-  const { person } = props;
+  const { person, user } = props;
+
+  const { notifications } = user;
+
+  const unviewedNotifications = notifications.filter(notification => {
+    return !notification.viewed;
+  });
 
   const classes = useStyles();
-  const theme = useTheme();
 
   const [open, setOpen] = React.useState(false);
   const [inputString, setInputString] = React.useState<string>('');
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+
+  const [greeting, setGreeting] = React.useState<Greetings>(makeGreeting());
+
+  const handleShowPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    markNotificationsAsViewed(unviewedNotifications);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,14 +187,25 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            {`Hello, ${
-              person
-                ? person.firstName
-                  ? person.firstName
-                  : person.userEmail
-                : 'User'
-            }!`}
+            {`${greeting} ${getPersonName(person)}!`}
           </Typography>
+          <NotificationIconContainer>
+            <IconButton color="inherit" onClick={handleShowPopover}>
+              <Badge
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                badgeContent={unviewedNotifications.length}
+                color="secondary"
+              >
+                <NotificationsActiveIcon />
+              </Badge>
+            </IconButton>
+            <NotificationPopover
+              notifications={unviewedNotifications}
+              anchorEl={anchorEl}
+              handleClosePopover={handleClosePopover}
+            />
+          </NotificationIconContainer>
+
           <div className={classes.searchfieldContainer}>
             <SearchInput
               placeholder={'Search...'}
@@ -232,12 +283,12 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             </Link>
           </ListItem>
           <ListItem button key={'Notifications Feed'}>
-            <Link to="/">
+            <Link to="/notifications">
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
             </Link>
-            <Link to="/">
+            <Link to="/notifications">
               <ListItemText primary={'Notifications Feed'} />
             </Link>
           </ListItem>
@@ -253,7 +304,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
           <ListItem button key={'Log Out'}>
             <Link to="/logout">
               <ListItemIcon>
-                <PersonnelIcon />
+                <LogoutIcon />
               </ListItemIcon>
             </Link>
             <Link to="/logout">

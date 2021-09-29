@@ -22,7 +22,9 @@ I wanted a project which would encourage me to improve at both front-end design 
 
 ## Installation & Setup
 
-* Requires a running instance of 
+* Requires a running instance of PostgreSQL
+* Requires a `.env` file matching the configuration of the `.env.example`, which requires an IMGUR refresh token, client ID, and client secret
+* Requires an `ormconfig` file which specifies all the Postgres database information, including username and password
 
 1. Download the project.
 2. Install the dependencies using `yarn`.

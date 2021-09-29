@@ -9,7 +9,7 @@ import {
 import { UserRole } from '../../../types/user';
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -37,4 +37,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at?: Date;
+
+  @Column({ nullable: true })
+  latest_activity: Date;
 }

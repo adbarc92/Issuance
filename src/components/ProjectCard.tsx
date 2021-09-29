@@ -23,12 +23,12 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ClientTask } from 'types/task';
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
 
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 
 interface ProjectCardProps {
-  project: Project;
+  project: ClientProject;
 }
 
 const useStyles = makeStyles((theme: Theme) =>

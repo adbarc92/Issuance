@@ -1,11 +1,18 @@
-import { ClientTask } from 'types/task';
+import { ClientTask } from './task';
+
+export interface ClientProject {
+  id: string;
+  title: string;
+  description: string;
+  deadline: Date | string | null;
+  tasks: ClientTask[];
+}
 
 export interface Project {
   id: string;
   title: string;
   description: string;
   deadline: Date | string | null;
-  tasks: ClientTask[];
 }
 
 export interface NewProject {

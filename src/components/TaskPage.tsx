@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { ClientTask } from 'types/task';
 import { ClientComment, updateCommentResponse } from 'types/comment';
 
-import { useGetTask } from 'hooks/axiosHooks';
+import { useGetTaskById } from 'hooks/axiosHooks';
 
 import TaskDialog from 'components/TaskDialog';
 import InputComment from 'components/InputComment';
@@ -37,7 +37,7 @@ export interface TaskPageProps {
 const TaskPage = (props: TaskPageProps): JSX.Element => {
   const { personId } = props;
 
-  const { loading, data, error, clearCache: clearTasksCache } = useGetTask(
+  const { loading, data, error, clearCache: clearTasksCache } = useGetTaskById(
     props.taskId
   );
   const [editingTask, setEditingTask] = React.useState(false);

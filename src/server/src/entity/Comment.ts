@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Comment {
+export class CommentEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -27,8 +27,8 @@ export class Comment {
   content!: string;
 
   @CreateDateColumn()
-  created_at?: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at?: Date;
+  updated_at!: Date;
 }

@@ -1,4 +1,3 @@
-// useDataLoader Hook
 // * Give it a function that creates a promise that gets data
 // * Given any number of functions like getUsers and a string that distinguishes the requests from each other; it returns an object that contains a boolean, loading, and a data object that
 //   * Alternatively, it could accept an array of functions and return an array of data objects
@@ -19,12 +18,15 @@ export const requestCache: Record<
   any
 > = ((window as any).requestCache = {});
 
+// *** CacheKeys should be modeled after endpoints
 export enum CacheKey {
   PERSONNEL = 'PERSONNEL',
   TASKS = 'TASKS',
   USERS = 'USERS',
   PROJECTS = 'PROJECTS',
   COMMENTS = 'COMMENTS',
+  UPDATE_ITEMS = 'UPDATE_ITEMS',
+  SUBSCRIPTIONS = 'SUBSCRIPTIONS',
 }
 
 type LoaderFunction = () => Promise<any>;

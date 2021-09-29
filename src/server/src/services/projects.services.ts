@@ -1,9 +1,9 @@
 import { getConnection, Repository } from 'typeorm';
 import { PersonService } from 'services/personnel.services';
-import { Project as ProjectEntity } from 'entity/Project';
-import { NewProject, Project as IProject } from '../../../types/project';
+import { ProjectEntity } from 'entity/Project';
+import { NewProject, ClientProject as IProject } from '../../../types/project';
 import { snakeCasify, toCamelCase } from 'utils';
-import { castProject } from 'cast';
+import { fixProject } from 'cast';
 import { TaskService } from 'services/tasks.services';
 
 export class ProjectService {
@@ -24,7 +24,7 @@ export class ProjectService {
     });
 
     return Promise.all(people).then(people =>
-      castProject(project, tasks, people)
+      fixProject(project, tasks, people)
     );
   }
 
@@ -42,7 +42,10 @@ export class ProjectService {
     const newProject = this.projectRepository.create(
       snakeCasify({ title, description, deadline }) as NewProject
     );
-    return await this.projectRepository.save(newProject);
+
+    const repoProject = await this.projectRepository.save(newProject);
+
+    return repoProject;
   }
 
   async modifyProject(
@@ -56,6 +59,8 @@ export class ProjectService {
       project[prop] = updatedProject[camelProp] ?? project[prop];
     }
 
-    return await this.projectRepository.save(project);
+    const fixedProject = await this.projectRepository.save(project);
+
+    return fixedProject;
   }
 }

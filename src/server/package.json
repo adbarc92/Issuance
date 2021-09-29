@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev -r tsconfig-paths/register src/app.ts"
+    "start:prod": "ts-node -r tsconfig-paths/register src/app.ts",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
+    "build": "tsc --build",
+    "clean": "tsc --clean",
+    "start": "node build/server/src/app.js",
+    "bs": "yarn build && yarn start"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +27,7 @@
     "http": "^0.0.1-security",
     "pg": "^8.4.1",
     "socket.io": "^3.1.0",
+    "ts-node": "^10.0.0",
     "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.28",
     "uuid": "^8.3.1",

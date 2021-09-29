@@ -10,6 +10,11 @@ import { SocketMessages } from '../../../types/socket';
 
 import { IoRequest } from 'utils';
 
+import { castProject, castUpdateItem } from 'cast';
+
+import { UpdateItemService } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
+
 const projectsController = (router: Router): void => {
   const projectService = new ProjectService();
 
@@ -28,10 +33,37 @@ const projectsController = (router: Router): void => {
     }
   });
 
-  router.post('/projects', async function (req: Request, res: Response) {
+  router.post('/projects', async function (
+    req: Request & { io: any; userId: string },
+    res: Response
+  ) {
     console.log('Router post project request');
     try {
       const project = await projectService.createProject(req.body);
+
+      const response = {
+        userId: req.userId,
+        project: castProject(project),
+      };
+
+      req.io.emit(SocketMessages.PROJECTS, response);
+
+      const updateItemService = new UpdateItemService();
+
+      const newUpdateItem = await updateItemService.createUpdateItem(
+        UpdateItemTypes.PROJECT,
+        project.id,
+        UpdateItemActions.CREATE,
+        req.userId
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       return res.send(project);
     } catch (e) {
       console.error(e);
@@ -50,6 +82,23 @@ const projectsController = (router: Router): void => {
         req.params.id
       );
       req.io.emit(SocketMessages.PROJECTS, updatedProject);
+
+      const updateItemService = new UpdateItemService();
+
+      const newUpdateItem = await updateItemService.createUpdateItem(
+        UpdateItemTypes.PROJECT,
+        updatedProject.id,
+        UpdateItemActions.UPDATE,
+        req.userId
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       return res.send(updatedProject);
     } catch (e) {
       res.status(500);

@@ -1,7 +1,7 @@
 // Todo: Modify Styling to be less terrible
 
 import React from 'react';
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
 
 import { List, ListItem, IconButton } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
@@ -55,7 +55,7 @@ const ProjectPage = (props: ProjectPageProps): JSX.Element => {
     return <div>{error}</div>;
   }
 
-  const project = data as Project;
+  const project = data as ClientProject;
 
   return (
     <RootWrapper>

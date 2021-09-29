@@ -24,7 +24,12 @@ import { createTask, updateTask } from 'store/actions';
 
 import { reRenderApp } from 'App';
 
-import { isNotFilledOut, isTooLong, trimState } from 'utils/index';
+import {
+  isNotFilledOut,
+  isTooLong,
+  trimState,
+  getPersonName,
+} from 'utils/index';
 
 import {
   useNotificationSnackbar,
@@ -37,7 +42,7 @@ import { useGetProjects, useGetPersonnel } from 'hooks/axiosHooks';
 
 import LoadingSpinner from 'elements/LoadingSpinner';
 
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
 import { Person } from 'types/person';
 
 const TextFieldWrapper = styled('div')(() => {
@@ -97,8 +102,8 @@ export enum TaskDialogAction {
   SET_TASKTYPE = 'setTaskType',
   SET_TASKPRIORITY = 'setTaskPriority',
   SET_TASKSTATUS = 'setTaskStatus',
-  SET_ASSIGNEDTO = 'setAssignedTo',
-  SET_REPORTEDBY = 'setReportedBy',
+  SET_ASSIGNED_TO = 'setAssignedTo',
+  SET_REPORTED_BY = 'setReportedBy',
   SET_DEADLINE = 'setDeadline',
   SET_PROJECT = 'setProject',
   SET_STORYPOINTS = 'setStoryPoints',
@@ -183,7 +188,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
     projectId: '',
     deadline: new Date(
       new Date().getTime() + 24 * 60 * 60 * 1000
-    ).toISOString(), // defaults to tomorrow
+    ).toISOString(), // * Defaults to tomorrow
     storyPoints: 0,
     rowIndex: 0,
   };
@@ -230,10 +235,10 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         case TaskDialogAction.SET_TASKSTATUS:
           newState.status = action.payload;
           break;
-        case TaskDialogAction.SET_ASSIGNEDTO:
+        case TaskDialogAction.SET_ASSIGNED_TO:
           newState.assignedTo = action.payload;
           break;
-        case TaskDialogAction.SET_REPORTEDBY:
+        case TaskDialogAction.SET_REPORTED_BY:
           newState.reportedBy = action.payload;
           break;
         case TaskDialogAction.SET_DEADLINE:
@@ -298,6 +303,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
         deadline: state.deadline as string,
         projectId: state.projectId,
         storyPoints: state.storyPoints,
+        reportedBy: state.reportedBy,
         rowIndex: 0,
       };
 
@@ -311,11 +317,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
           NotificationSeverity.SUCCESS
         );
         handleClose();
-        if (addingTask) {
-          clearTasksCache();
-        } else {
-          reRenderApp();
-        }
+        clearTasksCache();
       } else {
         showNotification(
           `Task ${addingTask ? 'creation' : 'editing'} failed!`,
@@ -468,13 +470,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   title={'Assigned Person'}
                   items={(personData as Person[]).map(person => {
                     return {
-                      label: person.firstName + person.lastName,
+                      label: getPersonName(person),
                       value: person.id,
                     };
                   })}
                   onChange={e => {
                     dispatch({
-                      type: TaskDialogAction.SET_ASSIGNEDTO,
+                      type: TaskDialogAction.SET_ASSIGNED_TO,
                       payload: e.target.value,
                     });
                   }}
@@ -491,13 +493,13 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   title={'Reported By'}
                   items={(personData as Person[]).map(person => {
                     return {
-                      label: person.firstName + person.lastName,
+                      label: getPersonName(person),
                       value: person.id,
                     };
                   })}
                   onChange={e => {
                     dispatch({
-                      type: TaskDialogAction.SET_REPORTEDBY,
+                      type: TaskDialogAction.SET_REPORTED_BY,
                       payload: e.target.value,
                     });
                   }}
@@ -527,7 +529,7 @@ const TaskDialog = (props: TaskDialogProps): JSX.Element => {
                   <Select
                     fullWidth
                     title={'Project'}
-                    items={(projectData as Project[]).map(project => {
+                    items={(projectData as ClientProject[]).map(project => {
                       return {
                         label: project.title,
                         value: project.id,

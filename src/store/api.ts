@@ -1,6 +1,6 @@
 // * Prepends `/api` to route
 import axios from 'axios';
-import { getSessionToken } from './auth';
+import { getSessionToken } from 'store/auth';
 
 export const api = axios.create({
   baseURL: '/api',

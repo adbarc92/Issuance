@@ -3,13 +3,15 @@
 import { api } from 'store/api';
 import { ClientTask, TaskInput } from 'types/task';
 import { Person as IPerson } from 'types/person';
-import { NewProject as IProject, Project } from 'types/project';
-import { User, UserInput } from 'types/user';
+import { NewProject as IProject, ClientProject } from 'types/project';
+import { ClientUser, UserInput } from 'types/user';
 import { requestCache, CacheKey } from 'hooks/getData';
 import { UpdateTaskResponse } from 'types/task';
 import { ClientComment } from 'types/comment';
 import { LoginResponse } from 'types/auth';
 import { NewComment } from 'types/comment';
+import { ClientNotification } from 'types/notification';
+import { ClientSubscription } from 'types/subscription';
 
 // * Actions change things
 
@@ -38,15 +40,17 @@ export const updateCacheOrdering = (
   cacheKey: CacheKey
 ): void => {
   const cache = requestCache[cacheKey];
-  const hashedCache = cache.reduce((prev, current) => {
-    prev[current.id] = current;
-    return prev;
-  }, {});
-  const newArray = orderingArray.map((elem: { id: string }) => {
-    return hashedCache[elem.id];
-  });
-  for (let i = 0; i < newArray.length; i++) {
-    requestCache[cacheKey][i] = newArray[i];
+  if (cache) {
+    const hashedCache = cache.reduce((prev, current) => {
+      prev[current.id] = current;
+      return prev;
+    }, {});
+    const newArray = orderingArray.map((elem: { id: string }) => {
+      return hashedCache[elem.id];
+    });
+    for (let i = 0; i < newArray.length; i++) {
+      requestCache[cacheKey][i] = newArray[i];
+    }
   }
 };
 
@@ -66,14 +70,16 @@ export const updateTask = async (
 
 export const handleUpdateTask = (data: UpdateTaskResponse): void => {
   updateCache(data.task);
+  console.log('data:', data);
   updateCacheOrdering(data.ordering, CacheKey.TASKS);
 };
 
+// Todo: refactor with updateCache
 export const handleUpdateComment = (comment: ClientComment): void => {
   const baseCacheKey = CacheKey.TASKS;
   const { taskId: id } = comment;
   const cacheKey = baseCacheKey + (id ?? '');
-  requestCache[cacheKey].comments.push(comment);
+  requestCache[cacheKey].comments.push(comment); // Todo: add catching for cache miss
 };
 
 export const createTask = async (
@@ -86,11 +92,11 @@ export const createTask = async (
       type: task.type,
       priority: task.priority,
       status: task.status,
-      assignedTo: 0,
+      assignedTo: task.assignedTo ?? '',
       deadline: task.deadline,
       projectId: task.projectId,
       storyPoints: task.storyPoints,
-      reportedBy: 0,
+      reportedBy: task.reportedBy ?? '',
     });
     return response.data;
   } catch (e) {
@@ -136,7 +142,7 @@ export const checkLogin = async (): Promise<LoginResponse | null> => {
 
 export const createUser = async (
   user: UserInput
-): Promise<{ user: User | null; statusCode: number }> => {
+): Promise<{ user: ClientUser | null; statusCode: number }> => {
   try {
     const response = await api.post('/users', {
       loginEmail: user.loginEmail,
@@ -164,7 +170,7 @@ export const updatePerson = async (
 };
 
 export const handleUpdatePerson = (data: IPerson): void => {
-  updateCache(data);
+  updateCache(data); // Todo: updateCache(data, requestCache[CacheKey.PERSONNEL]);
 };
 
 export const createPerson = async (
@@ -198,7 +204,7 @@ export const createProject = async (
 export const updateProject = async (
   project: IProject,
   id: string
-): Promise<Project | null> => {
+): Promise<ClientProject | null> => {
   try {
     const response = await api.put(`projects/${id}`, project);
     return response.data;
@@ -243,6 +249,66 @@ export const getProfilePicture = async (
     const res = await api.get(`/image/${personId}`);
     console.log('pfp get res:', res); // * Troubleshooting
     return res;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const handleUpdateNotifications = (
+  notification: ClientNotification
+): void => {
+  console.log('Updating notifications');
+  const baseCacheKey = CacheKey.USERS;
+  const { ownerId: id } = notification;
+  const cacheKey = baseCacheKey + (id ?? '');
+  requestCache[cacheKey].notifications.push(notification);
+};
+
+export const handleUpdateSubscriptions = (
+  subscription: ClientSubscription
+): void => {
+  console.log('Updating subscriptions');
+  const baseCacheKey = CacheKey.SUBSCRIPTIONS;
+  const { subscriberId: id } = subscription;
+  const cacheKey = baseCacheKey + (id ?? '');
+  console.log('requestCache[cacheKey]:', requestCache[cacheKey]);
+  if (requestCache[cacheKey]) {
+    requestCache[cacheKey].push(subscription);
+  } else {
+    requestCache[cacheKey] = [subscription];
+  }
+};
+
+export const markNotificationsAsViewed = async (
+  notifications: ClientNotification[]
+): Promise<ClientNotification[] | null> => {
+  try {
+    const fixedNotifications = notifications.map(notification => {
+      notification.viewed = true;
+      return notification;
+    });
+
+    console.log('fixedNotifications:', fixedNotifications);
+
+    const res = await api.put('/notifications', fixedNotifications);
+
+    console.log('res:', res);
+
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const getUnviewedNotificationsByUserId = async (
+  userId: string
+): Promise<ClientNotification[] | null> => {
+  try {
+    const res = await api.get(`/notifications/${userId}`);
+    console.log('unviewedNotifications:', res.data);
+    return res.data;
   } catch (e) {
     console.error(e);
     return null;

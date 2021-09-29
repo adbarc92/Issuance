@@ -6,6 +6,8 @@ import { Request, Response } from 'express';
 import { createErrorResponse } from 'utils';
 import { castPerson } from 'cast';
 
+import * as winston from 'winston';
+
 // * This function sets all the routes
 const personnelController = (router: Router): void => {
   const personService = new PersonService();
@@ -21,6 +23,7 @@ const personnelController = (router: Router): void => {
       return res.send(castPerson(person));
     } catch (e) {
       res.status(500);
+      console.error('Failed to get person by Id:', req.params.id, e);
       return res.send(createErrorResponse(e));
     }
   });

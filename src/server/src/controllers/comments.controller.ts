@@ -1,30 +1,129 @@
 // Todo: Add ConsoleLogs||ConsoleDebug and ConsoleErrors to each controller endpoint
 
 import { Router } from 'express';
-import { CommentsService } from 'services/comments.services';
+import { CommentService } from 'services/comments.services';
 import { Request, Response } from 'express';
-import { createErrorResponse } from 'utils';
-import { castPersonedComment, castPersonComment } from 'cast';
+import { createErrorResponse, affixUpdateItemToNotification } from 'utils';
+import { castPersonedComment, castUpdateItem, castNotification } from 'cast';
 
-import { IoRequest } from 'utils';
+import { UpdateItemService } from 'services/updateItems.services';
+import { UpdateItemTypes, UpdateItemActions } from '../../../types/updateItem';
+
+import { TaskService } from 'services/tasks.services';
+import { SubscriptionService } from 'services/subscriptions.services';
+import { NotificationService } from 'services/notifications.services';
+
 import { SocketMessages } from '../../../types/socket';
+import { SocketEventType } from '../../../types/subscription';
+
+import {
+  createSocketEventName,
+  affixPersonToComment,
+  IoRequest,
+  logThenEmit,
+} from '../utils';
+import { UserService } from 'services/users.services';
 
 const commentsController = (router: Router): void => {
-  const commentsService = new CommentsService();
+  const commentService = new CommentService();
 
   router.post('/comments', async function (
     req: Request & { io: any; userId: string },
     res: Response
   ) {
     try {
-      const personedComment = await commentsService.createComment(req.body);
-      const response = {
+      const updateItemServices = new UpdateItemService();
+      const subscriptionService = new SubscriptionService();
+      const taskService = new TaskService();
+      const notificationService = new NotificationService();
+      const userService = new UserService();
+
+      const personedComment = await commentService.createComment(req.body);
+
+      const clientComment = castPersonedComment(personedComment);
+
+      const socketResponse = {
         userId: req.userId,
-        comment: castPersonedComment(personedComment),
+        comment: clientComment,
       };
-      req.io.emit(SocketMessages.COMMENTS, response);
-      console.log('comment post response:', response);
-      return res.send(response.comment);
+
+      // req.io.emit(SocketMessages.COMMENTS, socketResponse);
+      logThenEmit(req, SocketMessages.COMMENTS, socketResponse);
+
+      const newUpdateItem = await updateItemServices.createUpdateItem(
+        UpdateItemTypes.COMMENT,
+        personedComment.id,
+        UpdateItemActions.CREATE,
+        req.userId
+      );
+
+      const assignedPerson = await taskService.getTaskAssigneeById(
+        personedComment.task_id
+      );
+
+      const assignedUser = await userService.getUserByPersonId(
+        assignedPerson.id
+      );
+
+      if (assignedUser) {
+        const assigneeSubscription = await subscriptionService.createSubscription(
+          personedComment.task_id,
+          assignedUser.id,
+          UpdateItemTypes.COMMENT
+        );
+
+        // Todo: undo redundant subscription emission
+        const assigneeSocketEventName = createSocketEventName(
+          SocketEventType.SUBSCRIPTION,
+          assigneeSubscription.subscriber_id
+        );
+        // req.io.emit(assigneeSocketEventName, assigneeSubscription);
+        logThenEmit(req, assigneeSocketEventName, assigneeSubscription);
+      }
+
+      const commenterSubscription = await subscriptionService.createSubscription(
+        personedComment.task_id,
+        req.userId,
+        UpdateItemTypes.COMMENT
+      );
+
+      const commenterSocketEventName = createSocketEventName(
+        SocketEventType.SUBSCRIPTION,
+        commenterSubscription.subscriber_id
+      );
+
+      // req.io.emit(commenterSocketEventName, commenterSubscription);
+      logThenEmit(req, commenterSocketEventName, commenterSubscription);
+
+      const subscriptions = await subscriptionService.getSubscriptionsByItemId(
+        personedComment.task_id
+      );
+
+      // Todo: refactor to separate function?
+      for (const subscription of subscriptions) {
+        if (newUpdateItem.user_id !== subscription.subscriber_id) {
+          const newNotification = await notificationService.createNotification(
+            subscription,
+            newUpdateItem.id
+          );
+
+          const serverNotification = await affixUpdateItemToNotification(
+            newNotification
+          );
+
+          const clientNotification = castNotification(serverNotification);
+
+          const notificationSocketEventName = createSocketEventName(
+            SocketEventType.NOTIFICATION,
+            subscription.subscribed_item_id
+          );
+
+          // req.io.emit(notificationSocketEvent, newNotification);
+          logThenEmit(req, notificationSocketEventName, clientNotification);
+        }
+      }
+
+      return res.send(clientComment);
     } catch (e) {
       res.status(500);
       return res.send(createErrorResponse(e));
@@ -36,7 +135,7 @@ const commentsController = (router: Router): void => {
     res: Response
   ) {
     try {
-      const personedComments = await commentsService.getCommentsByTaskId(
+      const personedComments = await commentService.getCommentsByTaskId(
         req.params.id
       );
       return res.send(
@@ -50,7 +149,7 @@ const commentsController = (router: Router): void => {
 
   router.get('/comments/:id', async function (req: Request, res: Response) {
     try {
-      const comment = await commentsService.getCommentById(req.params.id);
+      const comment = await commentService.getCommentById(req.params.id);
       return res.send(castPersonedComment(comment));
     } catch (e) {
       res.status(500);
@@ -60,7 +159,7 @@ const commentsController = (router: Router): void => {
 
   router.delete('/comments/:id', async function (req: Request, res: Response) {
     try {
-      await commentsService.removeComment(req.params.id);
+      await commentService.removeComment(req.params.id);
       res.send(JSON.stringify({}));
     } catch (e) {
       res.status(500);
@@ -74,15 +173,34 @@ const commentsController = (router: Router): void => {
   ) {
     try {
       const updatedComment = req.body;
-      const fixedComment = await commentsService.modifyComment(
+      const fixedComment = await commentService.modifyComment(
         req.params.id,
         updatedComment
       );
+      const commentEntityWithPerson = await affixPersonToComment(fixedComment);
       const response = {
-        comment: castPersonedComment(castPersonComment(fixedComment)),
+        comment: commentEntityWithPerson,
         userId: req.userId,
       };
-      req.io.emit('comments', response);
+      // req.io.emit(SocketMessages.COMMENTS, response);
+      logThenEmit(req, SocketMessages.COMMENTS, response);
+
+      const updateItemServices = new UpdateItemService();
+      const newUpdateItem = await updateItemServices.createUpdateItem(
+        UpdateItemTypes.COMMENT,
+        fixedComment.id,
+        UpdateItemActions.UPDATE,
+        req.userId
+      );
+
+      const updateItemResponse = {
+        updateItem: castUpdateItem(newUpdateItem),
+        userId: req.userId,
+      };
+
+      // req.io.emit(SocketMessages.UPDATE_ITEMS, updateItemResponse);
+      logThenEmit(req, SocketMessages.UPDATE_ITEMS, updateItemResponse);
+
       res.send(response);
     } catch (e) {
       res.status(500);

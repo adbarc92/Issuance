@@ -1,45 +1,48 @@
 import { getConnection, Repository } from 'typeorm';
-import { Person } from 'entity/Person';
+import { PersonEntity } from 'entity/Person';
 import { PersonJob } from '../../../types/person';
 import { snakeCasify } from 'utils';
 
 export class PersonService {
-  personRepository: Repository<Person>;
+  personRepository: Repository<PersonEntity>;
 
   constructor() {
-    this.personRepository = getConnection().getRepository(Person);
+    this.personRepository = getConnection().getRepository(PersonEntity);
   }
 
-  async getPersonById(id: string): Promise<Person> {
-    return await this.personRepository.findOne(id);
+  async getPersonById(id: string): Promise<PersonEntity> {
+    return this.personRepository.findOne(id);
   }
 
-  async getPersonByUserEmail(user_email: string): Promise<Person> {
-    return await this.personRepository.findOne({ user_email });
+  async getPersonByUserEmail(user_email: string): Promise<PersonEntity> {
+    return this.personRepository.findOne({ user_email });
   }
 
-  async getPersonnel(): Promise<Person[]> {
-    return await this.personRepository.find();
+  async getPersonnel(): Promise<PersonEntity[]> {
+    return this.personRepository.find(); // * Await will cover promise chains
   }
 
   async createPerson(
-    person: Partial<Person> & { userEmail: string }
-  ): Promise<Person> {
+    person: Partial<PersonEntity> & { userEmail: string }
+  ): Promise<PersonEntity> {
     const snakeCasePerson = snakeCasify(person);
     const curPerson = this.personRepository.create({
       ...snakeCasePerson,
       userEmail: person.userEmail,
       job: person.job ? person.job : PersonJob.CODER,
-    } as Person); // * BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
+    } as PersonEntity); // * BugFix: using spread inside create causes it to treat the argument as an array rather than a single object
     return this.personRepository.save(curPerson);
   }
 
   async modifyPerson(
-    person: Partial<Person> & { id: string }
-  ): Promise<Person> {
+    person: Partial<PersonEntity> & { id: string }
+  ): Promise<PersonEntity> {
+    console.log('modifying person...', person);
     const snakePerson = snakeCasify(person);
     const curPerson = await this.getPersonById(person.id);
+    console.log('curPerson:', curPerson);
     const newPerson = this.personRepository.merge(curPerson, snakePerson);
+    console.log('newPerson:', newPerson);
     return await this.personRepository.save(newPerson);
   }
 

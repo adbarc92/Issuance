@@ -2,10 +2,13 @@
 
 import { Person } from 'types/person';
 import { ClientTask } from 'types/task';
-import { User } from 'types/user';
-import { Project } from 'types/project';
+import { ClientUser } from 'types/user';
+import { ClientProject } from 'types/project';
+import { ClientUpdateItem } from 'types/updateItem';
 import { useGetData, CacheKey, IDataLoader } from 'hooks/getData';
 import { api } from 'store/api';
+import { ClientSubscription } from 'types/subscription';
+import { ClientNotification } from 'types/notification';
 
 export const getPersonByUsername = async (
   username: string
@@ -52,7 +55,9 @@ export const useGetPersonnel = (): IDataLoader<Person[] | null> => {
   return useGetData(getPersonnel, CacheKey.PERSONNEL);
 };
 
-export const getTask = async (taskId: string): Promise<ClientTask | null> => {
+export const getTaskById = async (
+  taskId: string
+): Promise<ClientTask | null> => {
   try {
     const res = await api.get(`/tasks/${taskId}`);
     return res.data;
@@ -62,10 +67,10 @@ export const getTask = async (taskId: string): Promise<ClientTask | null> => {
   }
 };
 
-export const useGetTask = (id: string): IDataLoader<ClientTask | null> => {
+export const useGetTaskById = (id: string): IDataLoader<ClientTask | null> => {
   return useGetData(
     () => {
-      return getTask(id);
+      return getTaskById(id);
     },
     CacheKey.TASKS,
     String(id)
@@ -86,7 +91,7 @@ export const useGetTasks = (): IDataLoader<ClientTask[] | null> => {
   return useGetData(getTasks, CacheKey.TASKS);
 };
 
-export const getUsers = async (): Promise<User[] | null> => {
+export const getUsers = async (): Promise<ClientUser[] | null> => {
   try {
     const res = await api.get('/users');
     return res.data;
@@ -96,11 +101,11 @@ export const getUsers = async (): Promise<User[] | null> => {
   }
 };
 
-export const useGetUsers = (): IDataLoader<User[] | null> => {
+export const useGetUsers = (): IDataLoader<ClientUser[] | null> => {
   return useGetData(getUsers, CacheKey.USERS);
 };
 
-export const getProjects = async (): Promise<Project[] | null> => {
+export const getProjects = async (): Promise<ClientProject[] | null> => {
   try {
     const res = await api.get('/projects');
     return res.data;
@@ -110,13 +115,13 @@ export const getProjects = async (): Promise<Project[] | null> => {
   }
 };
 
-export const useGetProjects = (): IDataLoader<Project[] | null> => {
+export const useGetProjects = (): IDataLoader<ClientProject[] | null> => {
   return useGetData(getProjects, CacheKey.PROJECTS);
 };
 
 export const getProjectById = async (
   projectId: string
-): Promise<Project | null> => {
+): Promise<ClientProject | null> => {
   try {
     const res = await api.get(`/projects/${projectId}`);
     return res.data;
@@ -128,7 +133,7 @@ export const getProjectById = async (
 
 export const useGetProjectById = (
   projectId: string
-): IDataLoader<Project | null> => {
+): IDataLoader<ClientProject | null> => {
   return useGetData(
     () => {
       return getProjectById(projectId);
@@ -138,7 +143,9 @@ export const useGetProjectById = (
   );
 };
 
-export const getUserById = async (userId: string): Promise<User | null> => {
+export const getUserById = async (
+  userId: string
+): Promise<ClientUser | null> => {
   try {
     const res = await api.get(`/users/${userId}`);
     return res.data;
@@ -148,7 +155,9 @@ export const getUserById = async (userId: string): Promise<User | null> => {
   }
 };
 
-export const useGetUserById = (userId: string): IDataLoader<User | null> => {
+export const useGetUserById = (
+  userId: string
+): IDataLoader<ClientUser | null> => {
   return useGetData(
     () => {
       return getUserById(userId);
@@ -192,4 +201,55 @@ export const getComments = async (): Promise<Comment[] | null> => {
 
 export const useGetComments = (): IDataLoader<Comment[] | null> => {
   return useGetData(getComments, CacheKey.COMMENTS);
+};
+
+export const getUpdateItems = async (): Promise<ClientUpdateItem[] | null> => {
+  try {
+    const res = await api.get('/notifications');
+    console.log('res:', res);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const useGetUpdateItems = (): IDataLoader<ClientUpdateItem[] | null> => {
+  return useGetData(getUpdateItems, CacheKey.UPDATE_ITEMS);
+};
+
+export const getUserSubscriptionsById = async (
+  userId: string
+): Promise<ClientSubscription[] | null> => {
+  try {
+    const res = await api.get(`/subscriptions/${userId}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+export const useGetUserSubscriptionsById = (
+  userId: string
+): IDataLoader<ClientSubscription[] | null> => {
+  return useGetData(
+    () => {
+      return getUserSubscriptionsById(userId);
+    },
+    CacheKey.SUBSCRIPTIONS,
+    userId
+  );
+};
+
+export const getNotificationsBySubscriptionId = async (
+  subscriptionId: string
+): Promise<ClientNotification[] | null> => {
+  try {
+    const res = await api.get(`/notifications/${subscriptionId}`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };

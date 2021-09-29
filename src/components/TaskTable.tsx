@@ -22,9 +22,7 @@ const Header = styled('div')((props: any) => {
 
 const Column = styled('div')((props: any) => {
   return {
-    backgroundColor: props.highlighted
-      ? theme.palette.background.highlighted
-      : 'unset',
+    backgroundColor: props.highlighted ? theme.palette.info.light : 'unset',
     padding: '0.25rem',
     display: 'flex',
     flexDirection: 'column',

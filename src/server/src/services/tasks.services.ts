@@ -1,9 +1,12 @@
 import { getConnection, Repository } from 'typeorm';
-import { Task as TaskEntity } from 'entity/Task';
+import { TaskEntity } from 'entity/Task';
 import { ClientTask, CommentedTask } from '../../../types/task';
+import { ClientComment } from '../../../types/comment';
 import { snakeCasify, toCamelCase, fixInputTask } from 'utils';
-import { CommentsService } from 'services/comments.services';
-import { castCommentTask } from 'cast';
+import { CommentService } from 'services/comments.services';
+import { castCommentTask, castPersonedComment } from 'cast';
+import { PersonEntity } from 'entity/Person';
+import { PersonService } from './personnel.services';
 
 export class TaskService {
   taskRepository: Repository<TaskEntity>;
@@ -13,12 +16,21 @@ export class TaskService {
   }
 
   async getTaskById(taskId: string): Promise<CommentedTask> {
-    const commentsService = new CommentsService();
-    const comments = await commentsService.getCommentsByTaskId(taskId);
+    const commentService = new CommentService();
+    const comments = await commentService.getCommentsByTaskId(taskId);
+    // const clientComments: ClientComment[] = comments.map(comment =>
+    //   castPersonedComment(comment)
+    // );
     const task = await this.taskRepository.findOne({ id: taskId });
     const commentedTask = castCommentTask(task);
     commentedTask.comments = comments;
     return commentedTask;
+  }
+
+  async getTaskAssigneeById(taskId: string): Promise<PersonEntity> {
+    const task = await this.taskRepository.findOne({ id: taskId });
+    const personService = new PersonService();
+    return await personService.getPersonById(task.assigned_to);
   }
 
   async getTaskOrdering(): Promise<{ id: string }[]> {
@@ -47,16 +59,19 @@ export class TaskService {
       .execute();
   }
 
-  async createTask(task: ClientTask): Promise<TaskEntity[]> {
+  async createTask(task: ClientTask): Promise<TaskEntity> {
     fixInputTask(task);
-    const curTask = this.taskRepository.create(snakeCasify(task));
+    const snakeTask: TaskEntity = snakeCasify(task);
+    const curTask = this.taskRepository.create(snakeTask);
     await this.taskRepository
       .createQueryBuilder()
-      .update('task')
+      .update('task_entity')
       .set({ row_index: () => 'row_index + 1' })
       .where('row_index >= 0')
       .execute();
-    return await this.taskRepository.save(curTask);
+    const newTask = await this.taskRepository.save(curTask);
+
+    return newTask;
   }
 
   async modifyTask(updatedTask: ClientTask, id: string): Promise<TaskEntity> {
@@ -72,28 +87,28 @@ export class TaskService {
         // * Close original gap: substract 1 from everything >= oldIndex
         await this.taskRepository
           .createQueryBuilder()
-          .update('task')
+          .update('task_entity')
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
         // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
-          .update('task')
+          .update('task_entity')
           .set({ row_index: () => 'row_index + 1' })
           .where('row_index >= :id', { id: newIndex })
           .execute();
       } else {
         await this.taskRepository
           .createQueryBuilder()
-          .update('task')
+          .update('task_entity')
           .set({ row_index: () => 'row_index - 1' })
           .where('row_index > :id', { id: oldIndex })
           .execute();
         // * Open a gap at the new index: add 1 to everything >= newIndex
         await this.taskRepository
           .createQueryBuilder()
-          .update('task')
+          .update('task_entity')
           .set({ row_index: () => 'row_index + 1' })
           .where('row_index >= :id', { id: newIndex })
           .execute();
@@ -105,7 +120,9 @@ export class TaskService {
       task[prop] = updatedTask[camelProp] ?? task[prop];
     }
 
-    return await this.taskRepository.save(task);
+    const fixedTask = await this.taskRepository.save(task);
+
+    return fixedTask;
   }
 
   async removeTask(id: string): Promise<any> {
@@ -119,7 +136,7 @@ export class TaskService {
       .execute();
     await this.taskRepository
       .createQueryBuilder()
-      .update('task')
+      .update('task_entity')
       .set({ row_index: () => 'row_index - 1' })
       .where('row_index >= :id', { id: deletedIndex })
       .execute();

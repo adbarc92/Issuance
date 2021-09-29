@@ -1,8 +1,6 @@
 import React from 'react';
 import { Menu, MenuItem } from '@material-ui/core';
 
-// Requires: Anchor Element, Menu Items, onClose
-
 interface MenuItem {
   key: string;
   onClick: () => void;

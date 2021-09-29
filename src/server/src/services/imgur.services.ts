@@ -2,24 +2,24 @@
 
 import { getConnection, Repository } from 'typeorm';
 import axios, { AxiosResponse } from 'axios';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import FormData from 'form-data';
 
-import { ImgurToken } from 'entity/ImgurToken';
+import { ImgurTokenEntity } from 'entity/ImgurToken';
 
 import { PersonService } from 'services/personnel.services';
 import { tokenIsExpired } from 'utils';
 import { UploadedFile } from 'express-fileupload';
 
-const configureDotEnv = () => {
-  const result = dotenv.config();
+// const configureDotEnv = () => {
+//   const result = dotenv.config();
 
-  if (result.error) {
-    throw result.error;
-  }
+//   if (result.error) {
+//     throw result.error;
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
 export interface ImgurTokenResponse {
   access_token: string;
@@ -112,14 +112,14 @@ export interface ImgurImageDownloadResponse {
 }
 
 export class ImgurService {
-  imgurRepository: Repository<ImgurToken>;
+  imgurRepository: Repository<ImgurTokenEntity>;
 
   constructor() {
-    this.imgurRepository = getConnection().getRepository(ImgurToken);
-    configureDotEnv();
+    this.imgurRepository = getConnection().getRepository(ImgurTokenEntity);
+    // configureDotEnv();
   }
 
-  async getAccessToken(): Promise<ImgurToken> {
+  async getAccessToken(): Promise<ImgurTokenEntity> {
     let token = await this.imgurRepository.findOne();
 
     if (!token || tokenIsExpired(token)) {
@@ -127,9 +127,9 @@ export class ImgurService {
         const url = 'https://api.imgur.com/oauth2/token';
 
         const data = JSON.stringify({
-          refresh_token: process.env.REFRESH_TOKEN,
-          client_id: process.env.CLIENT_ID,
-          client_secret: process.env.CLIENT_SECRET,
+          refresh_token: process.env.IMGUR_REFRESH_TOKEN,
+          client_id: process.env.IMGUR_CLIENT_ID,
+          client_secret: process.env.IMGUR_CLIENT_SECRET,
           grant_type: 'refresh_token',
         });
 

@@ -33,6 +33,48 @@ Issuance Dev Notes
 	* Timeline/Burndown
 	* CDN?
 	* Cookie-Usage
+	* Epic Tasks: one level between 
+	* Notifications and UpdateItems track changed fields for tasks and projects, and content for comments
+=== 08Jun2021 ===
+
+* Join Commands
+	* Refactor
+		* From Notification_Entity
+			notification_entity.user_id=>user_entity.email, update_item_id=>update_item_entity.item_id && 
+
+=== 13May2021 ===
+
+* Bug Fixes:
+	* Deleting a task should refresh other users' pages connected to the same database
+	* Creating a task should refresh other users' pages connected to the same database
+
+=== 29Apr2021 ===
+
+* JoinQueries
+* Network Requests
+
+=== 27Apr2021 ===
+
+* Todos: fix Theme, 
+
+* Add ChangedFields to UpdateItems and Notifications
+* Notification Strings:
+	* 'Alex Barclay has left a comment on <your> task, <taskName>';
+	* 'Alex Barclay commented: <comment>'
+	* 'Alex Barclay has changed the <field1> and <field2> on task, <taskName>'
+	* 
+
+=== 11Apr2021 ===
+
+* TypeORM Database Queries X
+
+=== 07Apr2021 ===
+
+	* Fixes:
+		* Bugs: Person Modification fails
+	* Features:
+		* User Privileges
+		* User Table
 
 === 04Apr2021 ===
 

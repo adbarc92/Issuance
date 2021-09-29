@@ -15,7 +15,7 @@ import { Alert } from '@material-ui/lab';
 
 import DateTimePicker from 'elements/DateTimePicker';
 
-import { Project } from 'types/project';
+import { ClientProject } from 'types/project';
 
 import { createProject, updateProject } from 'store/actions';
 
@@ -54,7 +54,7 @@ interface ProjectDialogProps {
   showingDialog: boolean;
   hideDialog: () => void;
   clearProjectsCache: () => void;
-  project: Project | null;
+  project: ClientProject | null;
 }
 
 export enum ProjectDialogAction {
@@ -79,10 +79,10 @@ const ProjectDialog = (props: ProjectDialogProps): JSX.Element => {
         ).toISOString(),
       }
     : {
-        title: (project as Project).title,
-        description: (project as Project).description,
-        deadline: (project as Project).deadline,
-        id: (project as Project).id,
+        title: (project as ClientProject).title,
+        description: (project as ClientProject).description,
+        deadline: (project as ClientProject).deadline,
+        id: (project as ClientProject).id,
       };
 
   const { state, submit, reset, errors, triedSubmit, dispatch } = useForm({

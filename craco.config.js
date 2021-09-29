@@ -24,19 +24,6 @@ const removeCssHashPlugin = {
 
 module.exports = {
   plugins: [{ plugin: removeCssHashPlugin }],
-  devServer: {
-    proxy: {
-      '/api/*': 'http://localhost:4000',
-      '/socket.io': {
-        target: 'http://localhost:4000',
-        ws: true,
-      },
-      '/socket.io/socket.io.js': {
-        target: 'http://localhost:4000',
-        ws: true,
-      },
-    },
-  },
   webpack: {
     configure: {
       output: {
