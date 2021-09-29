@@ -39,25 +39,8 @@ const getDirname = () => {
   return __dirname.replace(/\\/g, '/');
 };
 
-const getOptions = async () => {
-  let connectionOptions: ConnectionOptions;
-
-  connectionOptions = {
-    ...ormConfig,
-  };
-
-  if (process.env.DATABASE_URL) {
-    Object.assign(connectionOptions, { url: process.env.DATABASE_URL });
-  } else {
-    connectionOptions = await getConnectionOptions();
-  }
-
-  return connectionOptions;
-};
-
 const init = async () => {
-  const options = await getOptions();
-  const connection = await createConnection(options);
+  const connection = await createConnection({ ...ormConfig });
 
   await connection.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
@@ -66,8 +49,7 @@ const init = async () => {
 
 // * Create Typeorm connection
 const start = async () => {
-  const options = await getOptions();
-  const connection = await createConnection(options);
+  const connection = await createConnection({ ...ormConfig });
 
   try {
     const tokenRepository = connection.getRepository(TokenEntity);

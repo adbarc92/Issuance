@@ -22,7 +22,7 @@ export const ormConfig: PostgresConnectionOptions = {
   host: DB_HOST || 'localhost',
   username: DB_USERNAME || 'postgres',
   password: DB_PASSWORD || 'postgres',
-  database: DB_NAME || 'typeorm',
+  database: DB_NAME || 'issuance',
   entities: ['src/entity/*.ts'],
   logging: false,
   synchronize: true,
