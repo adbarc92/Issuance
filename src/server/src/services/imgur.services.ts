@@ -10,6 +10,8 @@ import { PersonService } from 'services/personnel.services';
 import { tokenIsExpired } from 'utils';
 import { UploadedFile } from 'express-fileupload';
 
+import { imgurConfig } from '../../config';
+
 export interface ImgurTokenResponse {
   access_token: string;
   expires_in: number;
@@ -114,10 +116,16 @@ export class ImgurService {
       try {
         const url = 'https://api.imgur.com/oauth2/token';
 
+        const {
+          clientId: client_id,
+          clientSecret: client_secret,
+          refreshToken: refresh_token,
+        } = imgurConfig;
+
         const data = JSON.stringify({
-          refresh_token: process.env.IMGUR_REFRESH_TOKEN,
-          client_id: process.env.IMGUR_CLIENT_ID,
-          client_secret: process.env.IMGUR_CLIENT_SECRET,
+          refresh_token,
+          client_id,
+          client_secret,
           grant_type: 'refresh_token',
         });
 

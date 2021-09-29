@@ -31,6 +31,8 @@ import upload from 'express-fileupload';
 import socketIo from 'socket.io';
 import http from 'http';
 
+import { ormConfig } from '../config';
+
 const port = process.env.PORT || 4000;
 
 const getDirname = () => {
@@ -41,15 +43,7 @@ const getOptions = async () => {
   let connectionOptions: ConnectionOptions;
 
   connectionOptions = {
-    type: 'postgres',
-    synchronize: true, // * Dangerful, until migrations are implemented
-    logging: false,
-    extra: {
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    },
-    entities: ['src/entity/*.ts'],
+    ...ormConfig,
   };
 
   if (process.env.DATABASE_URL) {
